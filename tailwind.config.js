@@ -12,6 +12,8 @@ module.exports = {
 
         bgcdark:'#191B1F',
         bgcgray:'#212429',
+        footerclr: "#042235",
+        footerclr2: "#071F2E",
 
         innerborder1:'#424242',
         innerborder2:'#7A7A7A',
