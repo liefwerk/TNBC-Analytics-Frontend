@@ -19,6 +19,7 @@ $ npm run generate
 
 For detailed explanation about NUXT JS, check out the [documentation](https://nuxtjs.org).
 
+```bash
 # UI/UX Design :
 https://www.figma.com/file/BFs7rxvYFixhH78ipqIzVV/Home-page?node-id=0%3A1
 # Prototype Link : 
@@ -30,4 +31,6 @@ https://drive.google.com/file/d/1c37JACKCF4AORYSMUGrK0ZRdPXFEATtZ/view?usp=shari
 https://drive.google.com/file/d/14HPgb8qW5n6zQitLRaWkDuikcX9tZyc-/view?usp=sharing
 # Database Design : 
 https://drive.google.com/file/d/1mRUUhH755HjcnaE9bY992LSmNR91GTIj/view?usp=sharing
-# UML : https://drive.google.com/file/d/1MtgXngOtMxGCDyccR1mQx4-RcLfrSm3n/view?usp=sharing
+# UML : 
+https://drive.google.com/file/d/1MtgXngOtMxGCDyccR1mQx4-RcLfrSm3n/view?usp=sharing
+```
