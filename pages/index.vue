@@ -4,26 +4,11 @@
     <div class="absolute top-1/2 transform -translate-y-1/2 w-full">
       <h1 class="text-5xl text-gray-100 text-center uppercase font-serif">TNBC Analytics</h1>
     </div>
-    <div class="">
-      <vue-particles
-        color="#dedede"
-        :particleOpacity="0.7"
-        :particlesNumber="200"
-        shapeType="circle"
-        :particleSize="4"
-        linesColor="#dedede"
-        :linesWidth="1"
-        :lineLinked="true"
-        :lineOpacity="0.4"
-        :linesDistance="100"
-        :moveSpeed="3"
-        :hoverEffect="true"
-        hoverMode="grab"
-        :clickEffect="true"
-        clickMode="push" 
-        class="h-96">
-      </vue-particles>
-    </div>
+    <Particles />
+  </div>
+  <div class="my-16">
+    <h2 class="title-h1 text-center">Transactions of the Month</h2>
+    <p class="text-xl text-center my-8">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor</p>
   </div>
 </div>
 </template>
@@ -31,5 +16,13 @@
 <script lang="ts">
 import Vue from 'vue'
 
-export default Vue.extend({})
+import Particles from '@/components/website/particles/Particles.vue'
+
+export default Vue.extend({
+
+  components: {
+    Particles
+  }
+
+})
 </script>

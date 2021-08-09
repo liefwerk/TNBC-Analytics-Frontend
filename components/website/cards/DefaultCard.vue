@@ -9,7 +9,7 @@
 import { Prop, Component, Vue } from 'nuxt-property-decorator'
 
 @Component
-export default class Default extends Vue {
+export default class DefaultCard extends Vue {
   @Prop({ required: true }) readonly title!: string
   @Prop({ required: true }) readonly number!: number
 
