@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col flex-wrap md:flex-row md:flex-nowrap justify-center card max-w-max">
+  <div class="flex flex-col flex-wrap md:flex-row md:flex-nowrap justify-center card max-w-max mx-8 md:mx-auto my-8">
     <img :src="member.image">
     <div class="my-8 text-center flex-shrink md:text-left md:my-0 md:mx-8">
       <p class="py-1 md:py-0">{{ member.name }}</p>
