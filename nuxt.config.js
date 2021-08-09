@@ -23,7 +23,7 @@ export default {
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
-    {src: "~/assets/css/styles.css", lang: 'css'}
+    { src: "~/assets/css/styles.css", lang: 'css' }
   ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
@@ -56,9 +56,13 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
+    // fixed thanks to this source: https://github.com/nuxt/nuxt.js/issues/9224#issuecomment-893289291
+    babel: {
+      plugins: [['@babel/plugin-proposal-private-property-in-object', { loose: true }]],
+    },
   },
   ssr: false, // Disable Server Side rendering
-  
+
   env: {
     baseUrl: process.env.BASE_URL || 'http://127.0.0.1:8000/'
   }
