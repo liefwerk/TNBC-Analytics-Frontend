@@ -30,6 +30,8 @@ export default {
   plugins: [
     {
       src: "~/plugins/highcharts.js",
+    },
+    {
       src: "~/plugins/particle.js",
     }
   ],

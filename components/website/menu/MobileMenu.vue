@@ -35,7 +35,6 @@ export default class NavBar extends Vue {
 
   @Emit('closeMobileMenu')
   closeMobileMenu(): void {}
-  @Prop({ required: true }) readonly categories!: object[]
 
 }
 </script>
