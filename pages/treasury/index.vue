@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-12 mx-6 md:mx-12">
+  <div class="mt-12 mb-20 mx-6 md:mx-12">
     <div class="mb-16">
       <h1 class="title-h1 mb-2">Treasury Withdrawals</h1>
       <span>TNBC Withdrawed From Treasury Account</span>
