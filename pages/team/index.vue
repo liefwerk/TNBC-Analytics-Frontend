@@ -1,6 +1,6 @@
 <template>
   <div class="mt-12 mb-20 md:mx-12">
-    <h1 class="title-h1 mb-20">Team Members</h1>
+    <h1 class="title-h1 text-center mb-20">Team Members</h1>
     <div
       v-for="(member, index) in team"
       :key="index">

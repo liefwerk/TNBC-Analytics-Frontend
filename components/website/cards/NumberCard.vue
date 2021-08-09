@@ -1,7 +1,7 @@
 <template>
   <div class="card mr-4 mb-4">
     <h3 class="title-h3 text-left">{{ title }}</h3>
-    <p class="mt-2">{{ number }}</p>
+    <p class="text-2xl font-semibold mt-4">{{ number }}</p>
   </div>
 </template>
 
@@ -9,7 +9,7 @@
 import { Prop, Component, Vue } from 'nuxt-property-decorator'
 
 @Component
-export default class DefaultCard extends Vue {
+export default class NumberCard extends Vue {
   @Prop({ required: true }) readonly title!: string
   @Prop({ required: true }) readonly number!: number
 
