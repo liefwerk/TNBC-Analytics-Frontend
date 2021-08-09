@@ -30,7 +30,7 @@
       <h5 class="mt-3 text-xl">About</h5>
       <ul class="mt-3 text-sm">
         <li><nuxt-link to="/team">Team</nuxt-link></li>
-        <li><nuxt-link to="/donation">Donation</nuxt-link></li>
+        <li><nuxt-link to="/donate">Donation</nuxt-link></li>
       </ul>
     </div>
   </div>
