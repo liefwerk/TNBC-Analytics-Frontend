@@ -7,23 +7,24 @@ module.exports = {
         bcprimary: '#223D60',
         bcsecondary: '#212429',
 
-        fcprimary : '#FFFFFF',
-        fcsecondary : '#D1D1D1',
+        fcprimary: '#FFFFFF',
+        fcsecondary: '#D1D1D1',
 
-        bgcdark:'#191B1F',
-        bgcgray:'#212429',
+        bgcdark: '#191B1F',
+        bgcgray: '#212429',
         footerclr: "#042235",
         footerclr2: "#071F2E",
 
-        innerborder1:'#424242',
-        innerborder2:'#7A7A7A',
+        innerborder1: '#424242',
+        innerborder2: '#7A7A7A',
 
         secondary: {
-         
+
         }
       },
       fontFamily: {
-        body: ['Roboto']
+        serif: ['Quando'],
+        body: ['Roboto'],
       },
       fontSize: {
         title: ['15px', '18px'],
@@ -34,7 +35,7 @@ module.exports = {
   },
   variants: {
     extend: {
-      
+
     },
   },
   plugins: [],

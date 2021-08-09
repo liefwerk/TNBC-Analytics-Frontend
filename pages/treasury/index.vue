@@ -1,6 +1,9 @@
 <template>
-  <div class="mt-12 mb-20 mx-6 md:mx-12">
-    <h1 class="title-h1 mb-20">Treasury</h1>
+  <div class="mt-12 mx-6 md:mx-12">
+    <div class="mb-16">
+      <h1 class="title-h1 mb-2">Treasury Withdrawals</h1>
+      <span>TNBC Withdrawed From Treasury Account</span>
+    </div>
 
     <div class="flex flex-wrap mx-auto">
       <div class="w-full md:w-1/2">
@@ -30,7 +33,7 @@
         </div>
       </div>
       <div class="w-full md:w-1/2">
-        Graph
+        <Graph />
       </div>
     </div>
 
@@ -43,18 +46,20 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue from 'vue';
 
-import DefaultCard from '@/components/website/cards/DefaultCard.vue'
-import NumberCard from '@/components/website/cards/NumberCard.vue'
-import Table from '@/components/website/table/Table.vue'
+import DefaultCard from '@/components/website/cards/DefaultCard.vue';
+import NumberCard from '@/components/website/cards/NumberCard.vue';
+import Table from '@/components/website/table/Table.vue';
+import Graph from '@/components/website/graphs/Graph.vue';
 
 export default Vue.extend({
 
   components: {
     NumberCard,
     DefaultCard,
-    Table
+    Table,
+    Graph
   },
   data() {
     return {
