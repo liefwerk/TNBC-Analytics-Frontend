@@ -1,20 +1,20 @@
 <template>
   <div>
     <vue-particles
-      color="#dedede"
-      :particleOpacity="0.7"
-      :particlesNumber="200"
+      color="#fff"
+      particleOpacity="0.5"
+      particlesNumber="250"
       shapeType="circle"
-      :particleSize="4"
-      linesColor="#dedede"
-      :linesWidth="1"
-      :lineLinked="true"
-      :lineOpacity="0.4"
-      :linesDistance="100"
-      :moveSpeed="3"
-      :hoverEffect="true"
+      particleSize="2"
+      linesColor="#fff"
+      linesWidth="1"
+      lineLinked="true"
+      lineOpacity="0.4"
+      linesDistance="100"
+      moveSpeed="2"
+      hoverEffect="true"
       hoverMode="grab"
-      :clickEffect="true"
+      clickEffect="true"
       clickMode="push" 
       class="h-96">
     </vue-particles>
