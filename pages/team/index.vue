@@ -20,42 +20,12 @@ export default Vue.extend({
     TeamCard
   },
   data() {
-    return {
-      team: [
-        {
-          name: 'Jhon Doe',
-          role: 'UI/UX Designer',
-          github: 'jhondoe',
-          TNBCAddress: 'a5dbcded3501291743e0cb4c6a186afa2c87a54f4a876c620dbd68385cba80d0',
-          image: 'TeamMember.svg',
-          qrCode: 'QRCode.svg'
-        },
-        {
-          name: 'Jhon Doe',
-          role: 'UI/UX Designer',
-          github: 'jhondoe',
-          TNBCAddress: 'a5dbcded3501291743e0cb4c6a186afa2c87a54f4a876c620dbd68385cba80d0',
-          image: 'TeamMember.svg',
-          qrCode: 'QRCode.svg'
-        },
-        {
-          name: 'Jhon Doe',
-          role: 'UI/UX Designer',
-          github: 'jhondoe',
-          TNBCAddress: 'a5dbcded3501291743e0cb4c6a186afa2c87a54f4a876c620dbd68385cba80d0',
-          image: 'TeamMember.svg',
-          qrCode: 'QRCode.svg'
-        },
-        {
-          name: 'Jhon Doe',
-          role: 'UI/UX Designer',
-          github: 'jhondoe',
-          TNBCAddress: 'a5dbcded3501291743e0cb4c6a186afa2c87a54f4a876c620dbd68385cba80d0',
-          image: 'TeamMember.svg',
-          qrCode: 'QRCode.svg'
-        },
-      ]
-    }
+    return {}
+  },
+  async asyncData({ $http }: any) {
+    const team = await $http.$get('/api/team')
+    
+    return { team }
   }
 
 })
