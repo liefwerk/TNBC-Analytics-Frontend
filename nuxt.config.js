@@ -2,6 +2,16 @@ export default {
   // Target: https://go.nuxtjs.dev/config-target
   target: 'static',
 
+  render: {
+    static: {
+      setHeaders(res) {
+        res.setHeader('X-Frame-Options', 'ALLOWALL')
+        res.setHeader('Access-Control-Allow-Origin', '*')
+        res.setHeader('Access-Control-Allow-Methods', 'GET')
+        res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
+      }
+    },
+  },
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     title: 'TNBC Analytics',
@@ -33,7 +43,7 @@ export default {
     },
     {
       src: "~/plugins/particle.js",
-    },
+    }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -51,7 +61,25 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
+    '@nuxt/http',
+    '@nuxtjs/toast',
   ],
+
+  http: {
+    proxy: true // Can be also an object with default options
+  },
+
+  proxy: {
+    '/api/': {
+      target: 'http://localhost:8000',
+      pathRewrite: { '^/api/': '' }
+    }
+  },
+
+  toast: {
+    position: 'bottom-right',
+    duration: '3000'
+  },
 
   // PWA module configuration: https://go.nuxtjs.dev/pwa
   pwa: {
