@@ -18,7 +18,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-
 import NavBar from '@/components/website/menu/NavBar.vue'
 import MobileMenu from '@/components/website/menu/MobileMenu.vue'
 import Footer from '@/components/website/footer/Footer.vue'
