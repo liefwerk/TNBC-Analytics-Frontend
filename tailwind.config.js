@@ -9,6 +9,10 @@ module.exports = {
 
         fcprimary: '#FFFFFF',
         fcsecondary: '#D1D1D1',
+        
+        btnprimary: '#D0D8DC',
+        btntxtclr: '#042235',
+        pcsecondery: 'rgba(4, 34, 53, 0.55)',
 
         bgcdark: '#191B1F',
         bgcgray: '#212429',
@@ -28,7 +32,7 @@ module.exports = {
       },
       fontSize: {
         title: ['15px', '18px'],
-        subtitle: ['12.5px', '15px'],
+        subtitle: ['16px', '15px'],
         intxt: ['15px', '21px'],
       }
     },
