@@ -14,7 +14,7 @@
         "highcharts": "^9.1.2",
         "highcharts-vue": "^1.4.0",
         "nuxt": "^2.15.7",
-        "vue-particles": "^1.0.9"
+        "particles-bg-vue": "^1.3.5"
     },
     "devDependencies": {
         "@nuxt/types": "^2.15.7",

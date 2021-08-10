@@ -33,7 +33,7 @@ export default {
     },
     {
       src: "~/plugins/particle.js",
-    }
+    },
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
