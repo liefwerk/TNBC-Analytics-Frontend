@@ -4,6 +4,8 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        primary: "#042235",
+        secondary: "#042235",
         bcprimary: '#223D60',
         bcsecondary: '#212429',
 
@@ -23,7 +25,7 @@ module.exports = {
         innerborder2: '#7A7A7A',
 
         secondary: {
-
+          
         }
       },
       fontFamily: {
