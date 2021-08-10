@@ -4,7 +4,7 @@
       <div class="absolute top-1/2 transform -translate-y-1/2 w-full">
         <h1 class="text-5xl text-gray-100 text-center uppercase">TNBC Analytics</h1>
       </div>
-      <Particles />
+      <Particle />
     </div>
     <div class="my-16 mx-4 font-serif">
       <h2 class="title-h1 text-center">Transactions of the Month</h2>
@@ -38,12 +38,12 @@
 import Vue from 'vue'
 
 import Graph from '@/components/website/graphs/Graph.vue'
-import Particles from '@/components/website/particles/Particles.vue'
+import Particle from '@/components/website/particles/Particle.vue'
 
 export default Vue.extend({
 
   components: {
-    Particles,
+    Particle,
     Graph
   }
 
