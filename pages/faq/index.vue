@@ -1,24 +1,28 @@
 <template>
- <div class="fcprimary">
-    <div class="px-5 py-4 mx-auto">
-        <div class="flex flex-col text-center w-full mb-8">
+ <div class="fcprimary m-8">
+    <div class="py-4 mx-auto">
+        <div class="flex flex-col text-center w-full mt-8 mb-16">
             <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">Frequently Asked Questions</h1>
             <p class="lg:w-2/3 mx-auto leading-relaxed text-base text-pcsecondery">Looking for answers? Questions & answers can be instantly filtered in FAQ page.</p>
         </div>
         <div class="btnprimary">
-            <button class="btnclass bg-btnprimary text-btntxtclr" >Treasury</button>
-            <button class="btnclass bg-btnprimary text-btntxtclr" >Government</button>
-            <button class="btnclass bg-btnprimary text-btntxtclr" >Project</button>
-            <button class="btnclass bg-btnprimary text-btntxtclr" >Core team</button>
+            <button 
+                v-for="(faq, index) in filteredFaqsTypes" 
+                :key="index"
+                @click="handleFilter(faq)"
+                class="btnclass border-2 btn-hover border-btnprimary text-btntxtclr"
+                :class="faq.title === selectedFilter ? 'selected-button' : ''">
+                    {{faq.title}}
+            </button>
         </div>
     </div>
-    <div  v-if="faqs.length">
-        <FaqCard :faqs="faqs"/>
+    <div 
+        v-for="(item, index) in filteredFaqs" 
+        :key="index"
+        @click="toggleFaq(item)"
+        class="relative flex flex-col flex-wrap md:flex-row md:flex-nowrap justify-start card mb-4">
+        <FaqCard :item="item" :isToggled="item === selectedFaq ? true : false" />
     </div>
-    <div v-else>
-        <Spinner />
-    </div>
-    
 </div>
 </template>
 
@@ -26,6 +30,7 @@
 import Vue from 'vue'
 import FaqCard from '@/components/website/cards/FaqCard.vue'
 import Spinner from '@/components/website/spinner/Spinner.vue'
+import { FaqItem, FaqItemType } from '@/constants/types/Faq'
   
 export default Vue.extend({
 
@@ -33,43 +38,43 @@ export default Vue.extend({
         FaqCard,
         Spinner
     },
-      data() {
+    data() {
         return {
-        showup: true,
-        close: false,
-        faqs: [
-            {
-                id: 1,
-                type:"treasury",
-                question: 'What is the current balance of Treasury ?',
-                answer: 'The current balance of Treasury is about 300,000,000 ,',
-            },
-            {
-                id: 2,
-                type:"government",
-                question: 'How much TNBC government withdrawed in goverment wallet ?',
-                answer: 'The total govt withdrawal is 50,000,000 .',
-            },
-            {
-                id: 3,
-                type:"project",
-                question: 'How much TNBC has been paid to the projects ?',
-                answer: 'About 200,000,000 TNBC has been paid to the projects .',
-            },
-            {
-                id: 4,
-                type:"coreteam",
-                question: 'How many members are there in core team ?',
-                answer: 'There are about 20 members in core team',
-            },
-        ],
-    }  
+            selectedFilter: 'Core Team',
+            selectedFaq: null,
+            faqs: null
+        }
   },
-  created(){
+  async asyncData({ $http }: any) {
+    const faqs: any = await $http.$get('/api/faq')
+    
+    return { faqs } as any
   },
-  mounted () {
+  methods: {
+    handleFilter(item: any): void {
+        this.selectedFilter = item.title
+    },
+    toggleFaq(item: any): void {
+        this.selectedFaq = item
+    }
   },
-  methods:{
-  }
+  computed:{
+        filteredFaqs(): any {
+            let _array: any = this.faqs as unknown as FaqItem
+            let filteredArray: any = _array.filter((faq: FaqItem) => faq.type.title === this.selectedFilter)
+            return filteredArray
+        },
+        filteredFaqsTypes(): any {
+            let _faqs: any = this.faqs as unknown as FaqItem
+            let _array: any = _faqs.map((faq: FaqItem) => faq.type)
+
+            const _filteredArray = _array.filter((type: FaqItem, index: number, self: any) =>
+                index === self.findIndex((t: FaqItemType) => (
+                    t.uuid === type.uuid
+                ))
+            )
+            return _filteredArray
+        }
+    }
 })
 </script>

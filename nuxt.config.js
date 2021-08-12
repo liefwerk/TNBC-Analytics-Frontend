@@ -2,16 +2,6 @@ export default {
   // Target: https://go.nuxtjs.dev/config-target
   target: 'static',
 
-  render: {
-    static: {
-      setHeaders(res) {
-        res.setHeader('X-Frame-Options', 'ALLOWALL')
-        res.setHeader('Access-Control-Allow-Origin', '*')
-        res.setHeader('Access-Control-Allow-Methods', 'GET')
-        res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
-      }
-    },
-  },
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     title: 'TNBC Analytics',
@@ -71,7 +61,7 @@ export default {
 
   proxy: {
     '/api/': {
-      target: 'http://localhost:8000',
+      target: 'http://tnbanalytics.pythonanywhere.com/',
       pathRewrite: { '^/api/': '' }
     }
   },
@@ -98,6 +88,7 @@ export default {
   ssr: false, // Disable Server Side rendering
 
   env: {
-    baseUrl: process.env.BASE_URL || 'http://127.0.0.1:8000/'
+    baseUrl: process.env.BASE_URL || 'http://127.0.0.1:3000/',
+    apiUrl: 'http://tnbanalytics.pythonanywhere.com/'
   }
 }

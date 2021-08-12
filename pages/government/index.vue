@@ -107,6 +107,48 @@ export default Vue.extend({
           githubIssueId: 295,
           recipientPublicKey: 'a2sa3e6re2d3adf3dfer1a3fe3r...'
         },
+        {
+          date: '4th July 2021',
+          amount: 2000000,
+          paidTo: 'Government',
+          githubIssueId: 295,
+          recipientPublicKey: 'a2sa3e6re2d3adf3dfer1a3fe3r...'
+        },
+        {
+          date: '18th June  2021',
+          amount: 1000000,
+          paidTo: 'Government',
+          githubIssueId: 295,
+          recipientPublicKey: 'a2sa3e6re2d3adf3dfer1a3fe3r...'
+        },
+        {
+          date: '4th July 2021',
+          amount: 2000000,
+          paidTo: 'Government',
+          githubIssueId: 295,
+          recipientPublicKey: 'a2sa3e6re2d3adf3dfer1a3fe3r...'
+        },
+        {
+          date: '18th June  2021',
+          amount: 1000000,
+          paidTo: 'Government',
+          githubIssueId: 295,
+          recipientPublicKey: 'a2sa3e6re2d3adf3dfer1a3fe3r...'
+        },
+        {
+          date: '4th July 2021',
+          amount: 2000000,
+          paidTo: 'Government',
+          githubIssueId: 295,
+          recipientPublicKey: 'a2sa3e6re2d3adf3dfer1a3fe3r...'
+        },
+        {
+          date: '18th June  2021',
+          amount: 1000000,
+          paidTo: 'Government',
+          githubIssueId: 295,
+          recipientPublicKey: 'a2sa3e6re2d3adf3dfer1a3fe3r...'
+        },
       ]
     }
   }

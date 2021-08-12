@@ -29,8 +29,6 @@ import QrcodeVue from 'qrcode.vue'
 })
 export default class TeamCard extends Vue{
   @Prop({ required: true }) readonly member!: object
-  
-
 
   async copyThat(accountNumber: string): Promise<void> {
     if (accountNumber as string)
