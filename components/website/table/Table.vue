@@ -4,7 +4,7 @@
       <div class="py-2 align-middle inline-block min-w-full">
         <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
           <table class="min-w-full divide-y divide-gray-200 border-collapse">
-            <thead class="bg-gray-50">
+            <thead class="bg-white">
               <tr>
                 <th 
                   @click="sort(column.attribute)" 
@@ -67,7 +67,6 @@
                 <nav class="relative z-0 inline-flex" aria-label="Pagination">
                   <a
                     @click="changeToPreviousPage"
-                    href="#" 
                     class="relative inline-flex items-center mr-2 px-2 py-2 rounded-full bg-white text-sm font-medium text-gray-500 shadow-md hover:bg-gray-50">
                     <span>
                     <!-- chevron-left -->
@@ -80,14 +79,13 @@
                   <a 
                     @click="changeItemsInPage(number)" 
                     v-for="(number, index) in displayPages" 
-                    :key="index" href="#" 
+                    :key="index"
                     :class="number === activeItem ? 'current' : ''" 
                     class="bg-white mx-2 shadow-md text-gray-500 hover:bg-gray-50 relative inline-flex items-center justify-center h-4 w-4 px-4 py-4 text-sm font-medium rounded-full">
                     {{ number }}
                   </a>
                   <a
                     @click="changeToNextPage"
-                    href="#"
                     class="relative inline-flex items-center ml-2 px-2 py-2 rounded-full bg-white text-sm font-medium text-gray-500 shadow-md hover:bg-gray-50">
                     <span>
                     <!-- chevron-right -->
@@ -208,7 +206,7 @@ export default class Table extends Vue {
 </script>
 <style scoped>
 .current {
-  @apply z-10 bg-blue-500 text-white;
+  @apply z-10 text-blue-500;
 }
 @media (max-width: 1024px) {
   table {
