@@ -16,7 +16,7 @@ import { Prop, Component, Vue } from 'nuxt-property-decorator'
 @Component
 export default class FaqCard extends Vue{
   @Prop({ required: true }) readonly item!: object
-  @Prop({ required: true }) readonly isToggled: boolean
+  @Prop({ required: true }) readonly isToggled: boolean = false
 
 }
 </script>

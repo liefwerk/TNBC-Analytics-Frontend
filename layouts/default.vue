@@ -12,7 +12,7 @@
       @showMobileMenu="showMobileMenu = true"
     />
     <Nuxt />
-    <Footer />
+    <Footer :settings="settings" />
   </div>
 </template>
 
@@ -45,8 +45,14 @@ export default Vue.extend({
     return {
       showMobileMenu: false,
       showCart: false,
+      settings: [],
     }
   },
+  async fetch() {
+    this.settings = await fetch(
+      process.env.apiUrl + 'setting'
+    ).then(res => res.json()).catch(err => console.log(err))
+  }
 })
 </script>
 

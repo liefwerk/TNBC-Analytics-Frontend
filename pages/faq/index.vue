@@ -19,7 +19,7 @@
     <div 
         v-for="(item, index) in filteredFaqs" 
         :key="index"
-        @click="toogleFaq(item)"
+        @click="toggleFaq(item)"
         class="relative flex flex-col flex-wrap md:flex-row md:flex-nowrap justify-start card mb-4">
         <FaqCard :item="item" :isToggled="item === selectedFaq ? true : false" />
     </div>
@@ -30,6 +30,7 @@
 import Vue from 'vue'
 import FaqCard from '@/components/website/cards/FaqCard.vue'
 import Spinner from '@/components/website/spinner/Spinner.vue'
+import { FaqItem, FaqItemType } from '@/constants/types/Faq'
   
 export default Vue.extend({
 
@@ -40,31 +41,35 @@ export default Vue.extend({
     data() {
         return {
             selectedFilter: 'Core Team',
-            selectedFaq: null
+            selectedFaq: null,
+            faqs: null
         }
   },
   async asyncData({ $http }: any) {
-    const faqs = await $http.$get('/api/faq')
+    const faqs: any = await $http.$get('/api/faq')
     
-    return { faqs }
+    return { faqs } as any
   },
   methods: {
-    handleFilter(item: object): void {
+    handleFilter(item: any): void {
         this.selectedFilter = item.title
     },
-    toogleFaq(item: object): void {
+    toggleFaq(item: any): void {
         this.selectedFaq = item
     }
   },
   computed:{
-        filteredFaqs(): object[]{
-            let filteredArray = this.faqs.filter(faq => faq.type.title === this.selectedFilter)
+        filteredFaqs(): any {
+            let _array: any = this.faqs as unknown as FaqItem
+            let filteredArray: any = _array.filter((faq: FaqItem) => faq.type.title === this.selectedFilter)
             return filteredArray
         },
-        filteredFaqsTypes(): object[]{
-            let _array = this.faqs.map(faq => faq.type)
-            const _filteredArray = _array.filter((type, index, self) =>
-                index === self.findIndex((t) => (
+        filteredFaqsTypes(): any {
+            let _faqs: any = this.faqs as unknown as FaqItem
+            let _array: any = _faqs.map((faq: FaqItem) => faq.type)
+
+            const _filteredArray = _array.filter((type: FaqItem, index: number, self: any) =>
+                index === self.findIndex((t: FaqItemType) => (
                     t.uuid === type.uuid
                 ))
             )

@@ -4,6 +4,15 @@
     <div class="md:mx-10 flex-grow w-full md:w-auto md:flex-grow-0">
       <h5 class="mt-3 text-xl">TNBC Analytics</h5>
       <ul class="mt-3 text-sm">
+        <li v-for="(item, index) in settings" :key="index">
+          debug: {{item}}
+          <a href="#">Github</a>
+          {{item.uuid}}
+          {{item.reddit_username}}
+          {{item.twitter_username}}
+          {{item.discord_invitation_code}}
+          {{item.github_username}}
+        </li>
         <li><a href="#">Github</a></li>
         <li><a href="#">Discord</a></li>
         <li><a href="#">Instagram</a></li>  
@@ -23,7 +32,7 @@
       <ul class="mt-3 text-sm">
         <li><a href="#">Blockchain Api</a></li>
         <li><a href="#">Github Api</a></li>
-        <li><a href="#">The New Boston Guide</a></li>  
+        <li><a href="#">The New Boston Guide</a></li>
       </ul>
     </div>
     <div class="md:mx-10 flex-grow w-full md:w-auto md:flex-grow-0">
@@ -49,6 +58,7 @@ import { Prop, Vue, Component } from 'nuxt-property-decorator'
 
 @Component
 export default class Footer extends Vue {
+  @Prop({ required: true }) readonly settings!: object[]
 
 }
 </script>

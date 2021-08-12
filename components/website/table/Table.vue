@@ -7,7 +7,6 @@
             <thead class="bg-white">
               <tr>
                 <th 
-                  @click="sort(column.attribute)" 
                   v-for="(column, index) in columns" 
                   :key="index" 
                   scope="col" 
@@ -124,7 +123,7 @@ export default class Table extends Vue {
   public maxItemsPerPage: number = 5
   public lastPage: number = Math.ceil(this.totalItems / this.maxItemsPerPage)
   public notEnoughPages: true = true
-  public currentSort: string = 'id'
+  public currentSort: string = 'date'
   public currentSortDir: string = 'asc'
   public activeItem: number | null = null 
 
@@ -172,14 +171,6 @@ export default class Table extends Vue {
         this.currentPage = this.lastPage
         this.activeItem = this.lastPage
       }
-  }
-
-  sort(s: string): void {
-    //if s == current sort, reverse
-    if(s === this.currentSort) {
-      this.currentSortDir = this.currentSortDir==='asc'?'desc':'asc';
-    }
-    this.currentSort = s;
   }
 
   get itemsInPage(): any[] {

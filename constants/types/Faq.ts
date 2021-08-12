@@ -1,9 +1,11 @@
-interface FaqItem {
+export interface FaqItem {
   uuid: string,
   question: string,
   answer: string,
-  type: {
-    uuid: string,
-    title: string
-  }
+  type: FaqItemType
+}
+
+export interface FaqItemType {
+  uuid: string,
+  title: string
 }
