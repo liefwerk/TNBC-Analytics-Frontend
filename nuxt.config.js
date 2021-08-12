@@ -71,7 +71,7 @@ export default {
 
   proxy: {
     '/api/': {
-      target: 'http://localhost:8000',
+      target: 'http://tnbanalytics.pythonanywhere.com/',
       pathRewrite: { '^/api/': '' }
     }
   },

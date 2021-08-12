@@ -1,5 +1,5 @@
 .card{
-  @apply px-8 py-6 rounded-xl bg-white shadow-md hover:shadow-lg;
+  @apply px-6 py-4 rounded-xl bg-white shadow-md hover:shadow-lg;
 }
 
 .title-h1 {
@@ -15,11 +15,19 @@
 }
 
 .btnprimary {
-  @apply flex lg:w-2/3 w-full justify-center sm:flex-row flex-col mx-auto px-2 sm:space-x-4 sm:space-y-0 space-y-4 sm:px-0 items-center
+  @apply flex lg:w-2/3 w-full sm:flex-row flex-col px-2 sm:space-x-4 sm:space-y-0 space-y-4 sm:px-0 items-center;
 }
 
 .btnclass {
-  @apply border-0 py-2 px-8 rounded-lg text-lg;
+  @apply py-2 px-8 rounded-lg text-lg;
+}
+
+.btn-hover {
+  @apply hover:bg-btnprimary
+}
+
+.selected-button {
+  @apply bg-btnprimary;
 }
 
 .cardbox {
