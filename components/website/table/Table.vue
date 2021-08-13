@@ -2,7 +2,10 @@
   <div class="flex flex-col">
     <div class="overflow-x-auto">
       <div class="py-2 align-middle inline-block min-w-full">
-        <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+        <div class="shadow overflow-hidden border-b bg-white border-gray-200 sm:rounded-lg">
+          <div class="w-full px-6 py-4">
+            <input placeholder="Search" class="py-2 px-4 border-2 w-full rounded-md" />
+          </div>
           <table class="min-w-full divide-y divide-gray-200 border-collapse">
             <thead class="bg-white">
               <tr>
