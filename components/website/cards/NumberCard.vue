@@ -1,6 +1,6 @@
 <template>
   <div class="card mr-4 mb-4">
-    <h3 class="title-h3 text-left">{{ title }}</h3>
+    <h3 class="text-intxt text-gray-800 text-left">{{ title }}</h3>
     <p class="text-2xl font-semibold mt-4">{{ number }}</p>
   </div>
 </template>

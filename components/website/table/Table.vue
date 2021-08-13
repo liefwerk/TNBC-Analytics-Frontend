@@ -10,12 +10,12 @@
                   v-for="(column, index) in columns" 
                   :key="index" 
                   scope="col" 
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  class="px-6 py-3 text-left text-intxt font-medium text-gray-500 uppercase tracking-wider">
                   {{ column.name }}
                 </th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-gray-200">
+            <tbody class="divide-y divide-gray-200 text-intxt">
               <tr v-for="(item, i) in sortedItems" :key="i" class="bg-white flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap mb-10 lg:mb-0">
                 <td 
                   v-for="(textColumn, j) in textColumns" 
@@ -66,7 +66,7 @@
                 <nav class="relative z-0 inline-flex" aria-label="Pagination">
                   <a
                     @click="changeToPreviousPage"
-                    class="relative inline-flex items-center mr-2 px-2 py-2 rounded-full bg-white text-sm font-medium text-gray-500 shadow-md hover:bg-gray-50">
+                    class="relative inline-flex items-center mr-2 px-2 py-2 transition-500 hover:shadow-sm rounded-full bg-white text-sm font-medium text-gray-500 shadow-md cursor-pointer">
                     <span>
                     <!-- chevron-left -->
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -74,18 +74,18 @@
                       </svg>
                     </span>
                   </a>
-                  <!-- Current: "z-10 bg-indigo-50 border-indigo-500 text-indigo-600", Default: "bg-white border-gray-300 text-gray-500 hover:bg-gray-50" -->
+                  <!-- Current: "z-10 bg-indigo-50 border-indigo-500 text-indigo-600", Default: "bg-white border-gray-300 text-gray-500  -->
                   <a 
                     @click="changeItemsInPage(number)" 
                     v-for="(number, index) in displayPages" 
                     :key="index"
                     :class="number === activeItem ? 'current' : ''" 
-                    class="bg-white mx-2 shadow-md text-gray-500 hover:bg-gray-50 relative inline-flex items-center justify-center h-4 w-4 px-4 py-4 text-sm font-medium rounded-full">
+                    class="bg-white mx-2 shadow-md text-gray-500 transition-500 hover:shadow-sm relative inline-flex items-center justify-center h-4 w-4 px-4 py-4 text-sm font-medium rounded-full cursor-pointer">
                     {{ number }}
                   </a>
                   <a
                     @click="changeToNextPage"
-                    class="relative inline-flex items-center ml-2 px-2 py-2 rounded-full bg-white text-sm font-medium text-gray-500 shadow-md hover:bg-gray-50">
+                    class="relative inline-flex items-center ml-2 px-2 py-2 transition-500 hover:shadow-sm rounded-full bg-white text-sm font-medium text-gray-500 shadow-md cursor-pointer">
                     <span>
                     <!-- chevron-right -->
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -196,9 +196,6 @@ export default class Table extends Vue {
 }
 </script>
 <style scoped>
-.current {
-  @apply z-10 text-blue-500;
-}
 @media (max-width: 1024px) {
   table {
     border: 0;

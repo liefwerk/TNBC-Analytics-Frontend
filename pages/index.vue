@@ -2,13 +2,13 @@
   <div class="mb-20">
     <div class="bg-gradient-to-b from-gray-900 to-gray-700 h-96 relative font-serif">
       <div class="absolute top-1/2 transform -translate-y-1/2 w-full">
-        <h1 class="text-5xl text-gray-100 text-center uppercase">TNBC Analytics</h1>
+        <h1 class="text-titlexl text-gray-100 text-center uppercase">TNBC Analytics</h1>
       </div>
       <Particle />
     </div>
     <div class="my-16 mx-4 font-serif">
-      <h2 class="title-h1 text-center">Transactions of the Month</h2>
-      <p class="text-lg text-center my-8 text-gray-500">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor</p>
+      <h2 class="text-titlelg text-center">Transactions of the Month</h2>
+      <p class="text-inbtn text-center my-4 text-gray-500">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor</p>
     </div>
     <div class="mx-4 my-10 md:mx-auto md:w-3/4">
       <Graph />
