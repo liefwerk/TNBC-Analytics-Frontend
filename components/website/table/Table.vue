@@ -21,7 +21,7 @@
                   v-for="(textColumn, j) in textColumns" 
                   :key="j" 
                   :data-label="textColumn.attribute"
-                  class="w-full lg:w-auto px-6 py-4 whitespace-nowrap">
+                  class="w-full lg:w-auto px-6 py-4">
                   <div class="flex-shrink-0">
                     {{ item[textColumn.attribute] }}
                   </div>
@@ -30,7 +30,7 @@
             </tbody>
           </table>
           <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
-            <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between md:justify-end">
+            <div class="flex items-center justify-between flex-wrap md:justify-end w-full">
               <div class="md:mr-6">
                 <p class="text-sm text-gray-700">
                   Showing

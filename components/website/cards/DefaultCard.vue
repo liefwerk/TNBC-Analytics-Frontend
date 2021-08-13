@@ -1,5 +1,5 @@
 <template>
-  <div class="card mr-4 mb-4">
+  <div class="card md:mr-4 mb-4 w-full md:w-auto">
     <h3 class="text-intxt text-left">{{ title }}</h3>
     <p class="mt-2">{{ number }}</p>
   </div>
