@@ -2,7 +2,10 @@
   <div class="flex flex-col">
     <div class="overflow-x-auto">
       <div class="py-2 align-middle inline-block min-w-full">
-        <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+        <div class="shadow overflow-hidden border-b bg-white border-gray-200 sm:rounded-lg">
+          <div class="w-full px-6 py-4">
+            <input placeholder="Search" class="py-2 px-4 border-2 w-full rounded-md" />
+          </div>
           <table class="min-w-full divide-y divide-gray-200 border-collapse">
             <thead class="bg-white">
               <tr>
@@ -10,18 +13,18 @@
                   v-for="(column, index) in columns" 
                   :key="index" 
                   scope="col" 
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  class="px-6 py-3 text-left text-intxt font-medium text-gray-500 uppercase tracking-wider">
                   {{ column.name }}
                 </th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-gray-200">
+            <tbody class="divide-y divide-gray-200 text-intxt">
               <tr v-for="(item, i) in sortedItems" :key="i" class="bg-white flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap mb-10 lg:mb-0">
                 <td 
                   v-for="(textColumn, j) in textColumns" 
                   :key="j" 
                   :data-label="textColumn.attribute"
-                  class="w-full lg:w-auto px-6 py-4 whitespace-nowrap">
+                  class="w-full lg:w-auto px-6 py-4">
                   <div class="flex-shrink-0">
                     {{ item[textColumn.attribute] }}
                   </div>
@@ -30,7 +33,7 @@
             </tbody>
           </table>
           <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
-            <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between md:justify-end">
+            <div class="flex items-center justify-between flex-wrap md:justify-end w-full">
               <div class="md:mr-6">
                 <p class="text-sm text-gray-700">
                   Showing
@@ -66,7 +69,7 @@
                 <nav class="relative z-0 inline-flex" aria-label="Pagination">
                   <a
                     @click="changeToPreviousPage"
-                    class="relative inline-flex items-center mr-2 px-2 py-2 rounded-full bg-white text-sm font-medium text-gray-500 shadow-md hover:bg-gray-50">
+                    class="relative inline-flex items-center mr-2 px-2 py-2 transition-500 hover:shadow-sm rounded-full bg-white text-sm font-medium text-gray-500 shadow-md cursor-pointer">
                     <span>
                     <!-- chevron-left -->
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -74,18 +77,18 @@
                       </svg>
                     </span>
                   </a>
-                  <!-- Current: "z-10 bg-indigo-50 border-indigo-500 text-indigo-600", Default: "bg-white border-gray-300 text-gray-500 hover:bg-gray-50" -->
+                  <!-- Current: "z-10 bg-indigo-50 border-indigo-500 text-indigo-600", Default: "bg-white border-gray-300 text-gray-500  -->
                   <a 
                     @click="changeItemsInPage(number)" 
                     v-for="(number, index) in displayPages" 
                     :key="index"
                     :class="number === activeItem ? 'current' : ''" 
-                    class="bg-white mx-2 shadow-md text-gray-500 hover:bg-gray-50 relative inline-flex items-center justify-center h-4 w-4 px-4 py-4 text-sm font-medium rounded-full">
+                    class="bg-white mx-2 shadow-md text-gray-500 transition-500 hover:shadow-sm relative inline-flex items-center justify-center h-4 w-4 px-4 py-4 text-sm font-medium rounded-full cursor-pointer">
                     {{ number }}
                   </a>
                   <a
                     @click="changeToNextPage"
-                    class="relative inline-flex items-center ml-2 px-2 py-2 rounded-full bg-white text-sm font-medium text-gray-500 shadow-md hover:bg-gray-50">
+                    class="relative inline-flex items-center ml-2 px-2 py-2 transition-500 hover:shadow-sm rounded-full bg-white text-sm font-medium text-gray-500 shadow-md cursor-pointer">
                     <span>
                     <!-- chevron-right -->
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -196,9 +199,6 @@ export default class Table extends Vue {
 }
 </script>
 <style scoped>
-.current {
-  @apply z-10 text-blue-500;
-}
 @media (max-width: 1024px) {
   table {
     border: 0;

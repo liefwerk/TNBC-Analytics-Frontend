@@ -2,13 +2,29 @@
   <div class="mb-20">
     <div class="bg-gradient-to-b from-gray-900 to-gray-700 h-96 relative font-serif">
       <div class="absolute top-1/2 transform -translate-y-1/2 w-full">
-        <h1 class="text-5xl text-gray-100 text-center uppercase">TNBC Analytics</h1>
+        <h1 class="text-titlexl text-gray-100 text-center uppercase">TNBC Analytics</h1>
       </div>
       <Particle />
     </div>
+    <div class="relative w-3/4 mx-auto font-serif">
+      <div class="absolute transform -translate-y-full mx-auto bg-gray-900 w-full text-center text-white p-2">
+        <p>Average blocktime of 0.015 seconds and 3,238 transactions per second, TNBC is the best Crypto Currency.</p>
+      </div>
+      <div class="grid grid-cols-1 md:flex md:flex-nowrap justify-center bg-white md:w-full md:mx-auto px-6 py-2 divide-y md:divide-y-0 md:divide-x divide-gray-300">
+        <HomeCard 
+          number="45,451,258"
+          title="Total Distributed Coins"/>
+        <HomeCard 
+          number="45,451,258"
+          title="Distributed to Core Team"/>
+        <HomeCard 
+          number="45,451,258"
+          title="Distributed to Projects"/>
+      </div>
+    </div>
     <div class="my-16 mx-4 font-serif">
-      <h2 class="title-h1 text-center">Transactions of the Month</h2>
-      <p class="text-lg text-center my-8 text-gray-500">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor</p>
+      <h2 class="text-titlelg text-center">Transactions of the Month</h2>
+      <p class="text-inbtn text-center my-4 text-gray-500">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor</p>
     </div>
     <div class="mx-4 my-10 md:mx-auto md:w-3/4">
       <Graph />
@@ -39,12 +55,14 @@ import Vue from 'vue'
 
 import Graph from '@/components/website/graphs/Graph.vue'
 import Particle from '@/components/website/particles/Particle.vue'
+import HomeCard from '@/components/website/cards/HomeCard.vue'
 
 export default Vue.extend({
 
   components: {
     Particle,
-    Graph
+    Graph,
+    HomeCard
   }
 
 })

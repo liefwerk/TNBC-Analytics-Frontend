@@ -1,8 +1,8 @@
 <template>
   <div class="mt-12 mb-20 mx-6 md:mx-12">
     <div class="mb-16">
-      <h1 class="title-h1 mb-2">Treasury Withdrawals</h1>
-      <span>TNBC Withdrawed From Treasury Account</span>
+      <h1 class="text-titlelg mb-2 font-serif font-light">Treasury Withdrawals</h1>
+      <span class="text-subtitle text-pcsecondery">TNBC Withdrawed From Treasury Account</span>
     </div>
 
     <div class="flex flex-wrap mx-auto">
@@ -38,7 +38,7 @@
     </div>
 
     <div class="mt-10">
-      <h2 class="title-h2 mb-6">Transactions</h2>
+      <h2 class="text-titlemd mb-4 font-serif">Transactions</h2>
       <Table :columns="columns" :items="items" />
     </div>
 

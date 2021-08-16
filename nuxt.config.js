@@ -31,9 +31,6 @@ export default {
     {
       src: "~/plugins/highcharts.js",
     },
-    {
-      src: "~/plugins/particle.js",
-    }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -61,7 +58,7 @@ export default {
 
   proxy: {
     '/api/': {
-      target: 'http://tnbanalytics.pythonanywhere.com/',
+      target: 'https://tnbanalytics.pythonanywhere.com/',
       pathRewrite: { '^/api/': '' }
     }
   },
@@ -89,6 +86,6 @@ export default {
 
   env: {
     baseUrl: process.env.BASE_URL || 'http://127.0.0.1:3000/',
-    apiUrl: 'http://tnbanalytics.pythonanywhere.com/'
+    apiUrl: 'https://tnbanalytics.pythonanywhere.com/'
   }
 }

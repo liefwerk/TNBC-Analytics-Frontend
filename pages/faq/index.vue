@@ -2,15 +2,15 @@
  <div class="fcprimary m-8">
     <div class="py-4 mx-auto">
         <div class="flex flex-col text-center w-full mt-8 mb-16">
-            <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">Frequently Asked Questions</h1>
-            <p class="lg:w-2/3 mx-auto leading-relaxed text-base text-pcsecondery">Looking for answers? Questions & answers can be instantly filtered in FAQ page.</p>
+            <h1 class="md:text-titlelg text-titlemd font-medium title-font mb-4 text-gray-900 font-serif">Frequently Asked Questions</h1>
+            <p class="lg:w-2/3 mx-auto leading-relaxed text-subtitle text-pcsecondery">Looking for answers? Questions & answers can be instantly filtered in FAQ page.</p>
         </div>
         <div class="btnprimary">
             <button 
                 v-for="(faq, index) in filteredFaqsTypes" 
                 :key="index"
                 @click="handleFilter(faq)"
-                class="btnclass border-2 btn-hover border-btnprimary text-btntxtclr"
+                class="btnclass border-2 btn-hover border-btnprimary text-inbtn cursor-pointer transition-500"
                 :class="faq.title === selectedFilter ? 'selected-button' : ''">
                     {{faq.title}}
             </button>
@@ -20,7 +20,7 @@
         v-for="(item, index) in filteredFaqs" 
         :key="index"
         @click="toggleFaq(item)"
-        class="relative flex flex-col flex-wrap md:flex-row md:flex-nowrap justify-start card mb-4">
+        class="relative flex flex-col flex-wrap md:flex-row md:flex-nowrap justify-start card mb-4 cursor-pointer">
         <FaqCard :item="item" :isToggled="item === selectedFaq ? true : false" />
     </div>
 </div>

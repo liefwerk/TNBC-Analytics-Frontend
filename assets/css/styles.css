@@ -22,8 +22,12 @@
   @apply py-2 px-8 rounded-lg text-lg;
 }
 
+.current {
+  @apply text-blue-500 shadow-sm;
+}
+
 .btn-hover {
-  @apply hover:bg-btnprimary
+  @apply hover:bg-btnprimary;
 }
 
 .selected-button {
@@ -32,4 +36,8 @@
 
 .cardbox {
    @apply max-w-md mx-auto md:max-w-2xl lg:max-w-5xl xl:max-w-5xl bg-white max-h-screen flex-row rounded-3xl relative;
+}
+
+.transition-500 {
+  @apply transition ease-in-out duration-500;
 }
