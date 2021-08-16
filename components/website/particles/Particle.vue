@@ -1,7 +1,7 @@
 <template>
   <div class="h-96">
     <!--<particles-bg type="cobweb" :bg="false" color="#ffffff" cross="dead"/>-->
-    <div :id="id" class="particles-js ma-0 pa-0 text-center"></div>
+    <div :id="id" class="particles-js m-0 p-0 text-center h-full"></div>
   </div>
 </template>
 
