@@ -31,9 +31,6 @@ export default {
     {
       src: "~/plugins/highcharts.js",
     },
-    {
-      src: "~/plugins/particle.js",
-    }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
