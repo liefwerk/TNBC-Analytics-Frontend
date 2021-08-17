@@ -3,20 +3,31 @@
   <div class="py-6 px-6 bg-footerclr lg:px-32 text-md text-white flex flex-col md:flex-row justify-between shadow-inner">
     <div class="md:mx-10 flex-grow w-full md:w-auto md:flex-grow-0">
       <h5 class="mt-3 text-xl">TNBC Analytics</h5>
-      <ul class="mt-3 text-sm">
-        <li v-for="(item, index) in settings" :key="index">
-          debug: {{item}}
-          <a href="#">Github</a>
-          {{item.uuid}}
-          {{item.reddit_username}}
-          {{item.twitter_username}}
-          {{item.discord_invitation_code}}
-          {{item.github_username}}
+      <ul v-for="(setting, index) in settings" :key="index" class="mt-3 text-sm">
+        <li>
+          <a
+            :href="'https://github.com/' + setting.github_username">
+            Github
+          </a>
         </li>
-        <li><a href="#">Github</a></li>
-        <li><a href="#">Discord</a></li>
-        <li><a href="#">Instagram</a></li>  
-        <li><a href="#">Twitter</a></li>
+        <li>
+          <a
+            :href="'https://www.reddit.com/u/' + setting.reddit_username">
+            Reddit
+          </a>
+        </li>
+        <li>
+          <a
+            :href="'https://twitter.com/' + setting.twitter_username">
+            Twitter
+          </a>
+        </li>
+        <li>
+          <a
+            :href="'https://discord.com/invite/' + setting.discord_invitation_code">
+            Discord
+          </a>
+        </li>
       </ul>
     </div>
       <div class="md:mx-10 flex-grow w-full md:w-auto md:flex-grow-0">
