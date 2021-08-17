@@ -6,7 +6,7 @@
       </div>
       <Particle />
     </div>
-    <div class="relative w-3/4 mx-auto font-serif">
+    <div class="relative w-3/4 mx-auto font-serif shadow-md">
       <div class="absolute transform -translate-y-full mx-auto bg-gray-900 w-full text-center text-white p-2">
         <p>Average blocktime of 0.015 seconds and 3,238 transactions per second, TNBC is the best Crypto Currency.</p>
       </div>
