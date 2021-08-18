@@ -1,7 +1,7 @@
 <template>
   <div class="mt-12 mb-20 mx-6 md:mx-12">
     <div class="mb-16">
-      <h1 class="text-titlelg mb-2 font-serif">Government Payments</h1>
+      <h1 class="text-titlelg mb-2 font-sans font-semibold">Government Payments</h1>
       <span class="text-subtitle text-pcsecondery">TNBC Released From Government Account</span>
     </div>
 
@@ -38,7 +38,7 @@
     </div>
 
     <div class="mt-10">
-      <h2 class="text-titlemd mb-4 font-serif">Transactions</h2>
+      <h2 class="text-titlemd mb-4 font-sans font-semibold">Transactions</h2>
       <Table :columns="columns" :items="items" />
     </div>
 

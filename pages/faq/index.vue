@@ -2,7 +2,7 @@
  <div class="fcprimary m-8">
     <div class="py-4 mx-auto">
         <div class="flex flex-col text-center w-full mt-8 mb-16">
-            <h1 class="md:text-titlelg text-titlemd font-medium title-font mb-4 text-gray-900 font-serif">Frequently Asked Questions</h1>
+            <h1 class="md:text-titlelg text-titlemd font-medium title-font mb-4 text-gray-900 font-sans font-semibold">Frequently Asked Questions</h1>
             <p class="lg:w-2/3 mx-auto leading-relaxed text-subtitle text-pcsecondery">Looking for answers? Questions & answers can be instantly filtered in FAQ page.</p>
         </div>
         <div class="btnprimary">

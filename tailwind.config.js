@@ -29,7 +29,7 @@ module.exports = {
         }
       },
       fontFamily: {
-        serif: ['Quando'],
+        sans: ['Inter'],
         body: ['Roboto'],
       },
       fontSize: {
