@@ -1,8 +1,8 @@
 <template>
   <div class="mt-12 mb-20 md:mx-12">
-    <h1 class="text-titlelg text-center mb-20 font-serif">Team Members</h1>
+    <h1 class="text-titlelg text-center mb-20 font-sans font-semibold">Team Members</h1>
     <div
-      v-for="(member, index) in team"
+      v-for="(member, index) in team.results"
       :key="index">
       <TeamCard :member="member" />
     </div>

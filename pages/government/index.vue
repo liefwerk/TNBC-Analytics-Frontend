@@ -1,7 +1,7 @@
 <template>
   <div class="mt-12 mb-20 mx-6 md:mx-12">
     <div class="mb-16">
-      <h1 class="text-titlelg mb-2 font-serif">Government Payments</h1>
+      <h1 class="text-titlelg mb-2 font-sans font-semibold">Government Payments</h1>
       <span class="text-subtitle text-pcsecondery">TNBC Released From Government Account</span>
     </div>
 
@@ -33,12 +33,12 @@
         </div>
       </div>
       <div class="w-full md:w-1/2">
-        <Graph />
+        <GovernmentGraph />
       </div>
     </div>
 
     <div class="mt-10">
-      <h2 class="text-titlemd mb-4 font-serif">Transactions</h2>
+      <h2 class="text-titlemd mb-4 font-sans font-semibold">Transactions</h2>
       <Table :columns="columns" :items="items" />
     </div>
 
@@ -51,7 +51,7 @@ import Vue from 'vue';
 import DefaultCard from '@/components/website/cards/DefaultCard.vue';
 import NumberCard from '@/components/website/cards/NumberCard.vue';
 import Table from '@/components/website/table/Table.vue';
-import Graph from '@/components/website/graphs/Graph.vue';
+import GovernmentGraph from '@/components/website/graphs/GovernmentGraph.vue';
 
 export default Vue.extend({
 
@@ -59,7 +59,7 @@ export default Vue.extend({
     NumberCard,
     DefaultCard,
     Table,
-    Graph
+    GovernmentGraph
   },
   data() {
     return {
