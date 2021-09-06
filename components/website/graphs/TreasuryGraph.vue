@@ -10,7 +10,7 @@ import { Prop, Component, Vue } from 'nuxt-property-decorator';
 // import {Chart} from 'highcharts-vue'
 
 @Component
-export default class Graph extends Vue {
+export default class TreasuryGraph extends Vue {
   // @Prop({ required: true }) readonly member!: object
   public navigator: object = {
     enabled: false

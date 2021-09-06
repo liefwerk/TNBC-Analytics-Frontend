@@ -15,13 +15,13 @@
       </div>
       <div class="grid grid-cols-1 md:flex md:flex-nowrap justify-center text-gray-800 bg-white md:w-full md:mx-auto px-6 py-2 divide-y md:divide-y-0 md:divide-x divide-gray-300">
         <HomeCard 
-          number="45,451,258"
+          :number="analytics.total_paid_as_bounty"
           title="Total Distributed Coins"/>
         <HomeCard 
-          number="45,451,258"
+          :number="analytics.total_paid_to_core_team"
           title="Distributed to Core Team"/>
         <HomeCard 
-          number="45,451,258"
+          :number="analytics.total_paid_to_projects"
           title="Distributed to Projects"/>
       </div>
     </div>
@@ -30,7 +30,7 @@
       <p class="text-inbtn font-normal text-center my-4 text-gray-500">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor</p>
     </div>
     <div class="mx-4 my-10 md:mx-auto md:w-3/4">
-      <Graph />
+      <HomeGraph />
       <div class="flex flex-wrap md:w-10/12 md:mx-auto my-8 lg:divide-x divide-gray-400 border-l border-r border-gray-400">
         <div class="w-full md:w-1/2 lg:w-1/4 p-4 border-t md:border-r lg:border-r-0 lg:border-b border-gray-400">
           <p class="text-sm mb-2">Latest Price</p>
@@ -56,17 +56,26 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import Graph from '@/components/website/graphs/Graph.vue'
+import HomeGraph from '@/components/website/graphs/HomeGraph.vue'
 import Particle from '@/components/website/particles/Particle.vue'
 import HomeCard from '@/components/website/cards/HomeCard.vue'
 
 export default Vue.extend({
-
+  data(){
+    return {
+      analytics: {} as any
+    }
+  },
   components: {
     Particle,
-    Graph,
+    HomeGraph,
     HomeCard
-  }
+  },
+  async asyncData({ $http }: any) {
+    const _analytics: any = await $http.$get('/api/statistics')
+    let analytics = _analytics.results[0]
+    return { analytics } as any
+  },
 
 })
 </script>

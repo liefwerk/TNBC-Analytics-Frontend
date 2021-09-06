@@ -33,7 +33,7 @@
         </div>
       </div>
       <div class="w-full md:w-1/2">
-        <Graph />
+        <GovernmentGraph />
       </div>
     </div>
 
@@ -51,7 +51,7 @@ import Vue from 'vue';
 import DefaultCard from '@/components/website/cards/DefaultCard.vue';
 import NumberCard from '@/components/website/cards/NumberCard.vue';
 import Table from '@/components/website/table/Table.vue';
-import Graph from '@/components/website/graphs/Graph.vue';
+import GovernmentGraph from '@/components/website/graphs/GovernmentGraph.vue';
 
 export default Vue.extend({
 
@@ -59,7 +59,7 @@ export default Vue.extend({
     NumberCard,
     DefaultCard,
     Table,
-    Graph
+    GovernmentGraph
   },
   data() {
     return {

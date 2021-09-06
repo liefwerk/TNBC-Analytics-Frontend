@@ -2,8 +2,8 @@
 <div>
   <div class="py-6 px-6 bg-footerclr lg:px-32 text-md text-white flex flex-col md:flex-row justify-between shadow-inner font-sans font-normal">
     <div class="md:mx-10 flex-grow w-full md:w-auto md:flex-grow-0">
-      <h5 class="my-4 opacity-60">TNBC Analytics</h5>
-      <ul v-for="(setting, index) in settings" :key="index" class="mt-3 text-sm">
+      <h5 class="my-4 opacity-60">TNBC Analytics</h5>   
+      <ul v-for="(setting, index) in settings.results" :key="index" class="mt-3 text-sm">
         <li class="pb-4 hover:text-gray-300">
           <a
             :href="'https://github.com/' + setting.github_username">
@@ -65,13 +65,21 @@
 </div>
 </template>
 <script lang="ts">
-import { Prop, Vue, Component } from 'nuxt-property-decorator'
+import Vue from 'vue'
 
-@Component
-export default class Footer extends Vue {
-  @Prop({ required: true }) readonly settings!: object[]
-
-}
+export default Vue.extend({
+  name: 'Footer',
+  data() {
+    return {
+      settings: {}
+    }
+  },
+  async fetch() {
+    this.settings = await fetch('api/setting')
+      .then((res) => res.json())
+      .catch(err => console.log(err))
+  }
+})
 </script>
 
 <style scoped>
