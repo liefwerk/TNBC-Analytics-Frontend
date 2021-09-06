@@ -5,7 +5,7 @@
         <p class="text-subtitle text-pcsecondery text-center w-1/2 mb-8 break-words" >All donations will go to TNBC Analytics to help fund the team to continue to develop the community and create content.</p>
     </div>
     <div
-      v-for="(donate, index) in donations"
+      v-for="(donate, index) in donations.results"
       :key="index">
       <DonateCard :donate="donate" />
     </div>

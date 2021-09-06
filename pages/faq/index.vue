@@ -41,8 +41,13 @@ export default Vue.extend({
   data() {
     return {
       selectedFilter: 'Core Team',
-      selectedFaq: null,
-      faqs: null
+      selectedFaq: {},
+      faqs: {
+        count: null,
+        next: null,
+        previous: null,
+        results: [],
+      }
     }
   },
   async asyncData({ $http }: any) {
@@ -60,12 +65,12 @@ export default Vue.extend({
   },
   computed:{
     filteredFaqs(): any {
-        let _array: any = this.faqs as unknown as FaqItem
+        let _array: any = this.faqs.results as unknown as FaqItem
         let filteredArray: any = _array.filter((faq: FaqItem) => faq.type.title === this.selectedFilter)
         return filteredArray
     },
     filteredFaqsTypes(): any {
-      let _faqs: any = this.faqs as unknown as FaqItem
+      let _faqs: any = this.faqs.results as unknown as FaqItem
       let _array: any = _faqs.map((faq: FaqItem) => faq.type)
 
       const _filteredArray = _array.filter((type: FaqItem, index: number, self: any) =>
