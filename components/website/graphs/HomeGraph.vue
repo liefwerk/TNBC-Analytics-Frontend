@@ -2,7 +2,7 @@
   <div>
     <highcharts 
       :constructor-type="'stockChart'" 
-      :options="getTransactionAmount" 
+      :options="getTransactions" 
       :navigator="navigator">
     </highcharts>
   </div>
@@ -10,6 +10,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import formatDateMixin from '@/mixins/formatDateMixin'
 
 interface Transaction {
   amount: number,​​
@@ -33,7 +34,7 @@ export default Vue.extend({
   name: 'HomeGraph',
   data(){
     return {
-      navigator: { enabled: false },
+      navigator: { enabled: true },
       transactions: {
         count: null,
         next: null,
@@ -42,19 +43,26 @@ export default Vue.extend({
       }
     }
   },
+  mixins: [formatDateMixin],
   async fetch() {
-    this.transactions = await fetch('api/transaction')
+    this.transactions = await fetch('api/transaction?limit=50')
       .then((res) => res.json())
       .catch(err => console.log(err))
   },
   computed: {
-    getTransactionAmount() {
+    getTransactions() {
       let _transactions = this.transactions.results
       let chartOptions: any =
       {
+        chart: {
+          type: 'areaspline'
+        },
+        xAxis: {
+          categories: []
+        },
         series: [
           {
-            type: 'areaspline',
+            name: 'Transactions',
             data: [] as any
           }
         ]
@@ -62,8 +70,25 @@ export default Vue.extend({
       
       _transactions.map((transaction: Transaction) => {
         chartOptions.series[0].data.push(transaction.amount as never)
+
+        let formated_created_date = ''
+        formated_created_date = this.formatDate(new Date(transaction.created_at))
+        chartOptions.xAxis.categories.push(formated_created_date as never)
       })
       return chartOptions
+    },
+    getTransactionTime(){
+      let _transactions = this.transactions.results
+      let dates = []
+      let formated_created_date = ''
+       _transactions.map((transaction: Transaction) => {
+      
+        if (transaction.created_at !== null)
+          formated_created_date = this.formatDate(new Date(transaction.created_at))
+
+        dates.push(formated_created_date)  
+      })
+      return dates
     }
   }
 
