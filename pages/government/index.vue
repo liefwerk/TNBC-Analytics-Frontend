@@ -38,8 +38,14 @@
     </div>
 
     <div class="mt-10">
-      <h2 class="text-titlemd mb-4 font-sans font-semibold">Transactions</h2>
-      <Table :columns="columns" :items="items" />
+      <h2 class="text-titlemd font-sans font-semibold">Payments</h2>
+      <p class="mb-4">Paid by the Government of TNBC</p>
+      <Table 
+        @previousPage="handlePreviousPage"
+        @nextPage="handleNextPage"
+        :total="total"
+        :columns="columns" 
+        :items="getTransactions" />
     </div>
 
   </div>
@@ -64,7 +70,11 @@ export default Vue.extend({
   },
   data() {
     return {
+      total: 0,
+      previous: null,
+      next: null,
       government: {},
+      transactions: [],
       columns: [
         {
           name: 'date',
@@ -75,81 +85,12 @@ export default Vue.extend({
           attribute: 'amount'
         },
         {
-          name: 'paid to',
-          attribute: 'paidTo'
-        },
-        {
           name: 'github issue id',
           attribute: 'githubIssueId'
         },
         {
           name: 'recipient public key',
           attribute: 'recipientPublicKey'
-        },
-      ],
-      items: [
-        {
-          date: '10th July 2021',
-          amount: 3000000,
-          paidTo: 'Government',
-          githubIssueId: 295,
-          recipientPublicKey: 'a2sa3e6re2d3adf3dfer1a3fe3r...'
-        },
-        {
-          date: '4th July 2021',
-          amount: 2000000,
-          paidTo: 'Government',
-          githubIssueId: 295,
-          recipientPublicKey: 'a2sa3e6re2d3adf3dfer1a3fe3r...'
-        },
-        {
-          date: '18th June  2021',
-          amount: 1000000,
-          paidTo: 'Government',
-          githubIssueId: 295,
-          recipientPublicKey: 'a2sa3e6re2d3adf3dfer1a3fe3r...'
-        },
-        {
-          date: '4th July 2021',
-          amount: 2000000,
-          paidTo: 'Government',
-          githubIssueId: 295,
-          recipientPublicKey: 'a2sa3e6re2d3adf3dfer1a3fe3r...'
-        },
-        {
-          date: '18th June  2021',
-          amount: 1000000,
-          paidTo: 'Government',
-          githubIssueId: 295,
-          recipientPublicKey: 'a2sa3e6re2d3adf3dfer1a3fe3r...'
-        },
-        {
-          date: '4th July 2021',
-          amount: 2000000,
-          paidTo: 'Government',
-          githubIssueId: 295,
-          recipientPublicKey: 'a2sa3e6re2d3adf3dfer1a3fe3r...'
-        },
-        {
-          date: '18th June  2021',
-          amount: 1000000,
-          paidTo: 'Government',
-          githubIssueId: 295,
-          recipientPublicKey: 'a2sa3e6re2d3adf3dfer1a3fe3r...'
-        },
-        {
-          date: '4th July 2021',
-          amount: 2000000,
-          paidTo: 'Government',
-          githubIssueId: 295,
-          recipientPublicKey: 'a2sa3e6re2d3adf3dfer1a3fe3r...'
-        },
-        {
-          date: '18th June  2021',
-          amount: 1000000,
-          paidTo: 'Government',
-          githubIssueId: 295,
-          recipientPublicKey: 'a2sa3e6re2d3adf3dfer1a3fe3r...'
         },
       ]
     }
@@ -158,12 +99,61 @@ export default Vue.extend({
   async asyncData({ $http }: any) {
     const _government: any = await $http.$get('/api/government')
     let government = _government.results[0]
-    return { government } as any
+
+    const _transactions: any = await $http.$get(`/api/transaction?limit=30&transaction_type=GOVERNMENT`)
+    let transactions = _transactions.results
+    let total = _transactions.count
+    let previous = _transactions.previous
+    let next = _transactions.next
+    return { government, transactions, total, previous, next } as any
+  },
+  methods: {
+    async handlePreviousPage() {
+      
+      if (this.previous){
+        const _previousTransactions = await fetch(`${this.previous}`)
+          .then(res => res.json())
+          .catch(err => console.log(err))
+
+        this.transactions = _previousTransactions.results
+        this.previous = _previousTransactions.previous
+        this.next = _previousTransactions.next
+      }
+
+    },
+    async handleNextPage() {
+      if (this.next){
+        const _nextTransactions = await fetch(`${this.next}`)
+          .then(res => res.json())
+          .catch(err => console.log(err))
+
+        this.transactions = _nextTransactions.results
+        this.previous = _nextTransactions.previous
+        this.next = _nextTransactions.next
+      }
+    }
   },
   computed: {
     getLastTransactionDate(){
       let lastTransactionDate = this.formatDate(new Date(this.government.last_transaction_at))
       return lastTransactionDate
+    },
+    getTransactions(){
+      let _transactions = []
+      // console.log(this.transactions)
+      this.transactions.map((transaction) => {
+        let lastTransactionDate = this.formatDate(new Date(transaction.txs_sent_at))
+        _transactions.push(
+          {
+            date: lastTransactionDate,
+            amount: transaction.amount,
+            githubIssueId: transaction.github_issue_id,
+            recipientPublicKey: transaction.recipient_account_number
+          }
+        )
+      })
+      // return ''
+      return _transactions
     }
   }
 

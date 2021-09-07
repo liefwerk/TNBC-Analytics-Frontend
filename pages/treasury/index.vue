@@ -38,7 +38,8 @@
     </div>
 
     <div class="mt-10">
-      <h2 class="text-titlemd mb-4 font-sans font-semibold">Transactions</h2>
+      <h2 class="text-titlemd font-sans font-semibold">Withdrawals</h2>
+      <p class="mb-4">Withdrawed from the Government's treasury</p>
       <Table 
         @previousPage="handlePreviousPage"
         @nextPage="handleNextPage"
@@ -83,39 +84,12 @@ export default Vue.extend({
           attribute: 'amount'
         },
         {
-          name: 'paid to',
-          attribute: 'paidTo'
-        },
-        {
           name: 'github issue id',
           attribute: 'githubIssueId'
         },
         {
           name: 'recipient public key',
           attribute: 'recipientPublicKey'
-        },
-      ],
-      items: [
-        {
-          date: '10th July 2021',
-          amount: 3000000,
-          paidTo: 'Government',
-          githubIssueId: 295,
-          recipientPublicKey: 'a2sa3e6re2d3adf3dfer1a3fe3r...'
-        },
-        {
-          date: '4th July 2021',
-          amount: 2000000,
-          paidTo: 'Government',
-          githubIssueId: 295,
-          recipientPublicKey: 'a2sa3e6re2d3adf3dfer1a3fe3r...'
-        },
-        {
-          date: '18th June  2021',
-          amount: 1000000,
-          paidTo: 'Government',
-          githubIssueId: 295,
-          recipientPublicKey: 'a2sa3e6re2d3adf3dfer1a3fe3r...'
         },
       ]
     }
@@ -172,7 +146,6 @@ export default Vue.extend({
           {
             date: lastTransactionDate,
             amount: transaction.amount,
-            paidTo: transaction.transaction_type,
             githubIssueId: transaction.github_issue_id,
             recipientPublicKey: transaction.recipient_account_number
           }
