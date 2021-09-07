@@ -52,17 +52,12 @@
               </div>
               <div class="md:mr-6 text-sm text-gray-700">
               Show 
-              <select 
-                v-model.number="maxItemsPerPage" 
+              <input
+                type="number"
+                step="5"
+                v-model.number.lazy="maxItemsPerPage" 
                 @change="onChange"
-                class="border-2 p-2 rounded-lg">
-                <option >3</option>
-                <option selected>5</option>
-                <option>10</option>
-                <option>20</option>
-                <option>50</option>
-                <option>100</option>
-              </select>
+                class="border-2 p-2 rounded-lg w-20" />
                Items
               </div>
               <div v-if="notEnoughPages">
@@ -113,6 +108,7 @@ import { Vue, Component, Prop } from 'nuxt-property-decorator'
 export default class Table extends Vue {
   @Prop({ required: true }) readonly items!: object[]
   @Prop({ required: true }) readonly columns!: object[]
+  @Prop({ required: true }) readonly total!: number
   mounted () {
     this.currentPage = 1
     this.activeItem = 1
@@ -155,6 +151,7 @@ export default class Table extends Vue {
   }
 
   changeToPreviousPage(): void {
+    this.$emit('previousPage')
     if (this.currentPage && this.activeItem)
       if (this.currentPage > 1) {
         this.currentPage -= 1
@@ -166,6 +163,7 @@ export default class Table extends Vue {
   }
 
   changeToNextPage(): void {
+    this.$emit('nextPage')
     if (this.currentPage && this.activeItem)
       if (this.currentPage < this.lastPage) {
         this.currentPage += 1

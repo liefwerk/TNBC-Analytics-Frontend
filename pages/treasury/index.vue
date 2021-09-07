@@ -39,7 +39,12 @@
 
     <div class="mt-10">
       <h2 class="text-titlemd mb-4 font-sans font-semibold">Transactions</h2>
-      <Table :columns="columns" :items="items" />
+      <Table 
+        @previousPage="handlePreviousPage"
+        @nextPage="handleNextPage"
+        :total="total"
+        :columns="columns" 
+        :items="getTransactions" />
     </div>
 
   </div>
@@ -63,7 +68,11 @@ export default Vue.extend({
   },
   data() {
     return {
+      total: 0,
+      previous: null,
+      next: null,
       treasury: {},
+      transactions: [],
       columns: [
         {
           name: 'date',
@@ -115,12 +124,62 @@ export default Vue.extend({
   async asyncData({ $http }: any) {
     const _treasury: any = await $http.$get('/api/treasury')
     let treasury = _treasury.results[0]
-    return { treasury } as any
+
+    const _transactions: any = await $http.$get(`/api/transaction?limit=5&transaction_type=TREASURY`)
+    let transactions = _transactions.results
+    let total = _transactions.count
+    let previous = _transactions.previous
+    let next = _transactions.next
+    return { treasury, transactions, total, previous, next } as any
+  },
+  methods: {
+    async handlePreviousPage() {
+      
+      if (this.previous){
+        const _previousTransactions = await fetch(`${this.previous}`)
+          .then(res => res.json())
+          .catch(err => console.log(err))
+
+        this.transactions = _previousTransactions.results
+        this.previous = _previousTransactions.previous
+        this.next = _previousTransactions.next
+      }
+
+    },
+    async handleNextPage() {
+      if (this.next){
+        const _nextTransactions = await fetch(`${this.next}`)
+          .then(res => res.json())
+          .catch(err => console.log(err))
+
+        this.transactions = _nextTransactions.results
+        this.previous = _nextTransactions.previous
+        this.next = _nextTransactions.next
+      }
+    }
   },
   computed: {
     getLastTransactionDate(){
       let lastTransactionDate = this.formatDate(new Date(this.treasury.last_transaction_at))
       return lastTransactionDate
+    },
+    getTransactions(){
+      let _transactions = []
+      // console.log(this.transactions)
+      this.transactions.map((transaction) => {
+        let lastTransactionDate = this.formatDate(new Date(transaction.txs_sent_at))
+        _transactions.push(
+          {
+            date: lastTransactionDate,
+            amount: transaction.amount,
+            paidTo: transaction.transaction_type,
+            githubIssueId: transaction.github_issue_id,
+            recipientPublicKey: transaction.recipient_account_number
+          }
+        )
+      })
+      // return ''
+      return _transactions
     }
   }
 
