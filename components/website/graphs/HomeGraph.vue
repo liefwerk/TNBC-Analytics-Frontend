@@ -37,21 +37,19 @@ export default Vue.extend({
       navigator: { enabled: true },
       transactions: {
         count: null,
-        next: null,
-        previous: null,
-        results: [],
+        data: []
       }
     }
   },
   mixins: [formatDateMixin],
   async fetch() {
-    this.transactions = await fetch('api/transaction?limit=31')
+    this.transactions = await fetch('api//homepage-chart?days=31')
       .then((res) => res.json())
       .catch(err => console.log(err))
   },
   computed: {
     getTransactions() {
-      let _transactions = this.transactions.results
+      let _transactions = this.transactions.data
       let chartOptions: any =
       {
         chart: {
@@ -73,10 +71,10 @@ export default Vue.extend({
       }
       
       _transactions.map((transaction: Transaction) => {
-        chartOptions.series[0].data.push(transaction.amount as never)
-
+        chartOptions.series[0].data.push(transaction[0] as never)
+        // console.log(transaction[1])
         let formated_created_date = ''
-        formated_created_date = this.formatDate(new Date(transaction.txs_sent_at))
+        formated_created_date = this.formatDate(new Date(transaction[1]))
         chartOptions.xAxis.categories.push(formated_created_date as never)
       })
       return chartOptions

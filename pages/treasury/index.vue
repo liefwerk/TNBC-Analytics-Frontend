@@ -10,26 +10,26 @@
         <div class="flex flex-wrap md:grid md:justify-items-stretch md:grid-cols-2 xl:grid-cols-3 break-words">
           <NumberCard 
             title="Balance"
-            number="994,824,452"
+            :number="treasury.balance"
             class="text-red-400" />
           <NumberCard 
-            title="Transactions"
-            number="139"
+            title="N° of Transactions"
+            :number="treasury.total_transactions"
             class="text-blue-400" />
           <NumberCard 
             title="Last Transaction"
-            number="1,212,456"
+            :number="treasury.last_transaction_amount"
             class="text-green-400" />
         </div>
         <div>
           <DefaultCard 
             title="Public Key"
-            number="23676c35fce177aef2412e3ab12d22bf521ed423c6f55b8922c336500a1a27c5"
+            :number="treasury.account_number"
             class="break-all" />
 
           <DefaultCard 
             title="Last Transaction Date"
-            number="15th June 2020" />
+            :number="getLastTransactionDate" />
         </div>
       </div>
       <div class="w-full md:w-1/2">
@@ -47,11 +47,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
-
 import DefaultCard from '@/components/website/cards/DefaultCard.vue';
 import NumberCard from '@/components/website/cards/NumberCard.vue';
 import Table from '@/components/website/table/Table.vue';
 import TreasuryGraph from '@/components/website/graphs/TreasuryGraph.vue';
+import formatDateMixin from '@/mixins/formatDateMixin'
 
 export default Vue.extend({
 
@@ -63,6 +63,7 @@ export default Vue.extend({
   },
   data() {
     return {
+      treasury: {},
       columns: [
         {
           name: 'date',
@@ -108,6 +109,18 @@ export default Vue.extend({
           recipientPublicKey: 'a2sa3e6re2d3adf3dfer1a3fe3r...'
         },
       ]
+    }
+  },
+  mixins: [formatDateMixin],
+  async asyncData({ $http }: any) {
+    const _treasury: any = await $http.$get('/api/treasury')
+    let treasury = _treasury.results[0]
+    return { treasury } as any
+  },
+  computed: {
+    getLastTransactionDate(){
+      let lastTransactionDate = this.formatDate(new Date(this.treasury.last_transaction_at))
+      return lastTransactionDate
     }
   }
 
