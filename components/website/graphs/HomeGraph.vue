@@ -45,7 +45,7 @@ export default Vue.extend({
   },
   mixins: [formatDateMixin],
   async fetch() {
-    this.transactions = await fetch('api/transaction?limit=50')
+    this.transactions = await fetch('api/transaction?limit=31')
       .then((res) => res.json())
       .catch(err => console.log(err))
   },
@@ -56,6 +56,10 @@ export default Vue.extend({
       {
         chart: {
           type: 'areaspline'
+        },
+        tooltip: {
+          shared: true,
+          valueSuffix: ' TNBC'
         },
         xAxis: {
           categories: []
@@ -72,23 +76,10 @@ export default Vue.extend({
         chartOptions.series[0].data.push(transaction.amount as never)
 
         let formated_created_date = ''
-        formated_created_date = this.formatDate(new Date(transaction.created_at))
+        formated_created_date = this.formatDate(new Date(transaction.txs_sent_at))
         chartOptions.xAxis.categories.push(formated_created_date as never)
       })
       return chartOptions
-    },
-    getTransactionTime(){
-      let _transactions = this.transactions.results
-      let dates = []
-      let formated_created_date = ''
-       _transactions.map((transaction: Transaction) => {
-      
-        if (transaction.created_at !== null)
-          formated_created_date = this.formatDate(new Date(transaction.created_at))
-
-        dates.push(formated_created_date)  
-      })
-      return dates
     }
   }
 
