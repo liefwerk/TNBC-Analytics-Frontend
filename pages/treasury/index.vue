@@ -43,8 +43,12 @@
       <Table 
         @previousPage="handlePreviousPage"
         @nextPage="handleNextPage"
+        @changedMaxItems="handleItemsChange"
         :total="total"
-        :columns="columns" 
+        :count="count"
+        :columns="columns"
+        :next="next"
+        :previous="previous"
         :items="getTransactions" />
     </div>
 
@@ -72,6 +76,7 @@ export default Vue.extend({
       total: 0,
       previous: null,
       next: null,
+      count: 0,
       treasury: {},
       transactions: [],
       columns: [
@@ -104,7 +109,8 @@ export default Vue.extend({
     let total = _transactions.count
     let previous = _transactions.previous
     let next = _transactions.next
-    return { treasury, transactions, total, previous, next } as any
+    let count = transactions.length
+    return { treasury, transactions, total, previous, next, count } as any
   },
   methods: {
     async handlePreviousPage() {
@@ -130,6 +136,19 @@ export default Vue.extend({
         this.previous = _nextTransactions.previous
         this.next = _nextTransactions.next
       }
+    },
+    async handleItemsChange(perPage) {
+      console.log(perPage)
+      console.log('items changing')
+
+      const _newTransactions = await fetch(`/api/transaction?limit=${perPage}&transaction_type=TREASURY`)
+          .then(res => res.json())
+          .catch(err => console.log(err))
+
+        this.transactions = _newTransactions.results
+        this.previous = _newTransactions.previous
+        this.next = _newTransactions.next
+        this.count = this.transactions.length
     }
   },
   computed: {
