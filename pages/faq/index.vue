@@ -10,7 +10,7 @@
           class="btnclass border-2 btn-hover border-btnprimary text-inbtn cursor-pointer transition-500"
           @click="resetFilter"
           :class="selectedFilter === '' ? 'selected-button' : ''">
-          All Questions
+          All
         </button>
         <button 
           v-for="(faq, index) in filteredFaqsTypes" 
