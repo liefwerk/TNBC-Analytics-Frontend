@@ -1,6 +1,10 @@
 <template>
   <div>
-    <highcharts :constructor-type="'stockChart'" :options="chartOptions" :navigator="navigator"></highcharts>
+    <highcharts 
+      :constructor-type="'stockChart'" 
+      :options="transactions" 
+      :navigator="navigator">
+    </highcharts>
   </div>
 </template>
 
@@ -11,19 +15,66 @@ import { Prop, Component, Vue } from 'nuxt-property-decorator';
 
 @Component
 export default class GovernmentGraph extends Vue {
-  // @Prop({ required: true }) readonly member!: object
+  @Prop({ required: true }) readonly data!: any
   public navigator: object = {
     enabled: false
   }
 
   public chartOptions: object =
     {
-    series: [
-      {
-        type: 'areaspline',
-        data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4],
-      }
-    ]
+    chart: {
+          type: 'areaspline'
+        },
+        tooltip: {
+          shared: true,
+          valueSuffix: ' TNBC'
+        },
+        xAxis: {
+          categories: []
+        },
+        series: [
+          {
+            name: 'Transactions',
+            data: [] as any
+          }
+        ]
+  }
+  public formatDate(dateString: any): any {
+    const date = new Date(dateString)
+    // Then specify how you want your dates to be formatted
+    return new Intl.DateTimeFormat('default', { dateStyle: 'medium' } as any).format(date)
+  }
+
+  get transactions(): any {
+    let _data = this.data
+    let chartOptions: any =
+    {
+      chart: {
+        type: 'areaspline'
+      },
+      tooltip: {
+        shared: true,
+        valueSuffix: ' TNBC'
+      },
+      xAxis: {
+        categories: []
+      },
+      series: [
+        {
+          name: 'Transactions',
+          data: [] as any
+        }
+      ]
+    }
+    
+    _data.map((d: any) => {
+      chartOptions.series[0].data.push(d[0] as never)
+      let formated_created_date = ''
+      formated_created_date = this.formatDate(new Date(d[1] as string) as any)
+      chartOptions.xAxis.categories.push(formated_created_date as never)
+    })
+
+    return chartOptions
   }
 
 }

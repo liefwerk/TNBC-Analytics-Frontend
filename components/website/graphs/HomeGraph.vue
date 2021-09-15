@@ -2,7 +2,7 @@
   <div>
     <highcharts 
       :constructor-type="'stockChart'" 
-      :options="getTransactionAmount" 
+      :options="getTransactions" 
       :navigator="navigator">
     </highcharts>
   </div>
@@ -33,35 +33,50 @@ export default Vue.extend({
   name: 'HomeGraph',
   data(){
     return {
-      navigator: { enabled: false },
-      transactions: {
-        count: null,
-        next: null,
-        previous: null,
-        results: [],
-      }
+      navigator: { enabled: true }
     }
   },
-  async fetch() {
-    this.transactions = await fetch('api/transaction')
-      .then((res) => res.json())
-      .catch(err => console.log(err))
+  props: {
+    transactions: {
+      type: Array,
+      required: true
+    }
+  },
+  methods: {
+    formatDate(dateString: any): any {
+      const date = new Date(dateString)
+      // Then specify how you want your dates to be formatted
+      return new Intl.DateTimeFormat('default', { dateStyle: 'medium' } as any).format(date)
+    },
   },
   computed: {
-    getTransactionAmount() {
-      let _transactions = this.transactions.results
+    getTransactions(): any {
+      let _transactions = this.transactions
       let chartOptions: any =
       {
+        chart: {
+          type: 'areaspline'
+        },
+        tooltip: {
+          shared: true,
+          valueSuffix: ' TNBC'
+        },
+        xAxis: {
+          categories: []
+        },
         series: [
           {
-            type: 'areaspline',
+            name: 'Transactions',
             data: [] as any
           }
         ]
       }
       
-      _transactions.map((transaction: Transaction) => {
-        chartOptions.series[0].data.push(transaction.amount as never)
+      _transactions.map((transaction: any) => {
+        chartOptions.series[0].data.push(transaction[0] as never)
+        let formated_created_date = ''
+        formated_created_date = this.formatDate(new Date(transaction[1] as string) as any)
+        chartOptions.xAxis.categories.push(formated_created_date as never)
       })
       return chartOptions
     }

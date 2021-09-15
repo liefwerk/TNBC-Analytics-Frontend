@@ -34,40 +34,31 @@
           </table>
           <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
             <div class="flex items-center justify-between flex-wrap md:justify-end w-full">
-              <div class="md:mr-6">
+              <div class="md:mr-6 flex-grow">
                 <p class="text-sm text-gray-700">
-                  Showing
-                  <!-- first page -->
-                  <span v-if="currentPage == 1" class="font-medium">{{ currentPage }}</span>
-                  <!-- last page -->
-                  <span v-else-if="currentPage == lastPage" class="font-medium">{{ (totalItems + 1) - itemsInPage.length }}</span>
-                  <!-- middle page -->
-                  <span v-else class="font-medium">{{ (itemsInPage.length * currentPage) - (itemsInPage.length - 1) }}</span>
-                  to
-                  <span class="font-medium">{{ currentPage != lastPage ? maxItemsPerPage * currentPage : totalItems }}</span>
-                  of
-                  <span class="font-medium">{{ totalItems }}</span>
+                  Total
+                  <span class="font-medium">{{ total }}</span>
                   results
                 </p>
               </div>
               <div class="md:mr-6 text-sm text-gray-700">
               Show 
               <select 
-                v-model.number="maxItemsPerPage" 
-                @change="onChange"
-                class="border-2 p-2 rounded-lg">
-                <option >3</option>
-                <option selected>5</option>
+                class="border-2 p-2 rounded-lg w-20" 
+                v-model="maxItemsPerPage"
+                @change="$emit('changedMaxItems', maxItemsPerPage)">
+                <option>5</option>
                 <option>10</option>
-                <option>20</option>
+                <option>15</option>
+                <option>30</option>
                 <option>50</option>
-                <option>100</option>
               </select>
                Items
               </div>
               <div v-if="notEnoughPages">
                 <nav class="relative z-0 inline-flex" aria-label="Pagination">
                   <a
+                    v-show="previous"
                     @click="changeToPreviousPage"
                     class="relative inline-flex items-center mr-2 px-2 py-2 transition-500 hover:shadow-sm rounded-full bg-white text-sm font-medium text-gray-500 shadow-md cursor-pointer">
                     <span>
@@ -87,6 +78,7 @@
                     {{ number }}
                   </a>
                   <a
+                    v-show="next"
                     @click="changeToNextPage"
                     class="relative inline-flex items-center ml-2 px-2 py-2 transition-500 hover:shadow-sm rounded-full bg-white text-sm font-medium text-gray-500 shadow-md cursor-pointer">
                     <span>
@@ -113,6 +105,10 @@ import { Vue, Component, Prop } from 'nuxt-property-decorator'
 export default class Table extends Vue {
   @Prop({ required: true }) readonly items!: object[]
   @Prop({ required: true }) readonly columns!: object[]
+  @Prop({ required: true }) readonly total!: number
+  @Prop({ required: true }) readonly count!: number
+  @Prop({ required: true }) readonly previous!: null | string
+  @Prop({ required: true }) readonly next!: null | string
   mounted () {
     this.currentPage = 1
     this.activeItem = 1
@@ -123,7 +119,7 @@ export default class Table extends Vue {
   public pageNumbers: [] = []
   public pageNumberCount: number = 1
   public totalItems: number = this.items.length
-  public maxItemsPerPage: number = 5
+  public maxItemsPerPage: number = this.count
   public lastPage: number = Math.ceil(this.totalItems / this.maxItemsPerPage)
   public notEnoughPages: true = true
   public currentSort: string = 'date'
@@ -155,6 +151,7 @@ export default class Table extends Vue {
   }
 
   changeToPreviousPage(): void {
+    this.$emit('previousPage')
     if (this.currentPage && this.activeItem)
       if (this.currentPage > 1) {
         this.currentPage -= 1
@@ -166,6 +163,7 @@ export default class Table extends Vue {
   }
 
   changeToNextPage(): void {
+    this.$emit('nextPage')
     if (this.currentPage && this.activeItem)
       if (this.currentPage < this.lastPage) {
         this.currentPage += 1

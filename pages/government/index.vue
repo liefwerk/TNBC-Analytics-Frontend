@@ -10,38 +10,47 @@
         <div class="flex flex-wrap md:grid md:justify-items-stretch md:grid-cols-2 xl:grid-cols-3 break-words">
           <NumberCard 
             title="Balance"
-            number="994,824,452"
+            :number="government.balance"
             class="text-red-400" />
           <NumberCard 
-            title="Transactions"
-            number="139"
+            title="N° of Transactions"
+            :number="government.total_transactions"
             class="text-blue-400" />
           <NumberCard 
             title="Last Transaction"
-            number="1,212,456"
+            :number="government.last_transaction_amount"
             class="text-green-400" />
         </div>
         <div>
           <DefaultCard 
-            title="Public Key"
-            number="23676c35fce177aef2412e3ab12d22bf521ed423c6f55b8922c336500a1a27c5"
+            title="Total TNBC Spent"
+            :number="government.total_tnbc_spent"
             class="break-all" />
 
           <DefaultCard 
             title="Last Transaction Date"
-            number="15th June 2020" />
+            :number="getLastTransactionDate" />
         </div>
       </div>
       <div class="w-full md:w-1/2">
-        <GovernmentGraph />
+        <GovernmentGraph :data="graphData" />
       </div>
     </div>
 
     <div class="mt-10">
-      <h2 class="text-titlemd mb-4 font-sans font-semibold">Transactions</h2>
-      <Table :columns="columns" :items="items" />
+      <h2 class="text-titlemd font-sans font-semibold">Payments</h2>
+      <p class="mb-4">Paid by the Government of TNBC</p>
+      <Table 
+        @previousPage="handlePreviousPage"
+        @nextPage="handleNextPage"
+        @changedMaxItems="handleItemsChange"
+        :total="total"
+        :count="count"
+        :columns="columns"
+        :next="next"
+        :previous="previous"
+        :items="getTransactions" />
     </div>
-
   </div>
 </template>
 
@@ -63,6 +72,13 @@ export default Vue.extend({
   },
   data() {
     return {
+      total: 0,
+      previous: null,
+      next: null,
+      count: 0,
+      government: {} as any,
+      transactions: [],
+      graphData: [],
       columns: [
         {
           name: 'date',
@@ -73,10 +89,6 @@ export default Vue.extend({
           attribute: 'amount'
         },
         {
-          name: 'paid to',
-          attribute: 'paidTo'
-        },
-        {
           name: 'github issue id',
           attribute: 'githubIssueId'
         },
@@ -84,72 +96,86 @@ export default Vue.extend({
           name: 'recipient public key',
           attribute: 'recipientPublicKey'
         },
-      ],
-      items: [
-        {
-          date: '10th July 2021',
-          amount: 3000000,
-          paidTo: 'Government',
-          githubIssueId: 295,
-          recipientPublicKey: 'a2sa3e6re2d3adf3dfer1a3fe3r...'
-        },
-        {
-          date: '4th July 2021',
-          amount: 2000000,
-          paidTo: 'Government',
-          githubIssueId: 295,
-          recipientPublicKey: 'a2sa3e6re2d3adf3dfer1a3fe3r...'
-        },
-        {
-          date: '18th June  2021',
-          amount: 1000000,
-          paidTo: 'Government',
-          githubIssueId: 295,
-          recipientPublicKey: 'a2sa3e6re2d3adf3dfer1a3fe3r...'
-        },
-        {
-          date: '4th July 2021',
-          amount: 2000000,
-          paidTo: 'Government',
-          githubIssueId: 295,
-          recipientPublicKey: 'a2sa3e6re2d3adf3dfer1a3fe3r...'
-        },
-        {
-          date: '18th June  2021',
-          amount: 1000000,
-          paidTo: 'Government',
-          githubIssueId: 295,
-          recipientPublicKey: 'a2sa3e6re2d3adf3dfer1a3fe3r...'
-        },
-        {
-          date: '4th July 2021',
-          amount: 2000000,
-          paidTo: 'Government',
-          githubIssueId: 295,
-          recipientPublicKey: 'a2sa3e6re2d3adf3dfer1a3fe3r...'
-        },
-        {
-          date: '18th June  2021',
-          amount: 1000000,
-          paidTo: 'Government',
-          githubIssueId: 295,
-          recipientPublicKey: 'a2sa3e6re2d3adf3dfer1a3fe3r...'
-        },
-        {
-          date: '4th July 2021',
-          amount: 2000000,
-          paidTo: 'Government',
-          githubIssueId: 295,
-          recipientPublicKey: 'a2sa3e6re2d3adf3dfer1a3fe3r...'
-        },
-        {
-          date: '18th June  2021',
-          amount: 1000000,
-          paidTo: 'Government',
-          githubIssueId: 295,
-          recipientPublicKey: 'a2sa3e6re2d3adf3dfer1a3fe3r...'
-        },
       ]
+    }
+  },
+  async asyncData({ $http }: any) {
+    const _government: any = await $http.$get('/api/government')
+    let government = _government.results[0]
+
+    const _transactions: any = await $http.$get(`/api/transaction?limit=10&transaction_type=GOVERNMENT`)
+    let transactions = _transactions.results
+    let total = _transactions.count
+    let previous = _transactions.previous
+    let next = _transactions.next
+    let count = transactions.length
+
+    const _graphData: any = await $http.post('api/government-chart', { days: '31' })
+      .then((res: any) => res.json())
+    let graphData = _graphData.data
+
+    return { government, transactions, total, previous, next, count, graphData } as any
+  },
+  methods: {
+    formatDate(dateString: any): any {
+      const date = new Date(dateString);
+      // Then specify how you want your dates to be formatted
+      return new Intl.DateTimeFormat('default', { dateStyle: 'medium' } as any).format(date);
+    },
+    async handlePreviousPage(): Promise<void>  {
+      
+      if (this.previous){
+        const _previousTransactions = await fetch(`${this.previous}`)
+          .then(res => res.json())
+          .catch(err => console.log(err))
+
+        this.transactions = _previousTransactions.results
+        this.previous = _previousTransactions.previous
+        this.next = _previousTransactions.next
+      }
+
+    },
+    async handleNextPage(): Promise<void> {
+      if (this.next){
+        const _nextTransactions = await fetch(`${this.next}`)
+          .then(res => res.json())
+          .catch(err => console.log(err))
+
+        this.transactions = _nextTransactions.results
+        this.previous = _nextTransactions.previous
+        this.next = _nextTransactions.next
+      }
+    },
+    async handleItemsChange(perPage: number): Promise<void> {
+      const _newTransactions = await fetch(`/api/transaction?limit=${perPage}&transaction_type=GOVERNMENT`)
+          .then(res => res.json())
+          .catch(err => console.log(err))
+
+        this.transactions = _newTransactions.results
+        this.previous = _newTransactions.previous
+        this.next = _newTransactions.next
+        this.count = this.transactions.length
+    }
+  },
+  computed: {
+    getLastTransactionDate(): any {
+      let lastTransactionDate: any = this.formatDate(new Date(this.government.last_transaction_at))
+      return lastTransactionDate
+    },
+    getTransactions(): any {
+      let transactions: object[] = []
+      let _transactions: any = this.transactions.map((transaction: any) => {
+        let lastTransactionDate = this.formatDate(new Date(transaction.txs_sent_at))
+        transactions.push(
+          {
+            date: lastTransactionDate,
+            amount: transaction.amount,
+            githubIssueId: transaction.github_issue_id,
+            recipientPublicKey: transaction.recipient_account_number
+          }
+        )
+      })
+      return transactions
     }
   }
 

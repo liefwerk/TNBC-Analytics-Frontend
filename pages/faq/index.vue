@@ -7,6 +7,12 @@
       </div>
       <div class="btnprimary">
         <button 
+          class="btnclass border-2 btn-hover border-btnprimary text-inbtn cursor-pointer transition-500"
+          @click="resetFilter"
+          :class="selectedFilter === '' ? 'selected-button' : ''">
+          All
+        </button>
+        <button 
           v-for="(faq, index) in filteredFaqsTypes" 
           :key="index"
           @click="handleFilter(faq)"
@@ -14,6 +20,15 @@
           :class="faq.title === selectedFilter ? 'selected-button' : ''">
               {{faq.title}}
         </button>
+      </div>
+    </div>
+    <div v-show="selectedFilter === ''">
+      <div 
+        v-for="(item, index) in faqs.results" 
+        :key="index"
+        @click="toggleFaq(item)"
+        class="relative flex flex-col flex-wrap md:flex-row md:flex-nowrap justify-start card mb-4 cursor-pointer">
+        <FaqCard :item="item" :isToggled="item === selectedFaq ? true : false" />
       </div>
     </div>
     <div 
@@ -40,7 +55,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      selectedFilter: 'Core Team',
+      selectedFilter: '',
       selectedFaq: {},
       faqs: {
         count: null,
@@ -58,6 +73,9 @@ export default Vue.extend({
   methods: {
     handleFilter(item: any): void {
       this.selectedFilter = item.title
+    },
+    resetFilter(item: any): void {
+      this.selectedFilter = ''
     },
     toggleFaq(item: any): void {
       this.selectedFaq = item
