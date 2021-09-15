@@ -33,7 +33,7 @@
         </div>
       </div>
       <div class="w-full md:w-1/2">
-        <GovernmentGraph />
+        <GovernmentGraph :data="graphData" />
       </div>
     </div>
 
@@ -78,6 +78,7 @@ export default Vue.extend({
       count: 0,
       government: {} as any,
       transactions: [],
+      graphData: [],
       columns: [
         {
           name: 'date',
@@ -108,7 +109,12 @@ export default Vue.extend({
     let previous = _transactions.previous
     let next = _transactions.next
     let count = transactions.length
-    return { government, transactions, total, previous, next, count } as any
+
+    const _graphData: any = await $http.post('api/government-chart', { days: '31' })
+      .then((res: any) => res.json())
+    let graphData = _graphData.data
+
+    return { government, transactions, total, previous, next, count, graphData } as any
   },
   methods: {
     formatDate(dateString: any): any {
