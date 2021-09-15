@@ -3,8 +3,12 @@
     <div class="overflow-x-auto">
       <div class="py-2 align-middle inline-block min-w-full">
         <div class="shadow-md overflow-hidden border-b bg-white border-gray-200 sm:rounded-lg">
-          <div class="w-full px-6 py-4">
-            <input placeholder="Search" class="py-2 px-4 border-2 w-full rounded-md" />
+          <div class="px-6 py-4 flex flex-nowrap">
+            <div class="flex flex-col flex-nowrap mr-2">
+              <label class="flex-grow">Enter a Github Issue ID</label>
+              <input v-model="githubIssueId" placeholder="42" class="py-2 px-4 border-2 w-full rounded-md" @change.number="$emit('githubUserEntry', $event)" />
+            </div>
+            <button class="self-end">Search</button>
           </div>
           <table class="min-w-full divide-y divide-gray-200 border-collapse">
             <thead class="bg-white">
@@ -18,7 +22,7 @@
                 </th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-gray-200 text-intxt">
+            <tbody v-if="sortedItems.length" class="divide-y divide-gray-200 text-intxt">
               <tr v-for="(item, i) in sortedItems" :key="i" class="bg-white flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap mb-10 lg:mb-0">
                 <td 
                   v-for="(textColumn, j) in textColumns" 
@@ -27,6 +31,16 @@
                   class="w-full lg:w-auto px-6 py-4">
                   <div class="flex-shrink-0">
                     {{ item[textColumn.attribute] }}
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+            <tbody v-else class="divide-y divide-gray-200 text-intxt">
+              <tr class="bg-white flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap mb-10 lg:mb-0">
+                <td 
+                  class="w-full lg:w-auto px-6 py-4">
+                  <div class="flex-shrink-0">
+                    Seems like there aren't any transactions for this query.
                   </div>
                 </td>
               </tr>
@@ -113,6 +127,7 @@ export default class Table extends Vue {
     this.currentPage = 1
     this.activeItem = 1
   }
+  public githubIssueId: number | null = null
   public prevPage: number | null = null
   public nextPage: number | null = null
   public currentPage: number | null = null
