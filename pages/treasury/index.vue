@@ -61,7 +61,7 @@ import DefaultCard from '@/components/website/cards/DefaultCard.vue';
 import NumberCard from '@/components/website/cards/NumberCard.vue';
 import Table from '@/components/website/table/Table.vue';
 import TreasuryGraph from '@/components/website/graphs/TreasuryGraph.vue';
-import formatDateMixin from '@/mixins/formatDateMixin'
+import formatDateMixin from '@/mixins/formatDateMixin';
 
 export default Vue.extend({
 
@@ -76,8 +76,8 @@ export default Vue.extend({
       total: 0,
       previous: null,
       next: null,
-      count: 0,
-      treasury: {},
+      count: 0 as number,
+      treasury: {} as any,
       transactions: [],
       columns: [
         {
@@ -99,7 +99,6 @@ export default Vue.extend({
       ]
     }
   },
-  mixins: [formatDateMixin],
   async asyncData({ $http }: any) {
     const _treasury: any = await $http.$get('/api/treasury')
     let treasury = _treasury.results[0]
@@ -113,6 +112,11 @@ export default Vue.extend({
     return { treasury, transactions, total, previous, next, count } as any
   },
   methods: {
+    formatDate(dateString: any): any {
+      const date = new Date(dateString);
+      // Then specify how you want your dates to be formatted
+      return new Intl.DateTimeFormat('default', { dateStyle: 'medium' } as any).format(date);
+    },
     async handlePreviousPage() {
       
       if (this.previous){
@@ -137,10 +141,7 @@ export default Vue.extend({
         this.next = _nextTransactions.next
       }
     },
-    async handleItemsChange(perPage) {
-      console.log(perPage)
-      console.log('items changing')
-
+    async handleItemsChange(perPage: number) {
       const _newTransactions = await fetch(`/api/transaction?limit=${perPage}&transaction_type=TREASURY`)
           .then(res => res.json())
           .catch(err => console.log(err))
@@ -152,14 +153,12 @@ export default Vue.extend({
     }
   },
   computed: {
-    getLastTransactionDate(){
+    getLastTransactionDate(): any {
       let lastTransactionDate = this.formatDate(new Date(this.treasury.last_transaction_at))
       return lastTransactionDate
     },
-    getTransactions(){
-      let _transactions = []
-      // console.log(this.transactions)
-      this.transactions.map((transaction) => {
+    getTransactions(): any {
+      const _transactions: any = this.transactions.map((transaction: any) => {
         let lastTransactionDate = this.formatDate(new Date(transaction.txs_sent_at))
         _transactions.push(
           {
@@ -170,7 +169,6 @@ export default Vue.extend({
           }
         )
       })
-      // return ''
       return _transactions
     }
   }

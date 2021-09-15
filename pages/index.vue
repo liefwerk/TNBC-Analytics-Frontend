@@ -30,7 +30,7 @@
       <p class="text-inbtn font-normal text-center my-4 text-gray-500">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor</p>
     </div>
     <div class="mx-4 my-10 md:mx-auto md:w-3/4">
-      <HomeGraph />
+      <HomeGraph :transactions="transactions" />
       <div class="flex flex-wrap md:w-10/12 md:mx-auto my-8 lg:divide-x divide-gray-400 border-l border-r border-gray-400">
         <div class="w-full md:w-1/2 lg:w-1/4 p-4 border-t md:border-r lg:border-r-0 lg:border-b border-gray-400">
           <p class="text-sm mb-2">Latest Price</p>
@@ -63,7 +63,8 @@ import HomeCard from '@/components/website/cards/HomeCard.vue'
 export default Vue.extend({
   data(){
     return {
-      analytics: {} as any
+      analytics: {} as any,
+      transactions: {} as any
     }
   },
   components: {
@@ -74,7 +75,13 @@ export default Vue.extend({
   async asyncData({ $http }: any) {
     const _analytics: any = await $http.$get('/api/statistics')
     let analytics = _analytics.results[0]
-    return { analytics } as any
+
+
+    const _transactions = await $http.post('api/homepage-chart', { days: '31' })
+      .then((res: any) => res.json())
+    let transactions = _transactions.data
+
+    return { analytics, transactions } as any
   },
 
 })

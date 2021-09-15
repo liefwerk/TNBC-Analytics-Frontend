@@ -10,7 +10,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import formatDateMixin from '@/mixins/formatDateMixin'
 
 interface Transaction {
   amount: number,​​
@@ -34,22 +33,25 @@ export default Vue.extend({
   name: 'HomeGraph',
   data(){
     return {
-      navigator: { enabled: true },
-      transactions: {
-        count: null,
-        data: []
-      }
+      navigator: { enabled: true }
     }
   },
-  mixins: [formatDateMixin],
-  async fetch() {
-    this.transactions = await this.$http.$post('api/homepage-chart', { days: '31' })
-      .then()
-      .catch(err => console.log(err))
+  props: {
+    transactions: {
+      type: Array,
+      required: true
+    }
+  },
+  methods: {
+    formatDate(dateString: any): any {
+      const date = new Date(dateString)
+      // Then specify how you want your dates to be formatted
+      return new Intl.DateTimeFormat('default', { dateStyle: 'medium' } as any).format(date)
+    },
   },
   computed: {
-    getTransactions() {
-      let _transactions = this.transactions.data
+    getTransactions(): any {
+      let _transactions = this.transactions
       let chartOptions: any =
       {
         chart: {
@@ -70,10 +72,10 @@ export default Vue.extend({
         ]
       }
       
-      _transactions.map((transaction: Transaction) => {
+      _transactions.map((transaction: any) => {
         chartOptions.series[0].data.push(transaction[0] as never)
         let formated_created_date = ''
-        formated_created_date = this.formatDate(new Date(transaction[1]))
+        formated_created_date = this.formatDate(new Date(transaction[1] as string) as any)
         chartOptions.xAxis.categories.push(formated_created_date as never)
       })
       return chartOptions

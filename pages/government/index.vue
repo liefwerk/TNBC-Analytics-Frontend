@@ -61,7 +61,6 @@ import DefaultCard from '@/components/website/cards/DefaultCard.vue';
 import NumberCard from '@/components/website/cards/NumberCard.vue';
 import Table from '@/components/website/table/Table.vue';
 import GovernmentGraph from '@/components/website/graphs/GovernmentGraph.vue';
-import formatDateMixin from '@/mixins/formatDateMixin'
 
 export default Vue.extend({
 
@@ -77,7 +76,7 @@ export default Vue.extend({
       previous: null,
       next: null,
       count: 0,
-      government: {},
+      government: {} as any,
       transactions: [],
       columns: [
         {
@@ -99,7 +98,6 @@ export default Vue.extend({
       ]
     }
   },
-  mixins: [formatDateMixin],
   async asyncData({ $http }: any) {
     const _government: any = await $http.$get('/api/government')
     let government = _government.results[0]
@@ -113,7 +111,12 @@ export default Vue.extend({
     return { government, transactions, total, previous, next, count } as any
   },
   methods: {
-    async handlePreviousPage() {
+    formatDate(dateString: any): any {
+      const date = new Date(dateString);
+      // Then specify how you want your dates to be formatted
+      return new Intl.DateTimeFormat('default', { dateStyle: 'medium' } as any).format(date);
+    },
+    async handlePreviousPage(): Promise<void>  {
       
       if (this.previous){
         const _previousTransactions = await fetch(`${this.previous}`)
@@ -126,7 +129,7 @@ export default Vue.extend({
       }
 
     },
-    async handleNextPage() {
+    async handleNextPage(): Promise<void> {
       if (this.next){
         const _nextTransactions = await fetch(`${this.next}`)
           .then(res => res.json())
@@ -137,7 +140,7 @@ export default Vue.extend({
         this.next = _nextTransactions.next
       }
     },
-    async handleItemsChange(perPage) {
+    async handleItemsChange(perPage: number): Promise<void> {
       const _newTransactions = await fetch(`/api/transaction?limit=${perPage}&transaction_type=GOVERNMENT`)
           .then(res => res.json())
           .catch(err => console.log(err))
@@ -149,13 +152,12 @@ export default Vue.extend({
     }
   },
   computed: {
-    getLastTransactionDate(){
-      let lastTransactionDate = this.formatDate(new Date(this.government.last_transaction_at))
+    getLastTransactionDate(): any {
+      let lastTransactionDate: any = this.formatDate(new Date(this.government.last_transaction_at))
       return lastTransactionDate
     },
-    getTransactions(){
-      let _transactions = []
-      this.transactions.map((transaction) => {
+    getTransactions(): any {
+      const _transactions: any = this.transactions.map((transaction: any) => {
         let lastTransactionDate = this.formatDate(new Date(transaction.txs_sent_at))
         _transactions.push(
           {
