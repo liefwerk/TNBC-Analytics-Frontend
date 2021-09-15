@@ -157,9 +157,10 @@ export default Vue.extend({
       return lastTransactionDate
     },
     getTransactions(): any {
-      const _transactions: any = this.transactions.map((transaction: any) => {
+      let transactions: object[] = []
+      let _transactions: any = this.transactions.map((transaction: any) => {
         let lastTransactionDate = this.formatDate(new Date(transaction.txs_sent_at))
-        _transactions.push(
+        transactions.push(
           {
             date: lastTransactionDate,
             amount: transaction.amount,
@@ -168,7 +169,7 @@ export default Vue.extend({
           }
         )
       })
-      return _transactions
+      return transactions
     }
   }
 
