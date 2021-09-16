@@ -1,5 +1,11 @@
 <template>
   <div class="relative h-full">
+  <div>
+    <a>7 days</a>
+    <a>14 days</a>
+    <a>31 days</a>
+    <a>Full year</a>
+  </div>
     <highcharts 
       v-if="data.length"
       :constructor-type="'stockChart'" 

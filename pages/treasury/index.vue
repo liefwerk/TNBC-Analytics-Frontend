@@ -44,6 +44,7 @@
         @previousPage="handlePreviousPage"
         @nextPage="handleNextPage"
         @changedMaxItems="handleItemsChange"
+        @githubUserEntry="handleGitHubIdSearch"
         :total="total"
         :count="count"
         :columns="columns"
@@ -122,6 +123,26 @@ export default Vue.extend({
       const date = new Date(dateString);
       // Then specify how you want your dates to be formatted
       return new Intl.DateTimeFormat('default', { dateStyle: 'medium' } as any).format(date);
+    },
+    async handleGitHubIdSearch(event: any): Promise<void> {
+      let value: number = Number(event.target.value as string)
+      if (value > 0){
+        const _searchTransactions = await fetch(`/api/transaction?github_issue_id=${value}&transaction_type=TREASURY`)
+          .then(res => res.json())
+          .catch(err => console.log(err))
+          
+        this.transactions = _searchTransactions.results
+        this.previous = _searchTransactions.previous
+        this.next = _searchTransactions.next
+      } else if (value === 0) {
+        const _searchTransactions = await fetch(`/api/transaction?limit=10&transaction_type=TREASURY`)
+          .then(res => res.json())
+          .catch(err => console.log(err))
+
+        this.transactions = _searchTransactions.results
+        this.previous = _searchTransactions.previous
+        this.next = _searchTransactions.next
+      }
     },
     async handlePreviousPage() {
       
