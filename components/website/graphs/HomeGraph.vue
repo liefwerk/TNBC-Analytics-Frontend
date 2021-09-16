@@ -5,7 +5,6 @@
       :options="getTransactions" 
       :navigator="navigator">
     </highcharts>
-    {{ transactions }}
   </div>
 </template>
 
@@ -78,7 +77,6 @@ export default Vue.extend({
         let formated_created_date = ''
         formated_created_date = this.formatDate(new Date(transaction[1] as string) as any)
         chartOptions.xAxis.categories.push(formated_created_date as never)
-        console.log(formated_created_date)
       })
       return chartOptions
     }
