@@ -16,9 +16,9 @@ const options = {
   scrollbar: {
     enabled: false
   },
-  navigator: { enabled: false },
+  navigator: { enabled: true },
   rangeSelector: {
-    enabled: false
+    enabled: true
   },
   plotOptions: {
     series: {
