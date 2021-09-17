@@ -30,23 +30,23 @@
       <p class="text-inbtn font-normal text-center my-4 text-gray-500">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor</p>
     </div>
     <div class="mx-4 my-10 md:mx-auto md:w-3/4">
-      <HomeGraph :transactions="transactions" />
+      <HomeGraph :transactions="getFormatedData" />
       <div class="flex flex-wrap md:w-10/12 md:mx-auto my-8 lg:divide-x divide-gray-400 border-l border-r border-gray-400">
         <div class="w-full md:w-1/2 lg:w-1/4 p-4 border-t md:border-r lg:border-r-0 lg:border-b border-gray-400">
-          <p class="text-sm mb-2">Latest Price</p>
-          <p class="text-xl">$0.061381</p>
+          <p class="text-sm mb-2">Total Treasury Withdrawals</p>
+          <p class="text-xl">{{ getTreasuryWithdrawals }}</p>
         </div>
         <div class="w-full md:w-1/2 lg:w-1/4 p-4 border-t lg:border-b border-gray-400">
           <p class="text-sm mb-2">Total Govt payment</p>
-          <p class="text-xl">$586.36M</p>
+          <p class="text-xl">{{ getGovernmentPayments }}</p>
         </div>
         <div class="w-full md:w-1/2 lg:w-1/4 p-4 border-t md:border-r lg:border-r-0 md:border-b border-gray-400">
           <p class="text-sm mb-2">Transaction Count</p>
-          <p class="text-xl">$5.016M</p>
+          <p class="text-xl">{{ getTotalTransactions }}</p>
         </div>
         <div class="w-full md:w-1/2 lg:w-1/4 p-4 border-t border-b border-gray-400">
           <p class="text-sm mb-2">Number of accounts</p>
-          <p class="text-xl">26.08M</p>
+          <p class="italic text-lg text-gray-400">TBA</p>
         </div>
       </div>
     </div>
@@ -64,7 +64,9 @@ export default Vue.extend({
   data(){
     return {
       analytics: {} as any,
-      transactions: {} as any
+      transactions: {} as any,
+      treasury: {} as any,
+      government: {} as any
     }
   },
   components: {
@@ -76,13 +78,36 @@ export default Vue.extend({
     const _analytics: any = await $http.$get('/api/statistics')
     let analytics = _analytics.results[0]
 
-
     const _transactions = await $http.post('api/homepage-chart', { days: '31' })
       .then((res: any) => res.json())
     let transactions = _transactions.data
 
-    return { analytics, transactions } as any
+    const _treasury: any = await $http.$get('/api/treasury')
+    let treasury = _treasury.results[0]
+
+    const _government: any = await $http.$get('/api/government')
+    let government = _government.results[0]
+
+    return { analytics, transactions, treasury, government } as any
   },
+  computed: {
+    getTreasuryWithdrawals(): number {
+      return this.treasury.total_transactions
+    },
+    getGovernmentPayments(): number {
+      return this.government.total_tnbc_spent
+    },
+    getTotalTransactions(): number {
+      return this.government.total_transactions + this.treasury.total_transactions
+    },
+    getFormatedData(): any {
+      const _data = this.transactions.map((d: any) => (
+        [ Date.parse(d[0] as string), d[1] ]
+      ))
+      console.log(_data)
+      return _data;
+    }
+  }
 
 })
 </script>

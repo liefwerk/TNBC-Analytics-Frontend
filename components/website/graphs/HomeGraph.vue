@@ -51,7 +51,6 @@ export default Vue.extend({
   },
   computed: {
     getTransactions(): any {
-      let _transactions = this.transactions
       let chartOptions: any =
       {
         chart: {
@@ -62,22 +61,16 @@ export default Vue.extend({
           valueSuffix: ' TNBC'
         },
         xAxis: {
-          categories: []
+          type: 'datetime'
         },
         series: [
           {
             name: 'Transactions',
-            data: [] as any
+            data: this.transactions
           }
         ]
       }
-      
-      _transactions.map((transaction: any) => {
-        chartOptions.series[0].data.push(transaction[0] as never)
-        let formated_created_date = ''
-        formated_created_date = this.formatDate(new Date(transaction[1] as string) as any)
-        chartOptions.xAxis.categories.push(formated_created_date as never)
-      })
+
       return chartOptions
     }
   }

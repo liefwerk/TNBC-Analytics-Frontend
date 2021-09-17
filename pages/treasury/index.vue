@@ -33,7 +33,7 @@
         </div>
       </div>
       <div class="w-full md:w-1/2">
-        <TreasuryGraph :data="graphData" />
+        <TreasuryGraph :data="getFormatedData" />
       </div>
     </div>
 
@@ -112,9 +112,10 @@ export default Vue.extend({
     let next = _transactions.next
     let count = transactions.length
 
-    const _graphData: any = await $http.post('api/treasury-chart', { days: '31' })
+    const _graphData: any = await $http.post('api/treasury-chart', { days: '365' })
       .then((res: any) => res.json())
     let graphData = _graphData.data
+    console.log(graphData)
 
     return { treasury, transactions, total, previous, next, count, graphData } as any
   },
@@ -198,6 +199,13 @@ export default Vue.extend({
         )
       })
       return transactions
+    },
+    getFormatedData(): any {
+      const _data = this.graphData.map((d: any) => (
+        [ Date.parse(d[0] as string), d[1] ]
+      ))
+      console.log(_data)
+      return _data;
     }
   }
 

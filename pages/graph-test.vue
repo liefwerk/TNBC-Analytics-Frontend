@@ -31,7 +31,7 @@ export default Vue.extend({
     getFormatedDate(): any {
 
       const _data = this.data.map(d => (
-        [ Date.parse(d[0]), d[1] ]
+        [ Date.parse(d[0] as string), d[1] ]
       ))
       console.log(_data)
       return _data;

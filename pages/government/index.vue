@@ -33,7 +33,7 @@
         </div>
       </div>
       <div class="w-full md:w-1/2">
-        <GovernmentGraph :data="graphData" />
+        <GovernmentGraph :data="getFormatedData" />
       </div>
     </div>
 
@@ -197,6 +197,13 @@ export default Vue.extend({
         )
       })
       return transactions
+    },
+    getFormatedData(): any {
+      const _data = this.graphData.map((d: any) => (
+        [ Date.parse(d[0] as string), d[1] ]
+      ))
+      console.log(_data)
+      return _data;
     }
   }
 

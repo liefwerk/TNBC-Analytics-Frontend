@@ -44,7 +44,6 @@ export default Vue.extend({
   },
   computed: {
     getTransactions(): any {
-      let _transactions = this.transactions
       let chartOptions: any =
       {
         chart: {
@@ -64,12 +63,7 @@ export default Vue.extend({
           }
         ]
       }
-      
-      // _transactions.map((transaction: any) => {
-      //   chartOptions.series[0].data.push(transaction[1] as never)
-      //   chartOptions.xAxis.categories.push(transaction[0] as never)
-      //   console.log(transaction[1])
-      // })
+
       return chartOptions
     }
   }
