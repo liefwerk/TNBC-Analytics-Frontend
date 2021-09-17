@@ -1,5 +1,5 @@
 <template>
-  <div class="relative h-full">
+  <div class="relative h-full card">
   <div>
     <a>7 days</a>
     <a>14 days</a>

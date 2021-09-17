@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="card">
     <highcharts 
       :constructor-type="'stockChart'" 
       :options="transactions" 
