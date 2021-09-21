@@ -75,17 +75,17 @@ export default Vue.extend({
     HomeCard
   },
   async asyncData({ $http }: any) {
-    const _analytics: any = await $http.$get('/api/statistics')
+    const _analytics: any = await $http.$get('https://tnbanalytics.pythonanywhere.com/statistics')
     let analytics = _analytics.results[0]
 
-    const _transactions = await $http.post('api/homepage-chart', { days: '31' })
+    const _transactions = await $http.post('https://tnbanalytics.pythonanywhere.com/homepage-chart', { days: '31' })
       .then((res: any) => res.json())
     let transactions = _transactions.data
 
-    const _treasury: any = await $http.$get('/api/treasury')
+    const _treasury: any = await $http.$get('https://tnbanalytics.pythonanywhere.com/treasury')
     let treasury = _treasury.results[0]
 
-    const _government: any = await $http.$get('/api/government')
+    const _government: any = await $http.$get('https://tnbanalytics.pythonanywhere.com/government')
     let government = _government.results[0]
 
     return { analytics, transactions, treasury, government } as any

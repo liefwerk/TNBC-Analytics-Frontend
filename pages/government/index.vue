@@ -101,10 +101,10 @@ export default Vue.extend({
     }
   },
   async asyncData({ $http }: any) {
-    const _government: any = await $http.$get('/api/government')
+    const _government: any = await $http.$get('https://tnbanalytics.pythonanywhere.com/government')
     let government = _government.results[0]
 
-    const _transactions: any = await $http.$get(`/api/transaction?limit=10&transaction_type=GOVERNMENT`)
+    const _transactions: any = await $http.$get(`https://tnbanalytics.pythonanywhere.com/transaction?limit=10&transaction_type=GOVERNMENT`)
     let transactions = _transactions.results
     let total = _transactions.count
     let previous = _transactions.previous
@@ -126,7 +126,7 @@ export default Vue.extend({
     async handleGitHubIdSearch(event: any): Promise<void> {
       let value: number = Number(event.target.value as string)
       if (value > 0){
-        const _searchTransactions = await fetch(`/api/transaction?github_issue_id=${value}&transaction_type=GOVERNMENT`)
+        const _searchTransactions = await fetch(`https://tnbanalytics.pythonanywhere.com/transaction?github_issue_id=${value}&transaction_type=GOVERNMENT`)
           .then(res => res.json())
           .catch(err => console.log(err))
           
@@ -134,7 +134,7 @@ export default Vue.extend({
         this.previous = _searchTransactions.previous
         this.next = _searchTransactions.next
       } else if (value === 0) {
-        const _searchTransactions = await fetch(`/api/transaction?limit=10&transaction_type=GOVERNMENT`)
+        const _searchTransactions = await fetch(`https://tnbanalytics.pythonanywhere.com/transaction?limit=10&transaction_type=GOVERNMENT`)
           .then(res => res.json())
           .catch(err => console.log(err))
 
@@ -168,7 +168,7 @@ export default Vue.extend({
       }
     },
     async handleItemsChange(perPage: number): Promise<void> {
-      const _newTransactions = await fetch(`/api/transaction?limit=${perPage}&transaction_type=GOVERNMENT`)
+      const _newTransactions = await fetch(`https://tnbanalytics.pythonanywhere.com/transaction?limit=${perPage}&transaction_type=GOVERNMENT`)
           .then(res => res.json())
           .catch(err => console.log(err))
 

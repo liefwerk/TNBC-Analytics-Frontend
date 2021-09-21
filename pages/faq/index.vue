@@ -86,7 +86,7 @@ export default Vue.extend({
     }
   },
   async asyncData({ $http }: any) {
-    const faqs: any = await $http.$get('/api/faq')
+    const faqs: any = await $http.$get('https://tnbanalytics.pythonanywhere.com/faq')
     let selectedFaq = faqs.results[0]
     return { faqs, selectedFaq } as any
   },

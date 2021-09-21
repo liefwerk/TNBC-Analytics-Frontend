@@ -23,7 +23,7 @@ export default Vue.extend({
     return {}
   },
   async asyncData({ $http }: any) {
-    const team = await $http.$get('/api/team')
+    const team = await $http.$get('https://tnbanalytics.pythonanywhere.com/team')
     
     return { team }
   }

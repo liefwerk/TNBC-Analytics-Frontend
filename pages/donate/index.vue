@@ -24,7 +24,7 @@ export default Vue.extend({
   },
 
   async asyncData({ $http }: any) {
-    const donations = await $http.$get('/api/donate')
+    const donations = await $http.$get('https://tnbanalytics.pythonanywhere.com/donate')
     
     return { donations }
   }
