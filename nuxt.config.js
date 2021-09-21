@@ -85,7 +85,7 @@ export default {
       plugins: [['@babel/plugin-proposal-private-property-in-object', { loose: true }]],
     },
   },
-  // ssr: false, // Disable Server Side rendering
+  ssr: false, // Disable Server Side rendering
 
   env: {
     baseUrl: process.env.BASE_URL || 'http://127.0.0.1:3000/',
