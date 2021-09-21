@@ -56,19 +56,7 @@ export default {
   ],
 
   http: {
-    proxy: true, // Can be also an object with default options
-  },
-
-  publicRuntimeConfig: {
-    http: {
-      browserBaseURL: process.env.BROWSER_BASE_URL
-    }
-  },
-
-  privateRuntimeConfig: {
-    http: {
-      baseURL: process.env.BASE_URL
-    }
+    proxy: true // Can be also an object with default options
   },
 
   proxy: {
