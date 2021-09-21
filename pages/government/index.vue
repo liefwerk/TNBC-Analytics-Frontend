@@ -111,7 +111,7 @@ export default Vue.extend({
     let next = _transactions.next
     let count = transactions.length
 
-    const _graphData: any = await $http.post('api/government-chart', { days: '31' })
+    const _graphData: any = await $http.post('https://tnbanalytics.pythonanywhere.com/government-chart', { days: '31' })
       .then((res: any) => res.json())
     let graphData = _graphData.data
 

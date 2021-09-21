@@ -112,7 +112,7 @@ export default Vue.extend({
     let next = _transactions.next
     let count = transactions.length
 
-    const _graphData: any = await $http.post('api/treasury-chart', { days: '365' })
+    const _graphData: any = await $http.post('https://tnbanalytics.pythonanywhere.com/treasury-chart', { days: '365' })
       .then((res: any) => res.json())
     let graphData = _graphData.data
 

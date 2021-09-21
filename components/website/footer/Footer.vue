@@ -75,7 +75,7 @@ export default Vue.extend({
     }
   },
   async fetch() {
-    this.settings = await fetch('api/setting')
+    this.settings = await fetch('https://tnbanalytics.pythonanywhere.com/setting')
       .then((res) => res.json())
       .catch(err => console.log(err))
   }
