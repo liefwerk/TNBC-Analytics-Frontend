@@ -104,7 +104,6 @@ export default Vue.extend({
       const _data = this.transactions.map((d: any) => (
         [ Date.parse(d[0] as string), d[1] ]
       ))
-      console.log(_data)
       return _data;
     }
   }

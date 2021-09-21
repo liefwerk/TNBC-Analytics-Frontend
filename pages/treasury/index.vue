@@ -115,7 +115,6 @@ export default Vue.extend({
     const _graphData: any = await $http.post('api/treasury-chart', { days: '365' })
       .then((res: any) => res.json())
     let graphData = _graphData.data
-    console.log(graphData)
 
     return { treasury, transactions, total, previous, next, count, graphData } as any
   },
@@ -204,7 +203,6 @@ export default Vue.extend({
       const _data = this.graphData.map((d: any) => (
         [ Date.parse(d[0] as string), d[1] ]
       ))
-      console.log(_data)
       return _data;
     }
   }
