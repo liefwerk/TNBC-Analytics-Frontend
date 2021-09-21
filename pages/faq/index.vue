@@ -40,6 +40,8 @@
           :isFirst="index === 0 ? true : false" />
       </div>
     </div>
+    <!-- When navigating through the categories, the first card should always be opened -->
+    <!-- For now, this only works for the 'All' default category -->
     <div 
       v-for="(item, index) in filteredFaqs" 
       :key="index"

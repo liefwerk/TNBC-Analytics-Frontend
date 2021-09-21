@@ -3,13 +3,13 @@
     <div class="overflow-x-auto">
       <div class="py-2 align-middle inline-block min-w-full">
         <div class="shadow-md overflow-hidden border-b bg-white border-gray-200 sm:rounded-lg">
-          <div class="px-6 py-4 flex flex-nowrap">
+          <!--<div class="px-6 py-4 flex flex-nowrap">
             <div class="flex flex-col flex-nowrap mr-2">
               <label class="flex-grow">Enter a Github Issue ID</label>
               <input v-model="githubIssueId" placeholder="42" class="py-2 px-4 border-2 w-full rounded-md" @change.number="$emit('githubUserEntry', $event)" />
             </div>
             <button class="self-end">Search</button>
-          </div>
+          </div>-->
           <table class="min-w-full divide-y divide-gray-200 border-collapse">
             <thead class="bg-white">
               <tr>

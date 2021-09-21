@@ -12,7 +12,7 @@
       <p class="break-all py-1 font-medium text-primary text-subtitle">{{ item.question }}</p>
       <p :class="!isToggled ? 'hidden' : ''" class="break-all py-1 text-secondary text-intxt transition-500">{{ item.answer }}</p>
     </div>
-    <img v-if="isToggled || isFirst" src="upicon.svg" class="absolute top-0 right-0 m-2">
+    <img v-if="isToggled" src="upicon.svg" class="absolute top-0 right-0 m-2">
     <img v-else src="downicon.svg" class="absolute top-0 right-0 m-2">
   </div>
 </template>
