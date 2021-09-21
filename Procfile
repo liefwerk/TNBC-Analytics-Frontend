@@ -1,1 +1,1 @@
-web: npm run generate && npm run start
+worker: npm run generate && npm run start
