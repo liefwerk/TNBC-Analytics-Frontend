@@ -1,13 +1,11 @@
 <template>
   <div class="h-96">
-    <!--<particles-bg type="cobweb" :bg="false" color="#ffffff" cross="dead"/>-->
     <div :id="id" class="particles-js m-0 p-0 text-center h-full"></div>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator'
-
 import { tsParticles } from 'tsparticles'
 
 @Component({})
@@ -26,11 +24,7 @@ export default class Particles extends Vue {
     tsParticles.load(this.id, {
       "particles": {
         "number": {
-          "value": 200,
-          "density": {
-            "enable": true,
-            "value_area": 600
-          }
+          "value": 150
         },
         "color": {
           "value": "#ffffff"
@@ -44,34 +38,25 @@ export default class Particles extends Vue {
         },
         "opacity": {
           "value": 0.8,
-          "random": true,
-          "anim": {
-            "enable": true,
-            "speed": 12.0,
-            "opacity_min": 0.6,
-            "sync": false
-          }
+          "random": false,
         },
         "size": {
-          "value": 2,
+          "value": 3,
           "random": true,
           "anim": {
-            "enable": true,
-            "speed": 0.3,
-            "size_min": 1.,
-            "sync": false
+            "enable": false
           }
         },
         "line_linked": {
           "enable": true,
-          "distance": 80,
+          "distance": 100,
           "color": "#ffffff",
-          "opacity": 0.7,
+          "opacity": 0.6,
           "width": 1
         },
         "move": {
           "enable": true,
-          "speed": 1.5,
+          "speed": 1.3,
           "direction": "none",
           "random": true,
           "straight": false,
@@ -89,7 +74,7 @@ export default class Particles extends Vue {
         "events": {
         "onDiv": [
           {
-            "enable": true,
+            "enable": false,
             "selectors": ".titlespace",
             "mode": "bounce"
           },], 
@@ -105,13 +90,13 @@ export default class Particles extends Vue {
         },
         "modes": {
           "grab": {
-            "distance": 400,
+            "distance": 200,
             "line_linked": {
               "opacity": 1
             }
           },
           "bubble": {
-            "distance": 250,
+            "distance": 100,
             "size": 5,
             "duration": 2,
             "opacity": 0.9,

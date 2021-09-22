@@ -1,6 +1,6 @@
 <template>
   <div>
-    <highcharts 
+    <highcharts
       :constructor-type="'stockChart'" 
       :options="getTransactions" 
       :navigator="navigator">

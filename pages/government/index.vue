@@ -45,11 +45,8 @@
         @nextPage="handleNextPage"
         @changedMaxItems="handleItemsChange"
         @githubUserEntry="handleGitHubIdSearch"
-        :total="total"
-        :count="count"
+        :options="tableOptions"
         :columns="columns"
-        :next="next"
-        :previous="previous"
         :items="getTransactions" />
     </div>
   </div>
@@ -57,26 +54,23 @@
 
 <script lang="ts">
 import Vue from 'vue';
-
-import DefaultCard from '@/components/website/cards/DefaultCard.vue';
-import NumberCard from '@/components/website/cards/NumberCard.vue';
 import Table from '@/components/website/table/Table.vue';
+import NumberCard from '@/components/website/cards/NumberCard.vue';
+import DefaultCard from '@/components/website/cards/DefaultCard.vue';
 import GovernmentGraph from '@/components/website/graphs/GovernmentGraph.vue';
+import { Options } from '@/contznts/types/Table'
 
 export default Vue.extend({
 
   components: {
+    Table,
     NumberCard,
     DefaultCard,
-    Table,
     GovernmentGraph
   },
   data() {
     return {
-      total: 0,
-      previous: null,
-      next: null,
-      count: 0,
+      tableOptions: Object as Options,
       government: {} as any,
       transactions: [],
       graphData: [],
@@ -105,17 +99,21 @@ export default Vue.extend({
     let government = _government.results[0]
 
     const _transactions: any = await $http.$get(`https://tnbanalytics.pythonanywhere.com/transaction?limit=5&transaction_type=GOVERNMENT`)
+    
+    let tableOptions: Options = {
+      total: _transactions.count,
+      previous: _transactions.previous,
+      next: _transactions.next,
+      count: _transactions.results.length
+    }
+
     let transactions = _transactions.results
-    let total = _transactions.count
-    let previous = _transactions.previous
-    let next = _transactions.next
-    let count = transactions.length
 
     const _graphData: any = await $http.post('https://tnbanalytics.pythonanywhere.com/government-chart', { days: '31' })
       .then((res: any) => res.json())
     let graphData = _graphData.data
 
-    return { government, transactions, total, previous, next, count, graphData } as any
+    return { government, transactions, tableOptions, graphData } as any
   },
   methods: {
     formatDate(dateString: any): any {
@@ -131,40 +129,40 @@ export default Vue.extend({
           .catch(err => console.log(err))
           
         this.transactions = _searchTransactions.results
-        this.previous = _searchTransactions.previous
-        this.next = _searchTransactions.next
+        this.tableOptions.previous = _searchTransactions.previous
+        this.tableOptionsnext = _searchTransactions.next
       } else if (value === 0) {
         const _searchTransactions = await fetch(`https://tnbanalytics.pythonanywhere.com/transaction?limit=10&transaction_type=GOVERNMENT`)
           .then(res => res.json())
           .catch(err => console.log(err))
 
         this.transactions = _searchTransactions.results
-        this.previous = _searchTransactions.previous
-        this.next = _searchTransactions.next
+        this.tableOptions.previous = _searchTransactions.previous
+        this.tableOptions.next = _searchTransactions.next
       }
     },
     async handlePreviousPage(): Promise<void>  {
       
-      if (this.previous){
-        const _previousTransactions = await fetch(`${this.previous}`)
+      if (this.tableOptions.previous){
+        const _previousTransactions = await fetch(`${this.tableOptions.previous}`)
           .then(res => res.json())
           .catch(err => console.log(err))
 
         this.transactions = _previousTransactions.results
-        this.previous = _previousTransactions.previous
-        this.next = _previousTransactions.next
+        this.tableOptions.previous = _previousTransactions.previous
+        this.tableOptions.next = _previousTransactions.next
       }
 
     },
     async handleNextPage(): Promise<void> {
-      if (this.next){
-        const _nextTransactions = await fetch(`${this.next}`)
+      if (this.tableOptions.next){
+        const _nextTransactions = await fetch(`${this.tableOptions.next}`)
           .then(res => res.json())
           .catch(err => console.log(err))
 
         this.transactions = _nextTransactions.results
-        this.previous = _nextTransactions.previous
-        this.next = _nextTransactions.next
+        this.tableOptions.previous = _nextTransactions.previous
+        this.tableOptions.next = _nextTransactions.next
       }
     },
     async handleItemsChange(perPage: number): Promise<void> {
@@ -173,9 +171,9 @@ export default Vue.extend({
           .catch(err => console.log(err))
 
         this.transactions = _newTransactions.results
-        this.previous = _newTransactions.previous
-        this.next = _newTransactions.next
-        this.count = this.transactions.length
+        this.tableOptions.previous = _newTransactions.previous
+        this.tableOptions.next = _newTransactions.next
+        this.tableOptions.count = this.transactions.length
     }
   },
   computed: {
@@ -202,7 +200,6 @@ export default Vue.extend({
       const _data = this.graphData.map((d: any) => (
         [ Date.parse(d[0] as string), d[1] ]
       ))
-      console.log(_data)
       return _data;
     }
   }
