@@ -1,5 +1,5 @@
 <template>
-  <div class="fcprimary m-8">
+  <div class="fcprimary mt-12 mb-20 mx-6 md:mx-12">
     <div class="py-4 mx-auto">
       <div class="flex flex-col text-center w-full mt-8 mb-16">
         <h1 class="md:text-titlelg text-titlemd font-medium title-font mb-4 text-gray-900 font-sans font-semibold">Frequently Asked Questions</h1>
@@ -18,7 +18,7 @@
           @click="handleFilter(faq)"
           class="btnclass border-2 btn-hover border-btnprimary text-inbtn cursor-pointer transition-500"
           :class="faq.title === selectedFilter ? 'selected-button' : ''">
-              {{faq.title}}
+            {{faq.title}}
         </button>
       </div>
     </div>
@@ -28,15 +28,35 @@
         :key="index"
         @click="toggleFaq(item)"
         class="relative flex flex-col flex-wrap md:flex-row md:flex-nowrap justify-start card mb-4 cursor-pointer">
-        <FaqCard :item="item" :isToggled="item === selectedFaq ? true : false" />
+        <FaqCard
+          v-if="index === 0"
+          :item="item" 
+          :isToggled="(item === selectedFaq && index === 0) ? true : false" 
+          :isFirst="index === 0 ? true : false" />
+        <FaqCard
+          v-else
+          :item="item" 
+          :isToggled="item === selectedFaq ? true : false" 
+          :isFirst="index === 0 ? true : false" />
       </div>
     </div>
+    <!-- When navigating through the categories, the first card should always be opened -->
+    <!-- For now, this only works for the 'All' default category -->
     <div 
       v-for="(item, index) in filteredFaqs" 
       :key="index"
       @click="toggleFaq(item)"
       class="relative flex flex-col flex-wrap md:flex-row md:flex-nowrap justify-start card mb-4 cursor-pointer">
-      <FaqCard :item="item" :isToggled="item === selectedFaq ? true : false" />
+      <FaqCard
+          v-if="index === 0"
+          :item="item" 
+          :isToggled="(item === selectedFaq && index === 0) ? true : false" 
+          :isFirst="index === 0 ? true : false" />
+      <FaqCard
+        v-else
+        :item="item" 
+        :isToggled="item === selectedFaq ? true : false" 
+        :isFirst="index === 0 ? true : false" />
     </div>
   </div>
 </template>
@@ -56,7 +76,7 @@ export default Vue.extend({
   data() {
     return {
       selectedFilter: '',
-      selectedFaq: {},
+      selectedFaq: null,
       faqs: {
         count: null,
         next: null,
@@ -66,9 +86,9 @@ export default Vue.extend({
     }
   },
   async asyncData({ $http }: any) {
-    const faqs: any = await $http.$get('/api/faq')
-    
-    return { faqs } as any
+    const faqs: any = await $http.$get('https://tnbanalytics.pythonanywhere.com/faq')
+    let selectedFaq = faqs.results[0]
+    return { faqs, selectedFaq } as any
   },
   methods: {
     handleFilter(item: any): void {

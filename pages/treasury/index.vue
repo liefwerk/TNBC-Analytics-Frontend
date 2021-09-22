@@ -33,7 +33,7 @@
         </div>
       </div>
       <div class="w-full md:w-1/2">
-        <TreasuryGraph :data="graphData" />
+        <TreasuryGraph :data="getFormatedData" />
       </div>
     </div>
 
@@ -102,17 +102,17 @@ export default Vue.extend({
     }
   },
   async asyncData({ $http }: any) {
-    const _treasury: any = await $http.$get('/api/treasury')
+    const _treasury: any = await $http.$get('https://tnbanalytics.pythonanywhere.com/treasury')
     let treasury = _treasury.results[0]
 
-    const _transactions: any = await $http.$get(`/api/transaction?limit=5&transaction_type=TREASURY`)
+    const _transactions: any = await $http.$get(`https://tnbanalytics.pythonanywhere.com/transaction?limit=5&transaction_type=TREASURY`)
     let transactions = _transactions.results
     let total = _transactions.count
     let previous = _transactions.previous
     let next = _transactions.next
     let count = transactions.length
 
-    const _graphData: any = await $http.post('api/treasury-chart', { days: '31' })
+    const _graphData: any = await $http.post('https://tnbanalytics.pythonanywhere.com/treasury-chart', { days: '365' })
       .then((res: any) => res.json())
     let graphData = _graphData.data
 
@@ -127,7 +127,7 @@ export default Vue.extend({
     async handleGitHubIdSearch(event: any): Promise<void> {
       let value: number = Number(event.target.value as string)
       if (value > 0){
-        const _searchTransactions = await fetch(`/api/transaction?github_issue_id=${value}&transaction_type=TREASURY`)
+        const _searchTransactions = await fetch(`https://tnbanalytics.pythonanywhere.com/transaction?github_issue_id=${value}&transaction_type=TREASURY`)
           .then(res => res.json())
           .catch(err => console.log(err))
           
@@ -135,7 +135,7 @@ export default Vue.extend({
         this.previous = _searchTransactions.previous
         this.next = _searchTransactions.next
       } else if (value === 0) {
-        const _searchTransactions = await fetch(`/api/transaction?limit=10&transaction_type=TREASURY`)
+        const _searchTransactions = await fetch(`https://tnbanalytics.pythonanywhere.com/transaction?limit=10&transaction_type=TREASURY`)
           .then(res => res.json())
           .catch(err => console.log(err))
 
@@ -169,7 +169,7 @@ export default Vue.extend({
       }
     },
     async handleItemsChange(perPage: number) {
-      const _newTransactions = await fetch(`/api/transaction?limit=${perPage}&transaction_type=TREASURY`)
+      const _newTransactions = await fetch(`https://tnbanalytics.pythonanywhere.com/transaction?limit=${perPage}&transaction_type=TREASURY`)
           .then(res => res.json())
           .catch(err => console.log(err))
 
@@ -198,6 +198,12 @@ export default Vue.extend({
         )
       })
       return transactions
+    },
+    getFormatedData(): any {
+      const _data = this.graphData.map((d: any) => (
+        [ Date.parse(d[0] as string), d[1] ]
+      ))
+      return _data;
     }
   }
 

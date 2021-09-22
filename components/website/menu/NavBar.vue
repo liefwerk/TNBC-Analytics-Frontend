@@ -1,6 +1,6 @@
 <template>
   <div class="bg-white py-3 px-4 shadow-xs">
-    <nav class="container mx-auto flex flex-row flex-nowrap justify-between" aria-label="Desktop navigation">
+    <nav class="px-8 w-full flex flex-row flex-nowrap justify-between" aria-label="Desktop navigation">
       <NuxtLink to="/" class="mr-2 font-bold text-3xl order-2 md:order-first">
        <img alt="logo" src="~/assets/img/logo.png" />
       </NuxtLink>

@@ -2,6 +2,9 @@ export default {
   // Target: https://go.nuxtjs.dev/config-target
   target: 'static',
 
+  generate: {
+    fallback: true
+  },
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     title: 'TNBC Analytics',
@@ -29,7 +32,7 @@ export default {
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     {
-      src: "~/plugins/highcharts.js",
+      src: "~/plugins/highcharts.js", mode: 'client'
     },
   ],
 
@@ -85,7 +88,7 @@ export default {
   ssr: false, // Disable Server Side rendering
 
   env: {
-    baseUrl: process.env.BASE_URL || 'http://127.0.0.1:3000/',
+    baseUrl: 'https://tnbanalytics.pythonanywhere.com/' || 'http://127.0.0.1:3000/',
     apiUrl: 'https://tnbanalytics.pythonanywhere.com/'
   }
 }

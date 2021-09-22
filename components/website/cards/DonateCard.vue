@@ -1,6 +1,6 @@
 <template>
-  <div class="relative flex flex-col flex-wrap md:flex-row md:flex-nowrap justify-between card mb-4">
-    <div class="flex flex-col text-center flex-shrink md:text-left mb-4 md:my-0 md:mx-8 self-center">
+  <div class="relative flex flex-col flex-wrap md:flex-row md:flex-nowrap justify-between card mb-4 mx-8 md:mx-16">
+    <div class="flex flex-col text-center flex-shrink md:text-left mb-4 md:my-0 self-center">
       <!-- <img :src="donate.qr_image" class="h-6 mx-auto md:mx-0 max-w-max"> -->
       <p class="break-all py-1">{{ donate.title }}</p>
       <p class="break-all py-1">{{ donate.public_key }}</p>

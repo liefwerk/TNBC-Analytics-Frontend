@@ -46,6 +46,4 @@ if (typeof Highcharts === "object") {
   })
 }
 
-
-
 Vue.use(HighchartsVue);

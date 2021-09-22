@@ -2,6 +2,10 @@
     "name": "tnba",
     "version": "1.0.0",
     "private": true,
+    "engines": {
+        "node": ">=14.15",
+        "npm": ">=7.16"
+    },
     "scripts": {
         "dev": "nuxt",
         "build": "nuxt build",
@@ -10,7 +14,11 @@
     },
     "dependencies": {
         "@nuxt/http": "^0.6.4",
+        "@nuxt/types": "^2.15.7",
+        "@nuxt/typescript-build": "^2.1.0",
+        "@nuxtjs/proxy": "^2.1.0",
         "@nuxtjs/pwa": "^3.3.5",
+        "@nuxtjs/tailwindcss": "^4.2.0",
         "@nuxtjs/toast": "^3.3.1",
         "core-js": "^3.15.1",
         "highcharts": "^9.1.2",
@@ -20,9 +28,6 @@
         "tsparticles": "^1.33.3"
     },
     "devDependencies": {
-        "@nuxt/types": "^2.15.7",
-        "@nuxt/typescript-build": "^2.1.0",
-        "@nuxtjs/tailwindcss": "^4.2.0",
         "nuxt-property-decorator": "^2.9.1",
         "postcss": "^8.3.5"
     }
