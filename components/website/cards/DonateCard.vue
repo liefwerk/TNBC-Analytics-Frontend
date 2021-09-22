@@ -1,27 +1,37 @@
 <template>
   <div class="relative flex flex-col flex-wrap md:flex-row md:flex-nowrap justify-between card mb-4 mx-8 md:mx-16">
     <div class="flex flex-col text-center flex-shrink md:text-left mb-4 md:my-0 self-center">
-      <!-- <img :src="donate.qr_image" class="h-6 mx-auto md:mx-0 max-w-max"> -->
       <p class="break-all py-1">{{ donate.title }}</p>
-      <p class="break-all py-1">{{ donate.public_key }}</p>
-      <p @click="copyThat(donate.public_key)" class="text-blue-700 hover:underline cursor-pointer">Copy the account number</p>
+      <div
+        @click="copyThat(donate.public_key)"
+        class="py-1 md:py-0 md:my-4">
+        <span>TNBC Address: </span>
+        <div class="flex flex-row flex-nowrap cursor-pointer hover:text-blue-600">
+          <CopyIcon
+            class="text-blue-400 hover:text-blue-600 h-5 w-5 self-center mr-1"
+          />
+          <span ref="accountNumber" class="break-all self-center">
+            {{ donate.public_key }}
+          </span>
+        </div> 
+      </div>
     </div>
-    <div class="w-24 h-24 self-center">
-      <qrcode-vue class="w-24 h-24" :value="donate.public_key" level="H" renderAs="svg" />
-    </div>
+    <QRCode :value="donate.public_key" />
   </div>
 </template>
 
 <script lang="ts">
 import { Prop, Component, Vue } from 'nuxt-property-decorator'
-import QrcodeVue from 'qrcode.vue'
+import QRCode from '@/components/website/QRCode.vue'
+import CopyIcon from '@/components/icons/CopyIcon.vue'
 
 @Component({
   components: {
-    QrcodeVue
+    QRCode,
+    CopyIcon
   }
 })
-export default class DonateCard extends Vue{
+export default class DonateCard extends Vue {
   @Prop({ required: true }) readonly donate!: object
 
   async copyThat(accountNumber: string): Promise<void> {
