@@ -65,7 +65,6 @@
                 <option>10</option>
                 <option>15</option>
                 <option>30</option>
-                <option>50</option>
               </select>
                Items
               </div>

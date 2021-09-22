@@ -23,8 +23,8 @@
         </div>
         <div>
           <DefaultCard 
-            title="Total TNBC Spent"
-            :number="government.total_tnbc_spent"
+            title="Public Key"
+            :number="government.account_number"
             class="break-all" />
 
           <DefaultCard 
@@ -104,7 +104,7 @@ export default Vue.extend({
     const _government: any = await $http.$get('https://tnbanalytics.pythonanywhere.com/government')
     let government = _government.results[0]
 
-    const _transactions: any = await $http.$get(`https://tnbanalytics.pythonanywhere.com/transaction?limit=10&transaction_type=GOVERNMENT`)
+    const _transactions: any = await $http.$get(`https://tnbanalytics.pythonanywhere.com/transaction?limit=5&transaction_type=GOVERNMENT`)
     let transactions = _transactions.results
     let total = _transactions.count
     let previous = _transactions.previous

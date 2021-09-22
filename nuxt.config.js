@@ -2,6 +2,12 @@ export default {
   // Target: https://go.nuxtjs.dev/config-target
   target: 'static',
 
+  loading: false,
+
+  server: {
+    host: '0' // default: localhost
+  },
+
   generate: {
     fallback: true
   },

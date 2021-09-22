@@ -25,7 +25,7 @@ export default class GovernmentGraph extends Vue {
     let chartOptions: any =
     {
       chart: {
-        type: 'areaspline'
+        type: 'spline'
       },
       tooltip: {
         shared: true,

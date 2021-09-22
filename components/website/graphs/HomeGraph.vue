@@ -53,20 +53,27 @@ export default Vue.extend({
     getTransactions(): any {
       let chartOptions: any =
       {
-        chart: {
-          type: 'areaspline'
-        },
         tooltip: {
-          shared: true,
+          shared: false,
           valueSuffix: ' TNBC'
         },
         xAxis: {
-          type: 'datetime'
+          type: 'datetime',
+          dateTimeLabelFormats: { // don't display the dummy year
+            month: '%e. %b',
+            year: '%b'
+          },
+          title: {
+              text: 'Date'
+          }
         },
         series: [
           {
             name: 'Transactions',
-            data: this.transactions
+            data: this.transactions,
+            type: 'areaspline',
+            threshold: null,
+            connectEnds: false
           }
         ]
       }

@@ -101,9 +101,17 @@ export default Vue.extend({
       return this.government.total_transactions + this.treasury.total_transactions
     },
     getFormatedData(): any {
-      const _data = this.transactions.map((d: any) => (
-        [ Date.parse(d[0] as string), d[1] ]
-      ))
+      console.log('untouched data', this.transactions)
+      const _data = this.transactions.map(function(d: any) {
+        let date: any = new Date(d[0] as any)
+        let year: any = date.getFullYear() as any
+        let month: any = date.getMonth() as any + 1
+        let day: any = date.getDay() as any
+        console.log(year, month, day) as any
+        console.log(Date.UTC(year, month, day)) as any
+        return [ Date.UTC(year, month, day), d[1] ]
+      })
+      // console.log(_data)
       return _data;
     }
   }
