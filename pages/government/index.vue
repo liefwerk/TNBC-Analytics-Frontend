@@ -33,7 +33,7 @@
         </div>
       </div>
       <div class="w-full md:w-1/2">
-        <GovernmentGraph :data="getFormatedData" />
+        <GovernmentGraph :data="getFormatedData" @handleFilter="changeDateRange"/>
       </div>
     </div>
 
@@ -54,14 +54,16 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import formatDateMixin from '@/mixins/formatDateMixin'
 import Table from '@/components/website/table/Table.vue';
 import NumberCard from '@/components/website/cards/NumberCard.vue';
 import DefaultCard from '@/components/website/cards/DefaultCard.vue';
 import GovernmentGraph from '@/components/website/graphs/GovernmentGraph.vue';
 import { Options } from '@/constants/types/Table'
+import { Transaction } from '@/constants/types/Graph'
+import { Government } from '@/constants/types/AnalyticsData'
 
 export default Vue.extend({
-
   components: {
     Table,
     NumberCard,
@@ -71,8 +73,8 @@ export default Vue.extend({
   data() {
     return {
       tableOptions: {} as Options,
-      government: {} as any,
-      transactions: [],
+      government: {} as Government,
+      transactions: [] as Array<Transaction>,
       graphData: [],
       columns: [
         {
@@ -118,7 +120,6 @@ export default Vue.extend({
   methods: {
     formatDate(dateString: any): any {
       const date = new Date(dateString);
-      // Then specify how you want your dates to be formatted
       return new Intl.DateTimeFormat('default', { dateStyle: 'medium' } as any).format(date);
     },
     async handleGitHubIdSearch(event: any): Promise<void> {
@@ -174,6 +175,18 @@ export default Vue.extend({
         this.tableOptions.previous = _newTransactions.previous
         this.tableOptions.next = _newTransactions.next
         this.tableOptions.count = this.transactions.length
+    },
+    async changeDateRange(value: any): Promise<void> {
+      const _graphData: any = await fetch('https://tnbanalytics.pythonanywhere.com/government-chart', { 
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({days: value})
+      })
+      .then((res: any) => res.json())
+      .catch(err => console.log(err))
+      this.graphData = _graphData.data
     }
   },
   computed: {

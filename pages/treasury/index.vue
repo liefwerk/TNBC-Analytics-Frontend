@@ -34,7 +34,7 @@
           </div>
         </div>
         <div class="w-full md:w-1/2">
-          <TreasuryGraph :data="getFormatedData" />
+          <TreasuryGraph :data="getFormatedData" @handleFilter="changeDateRange" />
         </div>
       </div>
 
@@ -62,6 +62,8 @@ import NumberCard from '@/components/website/cards/NumberCard.vue';
 import DefaultCard from '@/components/website/cards/DefaultCard.vue';
 import TreasuryGraph from '@/components/website/graphs/TreasuryGraph.vue';
 import { Options } from '@/constants/types/Table'
+import { Transaction } from '@/constants/types/Graph'
+import { Treasury } from '@/constants/types/AnalyticsData'
 
 export default Vue.extend({
   components: {
@@ -73,8 +75,8 @@ export default Vue.extend({
   data() {
     return {
       tableOptions: {} as Options,
-      treasury: {} as any,
-      transactions: [],
+      treasury: {} as Treasury,
+      transactions: [] as Array<Transaction>,
       graphData: [],
       columns: [
         {
@@ -111,7 +113,7 @@ export default Vue.extend({
 
     let transactions = _transactions.results
 
-    const _graphData: any = await $http.post('https://tnbanalytics.pythonanywhere.com/treasury-chart', { days: '365' })
+    const _graphData: any = await $http.post('https://tnbanalytics.pythonanywhere.com/treasury-chart', { days: '31' })
       .then((res: any) => res.json())
     let graphData = _graphData.data
 
@@ -143,8 +145,7 @@ export default Vue.extend({
         this.tableOptions.next = _searchTransactions.next
       }
     },
-    async handlePreviousPage() {
-      
+    async handlePreviousPage(): Promise<void> {
       if (this.tableOptions.previous){
         const _previousTransactions = await fetch(`${this.tableOptions.previous}`)
           .then(res => res.json())
@@ -156,7 +157,7 @@ export default Vue.extend({
       }
 
     },
-    async handleNextPage() {
+    async handleNextPage(): Promise<void> {
       if (this.tableOptions.next){
         const _nextTransactions = await fetch(`${this.tableOptions.next}`)
           .then(res => res.json())
@@ -167,7 +168,7 @@ export default Vue.extend({
         this.tableOptions.next = _nextTransactions.next
       }
     },
-    async handleItemsChange(perPage: number) {
+    async handleItemsChange(perPage: number): Promise<void> {
       const _newTransactions = await fetch(`https://tnbanalytics.pythonanywhere.com/transaction?limit=${perPage}&transaction_type=TREASURY`)
           .then(res => res.json())
           .catch(err => console.log(err))
@@ -176,6 +177,18 @@ export default Vue.extend({
         this.tableOptions.previous = _newTransactions.previous
         this.tableOptions.next = _newTransactions.next
         this.tableOptions.count = this.transactions.length
+    },
+    async changeDateRange(value: any): Promise<void> {
+      const _graphData: any = await fetch('https://tnbanalytics.pythonanywhere.com/treasury-chart', { 
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({days: value})
+      })
+      .then((res: any) => res.json())
+      .catch(err => console.log(err))
+      this.graphData = _graphData.data
     }
   },
   computed: {
