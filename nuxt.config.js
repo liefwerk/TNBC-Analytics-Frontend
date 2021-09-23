@@ -4,10 +4,6 @@ export default {
 
   loading: false,
 
-  server: {
-    host: '0' // default: localhost
-  },
-
   generate: {
     fallback: true
   },
@@ -43,7 +39,7 @@ export default {
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
-  components: true,
+  components: false,
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
@@ -80,6 +76,8 @@ export default {
   // PWA module configuration: https://go.nuxtjs.dev/pwa
   pwa: {
     manifest: {
+      name: 'TNBC Analytics',
+      description: 'A simple data viewer for The New Boston Coin',
       lang: 'en'
     }
   },

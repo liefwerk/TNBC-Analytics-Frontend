@@ -61,7 +61,7 @@ import Table from '@/components/website/table/Table.vue';
 import NumberCard from '@/components/website/cards/NumberCard.vue';
 import DefaultCard from '@/components/website/cards/DefaultCard.vue';
 import TreasuryGraph from '@/components/website/graphs/TreasuryGraph.vue';
-import { Options } from '@/contznts/types/Table'
+import { Options } from '@/constants/types/Table'
 
 export default Vue.extend({
   components: {
@@ -72,7 +72,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      tableOptions: Object as Options,
+      tableOptions: {} as Options,
       treasury: {} as any,
       transactions: [],
       graphData: [],

@@ -11,8 +11,6 @@
 <script lang="ts">
 import { Prop, Component, Vue } from 'nuxt-property-decorator';
 
-// import {Chart} from 'highcharts-vue'
-
 @Component
 export default class GovernmentGraph extends Vue {
   @Prop({ required: true }) readonly data!: any

@@ -58,7 +58,7 @@ import Table from '@/components/website/table/Table.vue';
 import NumberCard from '@/components/website/cards/NumberCard.vue';
 import DefaultCard from '@/components/website/cards/DefaultCard.vue';
 import GovernmentGraph from '@/components/website/graphs/GovernmentGraph.vue';
-import { Options } from '@/contznts/types/Table'
+import { Options } from '@/constants/types/Table'
 
 export default Vue.extend({
 
@@ -70,7 +70,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      tableOptions: Object as Options,
+      tableOptions: {} as Options,
       government: {} as any,
       transactions: [],
       graphData: [],
@@ -130,7 +130,7 @@ export default Vue.extend({
           
         this.transactions = _searchTransactions.results
         this.tableOptions.previous = _searchTransactions.previous
-        this.tableOptionsnext = _searchTransactions.next
+        this.tableOptions.next = _searchTransactions.next
       } else if (value === 0) {
         const _searchTransactions = await fetch(`https://tnbanalytics.pythonanywhere.com/transaction?limit=10&transaction_type=GOVERNMENT`)
           .then(res => res.json())

@@ -1,7 +1,6 @@
 <template>
   <div>
-    <Spinner v-if="showSpinner" />
-    <div v-else class="mb-20">
+    <div class="mb-20">
       <div class="bg-gradient-to-b from-gray-900 to-gray-700 h-96 relative font-sans font-semibold">
         <div class="absolute top-1/2 transform -translate-y-1/2 w-full">
           <div class="relative max-w-max mx-auto">
@@ -58,7 +57,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import Spinner from '@/components/website/spinner/Spinner.vue'
 import HomeGraph from '@/components/website/graphs/HomeGraph.vue'
 import Particle from '@/components/website/particles/Particle.vue'
 import HomeCard from '@/components/website/cards/HomeCard.vue'
@@ -67,23 +65,15 @@ export default Vue.extend({
   components: {
     Particle,
     HomeGraph,
-    HomeCard,
-    Spinner
+    HomeCard
   },
   data(){
     return {
-      showSpinner: true,
       analytics: {} as any,
       transactions: {} as any,
       treasury: {} as any,
       government: {} as any
     }
-  },
-  beforeCreate() {
-    this.showSpinner = true;
-  },
-  mounted() {
-    this.showSpinner = false;
   },
   async asyncData({ $http }: any) {
     const _analytics: any = await $http.$get('https://tnbanalytics.pythonanywhere.com/statistics')

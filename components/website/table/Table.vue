@@ -106,7 +106,7 @@
 import { Vue, Component, Prop } from 'nuxt-property-decorator'
 import ChevronLeftIcon from '@/components/icons/ChevronLeftIcon.vue'
 import ChevronRightIcon from '@/components/icons/ChevronRightIcon.vue'
-import { Options } from '@/contznts/types/Table'
+import { Options } from '@/constants/types/Table'
 
 @Component({ 
   components: {

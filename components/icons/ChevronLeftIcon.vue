@@ -5,6 +5,9 @@
 </template>
 
 <script lang="ts">
-  import { Vue } from 'nuxt-property-decorator'
-  export default class ChevronLeftIcon extends Vue {}
+import Vue from 'vue'
+
+export default Vue.extend({
+  name: 'ChevronLeftIcon'
+})
 </script>
