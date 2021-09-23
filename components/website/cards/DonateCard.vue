@@ -6,11 +6,11 @@
         @click="copyThat(donate.public_key)"
         class="py-1 md:py-0 md:my-4">
         <span>TNBC Address: </span>
-        <div class="flex flex-row flex-nowrap cursor-pointer hover:text-blue-600">
+        <div class="flex flex-col md:flex-row flex-nowrap cursor-pointer hover:text-blue-600">
           <CopyIcon
-            class="text-blue-400 hover:text-blue-600 h-5 w-5 self-center mr-1"
+            class="text-blue-400 hover:text-blue-600 h-5 w-5 self-center order-2 lg:order-1 lg:self-start mr-1"
           />
-          <span ref="accountNumber" class="break-all self-center">
+          <span ref="accountNumber" class="break-all self-center order-1">
             {{ donate.public_key }}
           </span>
         </div> 
