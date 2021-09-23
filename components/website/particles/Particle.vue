@@ -13,16 +13,8 @@ export default class Particles extends Vue {
 
   public id: string = 'particles-instance-' + Math.floor(Math.random() * 5000)
 
-  mounted () {
-    const tsParticles = require("tsparticles")
-    this.$nextTick(() => {
-      this.initParticleJS()
-    })
-  }
-  
-  initParticleJS () {
-    tsParticles.load(this.id, {
-      "particles": {
+  public particlesOptions: any = {
+    "particles": {
         "number": {
           "value": 150
         },
@@ -116,8 +108,34 @@ export default class Particles extends Vue {
         }
       },
       "retina_detect": true,
-      "pauseOnOutsideViewport":true
-    }).then((container) => {})
+      "pauseOnOutsideViewport": true
+  }
+
+  mounted () {
+    const tsParticles = require("tsparticles")
+    this.initParticleJS()
+    this.$nextTick(() => {
+      this.onResize()
+      window.addEventListener('resize', this.onResize)
+    })
+  }
+
+  onResize() {
+    if (process.client) {
+      let width = window.innerWidth
+      console.log(width)
+      if (width < 768){
+        this.particlesOptions.particles.number.value = 50;
+        this.initParticleJS()
+      } else {
+        this.particlesOptions.particles.number.value = 150;
+        this.initParticleJS()
+      }
+    }
+  }
+  
+  initParticleJS () {
+    tsParticles.load(this.id, this.particlesOptions).then((container) => {})
     .catch((error) => {
       console.error(error);
     });

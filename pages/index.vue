@@ -5,7 +5,7 @@
         <div class="absolute top-1/2 transform -translate-y-1/2 w-full">
           <div class="relative max-w-max mx-auto">
             <h1 class="text-titlexl text-gray-100 text-center max-w-max mx-auto relative z-10 select-none">TNBC Analytics</h1>
-            <div class="absolute bg-gray-800 w-full h-full filter blur-lg transform -translate-y-full"></div>
+            <div class="absolute bg-gray-800 w-44 md:w-full h-full filter blur-lg transform -translate-y-full"></div>
           </div>
         </div>
         <Particle />
@@ -102,7 +102,6 @@ export default Vue.extend({
       return this.government.total_transactions + this.treasury.total_transactions
     },
     getFormatedData(): any {
-      console.log('untouched data', this.transactions)
       const _data = this.transactions.map(function(d: any) {
         let date: any = new Date(d[0] as any)
         return [ Date.UTC(date.getFullYear(), date.getMonth(), date.getDay()), d[1] ]
