@@ -1,7 +1,10 @@
 <template>
   <div class="relative flex flex-col flex-wrap md:flex-row md:flex-nowrap justify-between card mb-4 mx-8 md:mx-16">
     <div class="flex flex-col text-center flex-shrink md:text-left mb-4 md:my-0 self-center">
-      <p class="break-all py-1">{{ donate.title }}</p>
+      <img 
+        class="h-auto w-32 self-center md:self-start"
+        :src="donate.qr_image"
+        :alt="donate.title">
       <div
         @click="copyThat(donate.public_key)"
         class="py-1 md:py-0 md:my-4">
