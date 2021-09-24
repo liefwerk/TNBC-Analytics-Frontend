@@ -123,7 +123,6 @@ export default class Particles extends Vue {
   onResize() {
     if (process.client) {
       let width = window.innerWidth
-      console.log(width)
       if (width < 768){
         this.particlesOptions.particles.number.value = 50;
         this.initParticleJS()

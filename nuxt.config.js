@@ -24,7 +24,12 @@ export default {
       },
     ]
   },
-  loading: false,
+  loading: {
+    color: '#f69052',
+    height: '3px',
+    continuous: true,
+    duration: 3000
+  },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [

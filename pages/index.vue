@@ -33,21 +33,21 @@
       <div class="mx-4 my-10 md:mx-auto md:w-3/4">
         <HomeGraph :transactions="getFormatedData" />
         <div class="flex flex-wrap md:w-10/12 md:mx-auto my-8 lg:divide-x divide-gray-400 border-l border-r border-gray-400">
-          <div class="w-full md:w-1/2 lg:w-1/4 p-4 border-t md:border-r lg:border-r-0 lg:border-b border-gray-400">
+          <div class="flex flex-col justify-between flex-nowrap w-full md:w-1/2 lg:w-1/4 p-4 border-t md:border-r lg:border-r-0 lg:border-b border-gray-400">
             <p class="text-sm mb-2">Total Treasury Withdrawals</p>
-            <p class="text-xl">{{ getTreasuryWithdrawals }}</p>
+            <p class="w-full text-left self-end text-xl">{{ getTreasuryWithdrawals }}</p>
           </div>
-          <div class="w-full md:w-1/2 lg:w-1/4 p-4 border-t lg:border-b border-gray-400">
+          <div class="flex flex-col justify-between flex-nowrap w-full md:w-1/2 lg:w-1/4 p-4 border-t lg:border-b border-gray-400">
             <p class="text-sm mb-2">Total Govt payment</p>
-            <p class="text-xl">{{ getGovernmentPayments }}</p>
+            <p class="w-full text-left self-end text-xl">{{ getGovernmentPayments }}</p>
           </div>
-          <div class="w-full md:w-1/2 lg:w-1/4 p-4 border-t md:border-r lg:border-r-0 md:border-b border-gray-400">
+          <div class="flex flex-col justify-between flex-nowrap w-full md:w-1/2 lg:w-1/4 p-4 border-t md:border-r lg:border-r-0 md:border-b border-gray-400">
             <p class="text-sm mb-2">Transaction Count</p>
-            <p class="text-xl">{{ getTotalTransactions }}</p>
+            <p class="w-full text-left self-end text-xl">{{ getTotalTransactions }}</p>
           </div>
-          <div class="w-full md:w-1/2 lg:w-1/4 p-4 border-t border-b border-gray-400">
+          <div class="flex flex-col justify-between flex-nowrap w-full md:w-1/2 lg:w-1/4 p-4 border-t border-b border-gray-400">
             <p class="text-sm mb-2">Number of accounts</p>
-            <p class="italic text-lg text-gray-400">TBA</p>
+            <p class="w-full text-left self-end text-lg">{{ totalAccounts }}</p>
           </div>
         </div>
       </div>
@@ -72,7 +72,8 @@ export default Vue.extend({
       analytics: {} as any,
       transactions: {} as any,
       treasury: {} as any,
-      government: {} as any
+      government: {} as any,
+      totalAccounts: null as null | number
     }
   },
   async asyncData({ $http }: any) {
@@ -89,7 +90,10 @@ export default Vue.extend({
       .then((res: any) => res.json())
     let transactions = _transactions.data
 
-    return { analytics, transactions, treasury, government } as any
+    const _additionalApi = await $http.$get('https://raw.githubusercontent.com/itsnikhil/tnb-analysis/master/web/js/static.json')
+    let totalAccounts = _additionalApi.Accounts
+
+    return { analytics, transactions, treasury, government, totalAccounts } as any
   },
   computed: {
     getTreasuryWithdrawals(): number {
