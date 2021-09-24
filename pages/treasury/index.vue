@@ -44,6 +44,7 @@
         <Table
           @previousPage="handlePreviousPage"
           @nextPage="handleNextPage"
+          @changePageOffset="handlePageOffset"
           @changedMaxItems="handleItemsChange"
           @githubUserEntry="handleGitHubIdSearch"
           :options="tableOptions"
@@ -167,6 +168,16 @@ export default Vue.extend({
         this.tableOptions.previous = _nextTransactions.previous
         this.tableOptions.next = _nextTransactions.next
       }
+    },
+    async handlePageOffset(offset: number, perPage: number): Promise<void> {
+      console.log('received emit from function', offset, perPage)
+      const _transactions = await fetch(`https://tnbanalytics.pythonanywhere.com/transaction?limit=${perPage}&offset=${offset}&transaction_type=TREASURY`)
+        .then(res => res.json())
+        .catch(err => console.log(err))
+
+      this.transactions = _transactions.results
+      this.tableOptions.previous = _transactions.previous
+      this.tableOptions.next = _transactions.next
     },
     async handleItemsChange(perPage: number): Promise<void> {
       const _newTransactions = await fetch(`https://tnbanalytics.pythonanywhere.com/transaction?limit=${perPage}&transaction_type=TREASURY`)

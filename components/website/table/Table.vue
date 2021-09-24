@@ -78,15 +78,14 @@
                     class="relative inline-flex items-center mr-2 px-2 py-2 transition-500 hover:shadow-sm rounded-full bg-white text-sm font-medium text-gray-500 shadow-md cursor-pointer">
                     <ChevronLeftIcon class="h-4 w-4" />
                   </a>
-                  <!-- Commented out Search function until we find a correct way to handle the fetching -->
-                  <!--<a 
-                    @click="changeItemsInPage(number)" 
+                  <a 
+                    @click="changePageOffset(number)" 
                     v-for="(number, index) in displayPages" 
                     :key="index"
                     :class="number === activeItem ? 'current' : ''" 
-                    class="bg-white mx-2 shadow-md text-gray-500 transition-500 hover:shadow-sm relative inline-flex items-center justify-center h-4 w-4 px-4 py-4 text-sm font-medium rounded-full cursor-pointer">
+                    class="table-number-button">
                     {{ number }}
-                  </a>-->
+                  </a>
                   <a
                     v-show="options.next"
                     @click="changeToNextPage"
@@ -128,7 +127,7 @@ export default class Table extends Vue {
   public currentPage: number | null = null
   public pageNumbers: [] = []
   public pageNumberCount: number = 1
-  public totalItems: number = this.items.length
+  public totalItems: number = this.options.total
   public maxItemsPerPage: number = this.options.count
   public lastPage: number = Math.ceil(this.totalItems / this.maxItemsPerPage)
   public notEnoughPages: true = true
@@ -143,7 +142,7 @@ export default class Table extends Vue {
   }
 
   get displayPages() {
-    this.lastPage = Math.ceil(this.totalItems / this.maxItemsPerPage)
+    // this.lastPage = Math.ceil(this.totalItems / this.maxItemsPerPage)
     const totalPages = this.lastPage;
     let currentPage: any = this.currentPage;
     if ([1, 2, 3, 4].includes(currentPage)) currentPage = 3;
@@ -155,9 +154,12 @@ export default class Table extends Vue {
     }
   }
 
-  changeItemsInPage(num: number): void {
-    this.currentPage = num
-    this.activeItem = num
+  changePageOffset(pageNumber: number): void {
+    let offset = (pageNumber - 1) * this.maxItemsPerPage
+    console.log('changePageOffset', offset)
+    this.$emit('changePageOffset', offset, this.maxItemsPerPage)
+    this.currentPage = pageNumber
+    this.activeItem = pageNumber
   }
 
   changeToPreviousPage(): void {
@@ -191,7 +193,7 @@ export default class Table extends Vue {
   }
 
   get sortedItems(): any[] {
-    return this.itemsInPage.sort((a: any, b: any) => {
+    return this.items.sort((a: any, b: any) => {
       let modifier = 1;
       if(this.currentSortDir === 'desc') modifier = -1;
       if(a[this.currentSort] < b[this.currentSort]) return -1 * modifier;
