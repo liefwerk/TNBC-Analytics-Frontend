@@ -2,6 +2,8 @@ export default {
   // Target: https://go.nuxtjs.dev/config-target
   target: 'static',
 
+  loading: false,
+
   generate: {
     fallback: true
   },
@@ -22,7 +24,12 @@ export default {
       },
     ]
   },
-  loading: false,
+  loading: {
+    color: '#f69052',
+    height: '3px',
+    continuous: true,
+    duration: 3000
+  },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
@@ -37,7 +44,7 @@ export default {
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
-  components: true,
+  components: false,
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
@@ -74,6 +81,8 @@ export default {
   // PWA module configuration: https://go.nuxtjs.dev/pwa
   pwa: {
     manifest: {
+      name: 'TNBC Analytics',
+      description: 'A simple data viewer for The New Boston Coin',
       lang: 'en'
     }
   },

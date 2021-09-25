@@ -14,11 +14,11 @@ const options = {
     backgroundColor: 'transparent'
   },
   scrollbar: {
-    enabled: false
+    enabled: true
   },
   navigator: { enabled: true },
   rangeSelector: {
-    enabled: true
+    enabled: false
   },
   plotOptions: {
     series: {
@@ -32,7 +32,7 @@ const options = {
       },
       marker: {
         enabled: true,
-        radius: 4,
+        radius: 3,
         fillColor: '#ff1145'
       }
     },

@@ -3,6 +3,8 @@
     <div class="overflow-x-auto">
       <div class="py-2 align-middle inline-block min-w-full">
         <div class="shadow-md overflow-hidden border-b bg-white border-gray-200 sm:rounded-lg">
+        <!-- Commented out Search function until we find a correct way to handle the fetching -->
+        <!-- Might have to use built in watch function -->
           <!--<div class="px-6 py-4 flex flex-nowrap">
             <div class="flex flex-col flex-nowrap mr-2">
               <label class="flex-grow">Enter a Github Issue ID</label>
@@ -51,7 +53,7 @@
               <div class="md:mr-6 flex-grow">
                 <p class="text-sm text-gray-700">
                   Total
-                  <span class="font-medium">{{ total }}</span>
+                  <span class="font-medium">{{ options.total }}</span>
                   results
                 </p>
               </div>
@@ -65,42 +67,30 @@
                 <option>10</option>
                 <option>15</option>
                 <option>30</option>
-                <option>50</option>
               </select>
                Items
               </div>
               <div v-if="notEnoughPages">
-                <nav class="relative z-0 inline-flex" aria-label="Pagination">
+                <nav class="relative z-0 inline-flex" aria-label="Table pagination">
                   <a
-                    v-show="previous"
+                    v-show="options.previous"
                     @click="changeToPreviousPage"
                     class="relative inline-flex items-center mr-2 px-2 py-2 transition-500 hover:shadow-sm rounded-full bg-white text-sm font-medium text-gray-500 shadow-md cursor-pointer">
-                    <span>
-                    <!-- chevron-left -->
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                      </svg>
-                    </span>
+                    <ChevronLeftIcon class="h-4 w-4" />
                   </a>
-                  <!-- Current: "z-10 bg-indigo-50 border-indigo-500 text-indigo-600", Default: "bg-white border-gray-300 text-gray-500  -->
                   <a 
-                    @click="changeItemsInPage(number)" 
+                    @click="changePageOffset(number)" 
                     v-for="(number, index) in displayPages" 
                     :key="index"
                     :class="number === activeItem ? 'current' : ''" 
-                    class="bg-white mx-2 shadow-md text-gray-500 transition-500 hover:shadow-sm relative inline-flex items-center justify-center h-4 w-4 px-4 py-4 text-sm font-medium rounded-full cursor-pointer">
+                    class="table-number-button">
                     {{ number }}
                   </a>
                   <a
-                    v-show="next"
+                    v-show="options.next"
                     @click="changeToNextPage"
                     class="relative inline-flex items-center ml-2 px-2 py-2 transition-500 hover:shadow-sm rounded-full bg-white text-sm font-medium text-gray-500 shadow-md cursor-pointer">
-                    <span>
-                    <!-- chevron-right -->
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                      </svg>
-                    </span>
+                    <ChevronRightIcon class="h-4 w-4" />
                   </a>
                 </nav>
               </div>
@@ -112,17 +102,21 @@
   </div>
 </template>
 <script lang="ts">
-
 import { Vue, Component, Prop } from 'nuxt-property-decorator'
+import ChevronLeftIcon from '@/components/icons/ChevronLeftIcon.vue'
+import ChevronRightIcon from '@/components/icons/ChevronRightIcon.vue'
+import { Options } from '@/constants/types/Table'
 
-@Component
+@Component({ 
+  components: {
+    ChevronLeftIcon,
+    ChevronRightIcon
+  }
+})
 export default class Table extends Vue {
   @Prop({ required: true }) readonly items!: object[]
   @Prop({ required: true }) readonly columns!: object[]
-  @Prop({ required: true }) readonly total!: number
-  @Prop({ required: true }) readonly count!: number
-  @Prop({ required: true }) readonly previous!: null | string
-  @Prop({ required: true }) readonly next!: null | string
+  @Prop({ required: true }) readonly options!: Options
   mounted () {
     this.currentPage = 1
     this.activeItem = 1
@@ -133,8 +127,8 @@ export default class Table extends Vue {
   public currentPage: number | null = null
   public pageNumbers: [] = []
   public pageNumberCount: number = 1
-  public totalItems: number = this.items.length
-  public maxItemsPerPage: number = this.count
+  public totalItems: number = this.options.total
+  public maxItemsPerPage: number = this.options.count
   public lastPage: number = Math.ceil(this.totalItems / this.maxItemsPerPage)
   public notEnoughPages: true = true
   public currentSort: string = 'date'
@@ -148,7 +142,7 @@ export default class Table extends Vue {
   }
 
   get displayPages() {
-    this.lastPage = Math.ceil(this.totalItems / this.maxItemsPerPage)
+    // this.lastPage = Math.ceil(this.totalItems / this.maxItemsPerPage)
     const totalPages = this.lastPage;
     let currentPage: any = this.currentPage;
     if ([1, 2, 3, 4].includes(currentPage)) currentPage = 3;
@@ -160,9 +154,12 @@ export default class Table extends Vue {
     }
   }
 
-  changeItemsInPage(num: number): void {
-    this.currentPage = num
-    this.activeItem = num
+  changePageOffset(pageNumber: number): void {
+    let offset = (pageNumber - 1) * this.maxItemsPerPage
+    console.log('changePageOffset', offset)
+    this.$emit('changePageOffset', offset, this.maxItemsPerPage)
+    this.currentPage = pageNumber
+    this.activeItem = pageNumber
   }
 
   changeToPreviousPage(): void {
@@ -196,7 +193,7 @@ export default class Table extends Vue {
   }
 
   get sortedItems(): any[] {
-    return this.itemsInPage.sort((a: any, b: any) => {
+    return this.items.sort((a: any, b: any) => {
       let modifier = 1;
       if(this.currentSortDir === 'desc') modifier = -1;
       if(a[this.currentSort] < b[this.currentSort]) return -1 * modifier;

@@ -1,33 +1,41 @@
 <template>
-  <div class="flex flex-col flex-wrap md:flex-row md:flex-nowrap justify-center card mx-8 md:mx-16 my-8">
-    <img class="w-24 h-24 self-center" :src="member.image">
+  <div class="flex flex-col flex-wrap md:flex-row md:flex-nowrap justify-around card mx-8 md:mx-16 my-8">
+    <img class="w-36 h-36 self-center rounded-full" :src="member.image">
     <div class="my-8 text-center flex-shrink md:text-left md:my-0 md:mx-8">
       <p class="py-1 md:py-0 text-subtitle">{{ member.name }}</p>
       <p class="py-1 md:py-0">{{ member.role }}</p>
       <p class="py-1 md:py-0">Github: {{ member.github_username }}</p>
       <p class="py-1 md:py-0">Discord: {{ member.discord_username }}</p>
-      <div class="py-1 md:py-0 md:my-4">
-        <p class="break-all">TNBC Address: <span ref="accountNumber">{{ member.account_number }}</span></p>
-        <p @click="copyThat(member.account_number)" class="text-blue-700 hover:underline cursor-pointer">Copy the account number</p>
+      <div
+        @click="copyThat(member.account_number)"
+        class="py-1 md:py-0 md:my-4">
+        <span>TNBC Address: </span>
+        <div class="flex flex-col lg:flex-row flex-nowrap cursor-pointer hover:text-blue-600">
+          <CopyIcon
+            class="text-blue-400 hover:text-blue-600 h-5 w-5 self-center order-2 lg:order-1 lg:self-start mr-1"
+          />
+          <span ref="accountNumber" class="break-all self-center order-1">
+            {{ member.account_number }}
+          </span>
+        </div> 
       </div>
     </div>
-    <div class="w-24 h-24 self-center flex-grow">
-      <qrcode-vue class="float-right" :value="member.account_number" level="H" renderAs="svg" />
-    </div>
+    <QRCode :value="member.account_number" />
   </div>
 </template>
 
 <script lang="ts">
 import { Prop, Component, Vue } from 'nuxt-property-decorator'
-
-import QrcodeVue from 'qrcode.vue'
+import QRCode from '@/components/website/QRCode.vue'
+import CopyIcon from '@/components/icons/CopyIcon.vue'
 
 @Component({
   components: {
-    QrcodeVue
+    QRCode,
+    CopyIcon
   }
 })
-export default class TeamCard extends Vue{
+export default class TeamCard extends Vue {
   @Prop({ required: true }) readonly member!: object
 
   async copyThat(accountNumber: string): Promise<void> {
