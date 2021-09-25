@@ -14,7 +14,7 @@ import QrcodeVue from 'qrcode.vue'
   }
 })
 export default class QRCode extends Vue {
-  @Prop({ required: true }) readonly value!: string
+  @Prop({ required: true }) readonly value!: Object
 
 }
 </script>

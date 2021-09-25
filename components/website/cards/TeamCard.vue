@@ -20,7 +20,7 @@
         </div> 
       </div>
     </div>
-    <QRCode :value="member.account_number" />
+    <QRCode :value="stringifiedAccountNumber" />
   </div>
 </template>
 
@@ -28,6 +28,7 @@
 import { Prop, Component, Vue } from 'nuxt-property-decorator'
 import QRCode from '@/components/website/QRCode.vue'
 import CopyIcon from '@/components/icons/CopyIcon.vue'
+import { Member } from '@/constants/types/Team'
 
 @Component({
   components: {
@@ -36,7 +37,7 @@ import CopyIcon from '@/components/icons/CopyIcon.vue'
   }
 })
 export default class TeamCard extends Vue {
-  @Prop({ required: true }) readonly member!: object
+  @Prop({ required: true }) readonly member!: Member
 
   async copyThat(accountNumber: string): Promise<void> {
     if (accountNumber as string)
@@ -44,6 +45,11 @@ export default class TeamCard extends Vue {
         .then((res) => {
           this.$toast.success('Number copied successfully') 
         })
+  }
+
+  get stringifiedAccountNumber(): Object {
+    let accountNumber ={ "address": this.member.account_number }
+    return JSON.stringify(accountNumber)
   }
 
 }

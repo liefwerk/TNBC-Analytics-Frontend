@@ -4,29 +4,43 @@
     <div class="flex flex-wrap md:flex-row md:flex-nowrap justify-center mb-8">
         <p class="text-subtitle text-pcsecondery text-center w-1/2 mb-8 break-words" >All donations will go to TNBC Analytics to help fund the team to continue to develop the community and create content.</p>
     </div>
+    <div v-if="!donations.length" class="text-xl">
+      <p>Loading...</p>
+    </div>
     <div
-      v-for="(donate, index) in donations.results"
+      v-else
+      v-for="(donation, index) in donations"
       :key="index">
-      <DonateCard :donate="donate" />
+      <DonateCard :donation="donation" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-
 import DonateCard from '@/components/website/cards/DonateCard.vue'
+import { Donation } from '@/constants/types/Donate'
 
 export default Vue.extend({
-
+  data(){
+    return {
+      donations: [] as Array<Donation>
+    }
+  },
   components: {
     DonateCard
   },
 
   async asyncData({ $http }: any) {
-    const donations = await $http.$get('https://tnbanalytics.pythonanywhere.com/donate')
-    
+    const _donations = await $http.$get('https://tnbanalytics.pythonanywhere.com/donate')
+    let donations: Array<Donation> = _donations.results
     return { donations }
+  },
+  methods: {
+    stringifiedAccountNumber(publicKey: string): Object {
+      let accountNumber = { "address": publicKey }
+      return JSON.stringify(accountNumber)
+    }
   }
 
 })
