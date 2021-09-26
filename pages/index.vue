@@ -16,19 +16,19 @@
         </div>
         <div class="grid grid-cols-1 md:flex md:flex-nowrap justify-center text-gray-800 bg-white md:w-full md:mx-auto px-6 py-2 divide-y md:divide-y-0 md:divide-x divide-gray-300">
           <HomeCard 
-            :number="analytics.total_paid_as_bounty"
-            title="Total Distributed Coins"/>
-          <HomeCard 
             :number="analytics.total_paid_to_core_team"
             title="Distributed to Core Team"/>
           <HomeCard 
             :number="analytics.total_paid_to_projects"
             title="Distributed to Projects"/>
+          <HomeCard 
+            :number="analytics.total_paid_as_bounty"
+            title="Disctributed as Bounty Rewards"/>
         </div>
       </div>
       <div class="my-16 mx-4 font-sans font-semibold">
-        <h2 class="text-titlelg text-center">Transactions of the Month</h2>
-        <p class="text-inbtn font-normal text-center my-4 text-gray-500">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor</p>
+        <h2 class="text-titlelg text-center">Transactions Of The Month</h2>
+        <p class="text-inbtn font-normal text-center my-4 text-gray-500">The Graph Represents All The Transations Made By TNBC Government On Last 30 Days.</p>
       </div>
       <div class="mx-4 my-10 md:mx-auto md:w-3/4">
         <HomeGraph :transactions="getFormatedData" />
@@ -97,7 +97,7 @@ export default Vue.extend({
   },
   computed: {
     getTreasuryWithdrawals(): number {
-      return this.treasury.total_transactions
+      return this.treasury.total_tnbc_spent
     },
     getGovernmentPayments(): number {
       return this.government.total_tnbc_spent

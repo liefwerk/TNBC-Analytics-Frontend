@@ -2,7 +2,7 @@
   <div class="mt-12 mb-20 mx-6 md:mx-12">
     <h1 class="text-titlelg text-center mb-4 font-sans font-semibold">Donation</h1>
     <div class="flex flex-wrap md:flex-row md:flex-nowrap justify-center mb-8">
-        <p class="text-subtitle text-pcsecondery text-center w-1/2 mb-8 break-words" >All donations will go to TNBC Analytics to help fund the team to continue to develop the community and create content.</p>
+        <p class="text-subtitle text-pcsecondery text-center w-1/2 mb-8 break-words" >All donations will go to TNBC Analytics Team for continuous development.</p>
     </div>
     <div v-if="!donations.length" class="text-xl">
       <p>Loading...</p>
