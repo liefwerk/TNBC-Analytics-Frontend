@@ -18,7 +18,7 @@
           </li>
         </ul>
         <div class="absolute top-0 right-0 pt-6 pr-6">
-          <button @click="closeMobileMenu" class="ml-1 flex items-center border-2 border-gray-200 justify-center h-7 w-7 rounded-full hover:text-red-700 hover:border-red-700">
+          <button @click="closeMobileMenu" class="ml-1 flex items-center border-2 border-gray-200 justify-center h-7 w-7 rounded-full hover:text-gray-400 hover:border-gray-700">
             X
           </button>
         </div>

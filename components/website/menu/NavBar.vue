@@ -5,10 +5,10 @@
        <img class="self-center" alt="logo" src="~/assets/img/logo.png" />
       </NuxtLink>
       <ul class="self-center flex flex-nowrap order-1 text-gray-800">
-        <li class="ml-4 md:ml-8 self-center text-md uppercase text-gray-700 hidden md:block hover:text-green-700"><NuxtLink to="/">Home</NuxtLink></li>
-        <li class="ml-4 md:ml-8 self-center text-md uppercase text-gray-700 hidden md:block hover:text-green-700"><NuxtLink to="/treasury">Treasury</NuxtLink></li>
-        <li class="ml-4 md:ml-8 self-center text-md uppercase text-gray-700 hidden md:block hover:text-green-700"><NuxtLink to="/government">Government</NuxtLink></li>
-        <li class="ml-4 md:ml-8 self-center text-md uppercase text-gray-700 hidden md:block hover:text-green-700"><NuxtLink to="/faq">FAQ</NuxtLink></li>
+        <li class="ml-4 md:ml-8 self-center text-md uppercase text-gray-700 hidden md:block hover:text-gray-400"><NuxtLink to="/">Home</NuxtLink></li>
+        <li class="ml-4 md:ml-8 self-center text-md uppercase text-gray-700 hidden md:block hover:text-gray-400"><NuxtLink to="/treasury">Treasury</NuxtLink></li>
+        <li class="ml-4 md:ml-8 self-center text-md uppercase text-gray-700 hidden md:block hover:text-gray-400"><NuxtLink to="/government">Government</NuxtLink></li>
+        <li class="ml-4 md:ml-8 self-center text-md uppercase text-gray-700 hidden md:block hover:text-gray-400"><NuxtLink to="/faq">FAQ</NuxtLink></li>
         <li class="self-center cursor-pointer">
           <button @click="showMobileMenu" class="inline-block md:hidden p-1" aria-label="Menu icon">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">

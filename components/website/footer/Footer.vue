@@ -6,25 +6,25 @@
       <ul v-for="(setting, index) in settings.results" :key="index" class="mt-3 text-sm">
         <li class="pb-4 hover:text-gray-300">
           <a
-            :href="'https://github.com/' + setting.github_username">
+            :href="setting.github_username" target="_blank">
             Github
           </a>
         </li>
         <li class="pb-4 hover:text-gray-300">
           <a
-            :href="'https://www.reddit.com/u/' + setting.reddit_username">
+            :href="'https://www.reddit.com/u/' + setting.reddit_username" target="_blank">
             Reddit
           </a>
         </li>
         <li class="pb-4 hover:text-gray-300">
           <a
-            :href="'https://twitter.com/' + setting.twitter_username">
+            :href="'https://twitter.com/' + setting.twitter_username" target="_blank">
             Twitter
           </a>
         </li>
         <li class="pb-4 hover:text-gray-300">
           <a
-            :href="'https://discord.com/invite/' + setting.discord_invitation_code">
+            :href="'https://discord.com/invite/' + setting.discord_invitation_code" target="_blank">
             Discord
           </a>
         </li>
@@ -33,17 +33,17 @@
       <div class="md:mx-10 flex-grow w-full md:w-auto md:flex-grow-0">
       <h5 class="my-4 opacity-60">Useful Links</h5>
       <ul class="mt-3 text-sm">
-        <li class="pb-4 hover:text-gray-300"><a href="#">The New Boston</a></li>
-        <li class="pb-4 hover:text-gray-300"><a href="#">TNBC Wallet</a></li>
-        <li class="pb-4 hover:text-gray-300"><a href="#">TNBC Explorer</a></li>  
+        <li class="pb-4 hover:text-gray-300"><a href="https://thenewboston.com/" target="_blank">The New Boston</a></li>
+        <li class="pb-4 hover:text-gray-300"><a href="https://thenewboston.com/download" target="_blank">TNBC Desktop Wallet</a></li>
+        <li class="pb-4 hover:text-gray-300"><a href="https://play.google.com/store/apps/details?id=com.keysign" target="_blank">TNBC Mobile Wallet</a></li>  
+        <li class="pb-4 hover:text-gray-300"><a href="https://developer.thenewboston.com/whitepaper" target="_blank">TNBC whitepaper</a></li>
       </ul>
     </div>
       <div class="md:mx-10 flex-grow w-full md:w-auto md:flex-grow-0">
       <h5 class="my-4 opacity-60">Resources</h5>
       <ul class="mt-3 text-sm">
-        <li class="pb-4 hover:text-gray-300"><a href="#">Blockchain Api</a></li>
-        <li class="pb-4 hover:text-gray-300"><a href="#">Github Api</a></li>
-        <li class="pb-4 hover:text-gray-300"><a href="#">The New Boston Guide</a></li>
+        <li class="pb-4 hover:text-gray-300"><a href="https://developer.thenewboston.com/api/bank-api/accounts" target="_blank"> TNBC Blockchain APIs</a></li>
+        <li class="pb-4 hover:text-gray-300"><a href="https://tnbanalytics.pythonanywhere.com/swagger/" target="_blank">TNBC Analytics APIs</a></li>
       </ul>
     </div>
     <div class="md:mx-10 flex-grow w-full md:w-auto md:flex-grow-0">
