@@ -16,16 +16,17 @@
             <thead class="bg-white">
               <tr>
                 <th
-                  @click="sort(column.attribute)" 
+                  @click="sort(column.attribute)"
                   v-for="(column, index) in columns" 
                   :key="index"
                   scope="col" 
                   class="px-6 py-3 text-left text-intxt font-medium text-gray-500 uppercase tracking-wider">
                   <div class="flex flex-nowrap cursor-pointer">
-                    <div class="self-center mr-2" v-show="currentSort === column.attribute">
+                    <!-- Commented out Sorting option until we add it to the official list of tasks -->
+                    <!--<div class="self-center mr-2" v-show="currentSort === column.attribute">
                       <SortedAscIcon v-if="currentSortDir === 'asc'" class="h-4 w-4 text-blue-400" />
                       <SortedDescIcon v-else class="h-4 w-4 text-blue-400" />
-                    </div>
+                    </div>-->
                     {{ column.name }}
                   </div>
                 </th>
@@ -38,7 +39,7 @@
                   :key="j" 
                   :data-label="textColumn.attribute"
                   class="w-full lg:w-auto px-6 py-4">
-                  <div class="flex-shrink-0">
+                  <div class="flex-shrink-0 break-all">
                     {{ item[textColumn.attribute] }}
                   </div>
                 </td>
@@ -198,11 +199,11 @@ export default class Table extends Vue {
   }
 
   sort(s: string): void {
-    //if s == current sort, reverse
-    if(s === this.currentSort) {
-      this.currentSortDir = this.currentSortDir==='asc'?'desc':'asc';
-    }
-    this.currentSort = s;
+    console.log('this function has been temporarily disabled.')
+    // if(s === this.currentSort) {
+    //   this.currentSortDir = this.currentSortDir==='asc'?'desc':'asc';
+    // }
+    // this.currentSort = s;
   }
 
   get itemsInPage(): any[] {
