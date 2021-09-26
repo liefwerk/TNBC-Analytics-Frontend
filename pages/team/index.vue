@@ -1,7 +1,11 @@
 <template>
   <div class="mt-12 mb-20 mx-6 md:mx-12">
     <h1 class="text-titlelg text-center mb-20 font-sans font-semibold">Team Members</h1>
+    <div v-if="!team.results.length" class="text-xl">
+      <p>Loading...</p>
+    </div>
     <div
+      v-else
       v-for="(member, index) in team.results"
       :key="index">
       <TeamCard :member="member" />
@@ -23,7 +27,7 @@ export default Vue.extend({
     return {}
   },
   async asyncData({ $http }: any) {
-    const team = await $http.$get('https://tnbanalytics.pythonanywhere.com/team')
+    const team = await $http.$get('https://tnbanalytics.pythonanywhere.com/team?limit=10')
     
     return { team }
   }

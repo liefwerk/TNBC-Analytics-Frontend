@@ -14,12 +14,12 @@
   @apply text-lg text-gray-900 font-medium;
 }
 
-.btnprimary {
-  @apply flex lg:w-2/3 w-full sm:flex-row flex-col px-2 sm:space-x-4 sm:space-y-0 space-y-4 sm:px-0 items-center;
+.btn-wrapper {
+  @apply flex lg:w-2/3 w-full flex-row flex-wrap px-2;
 }
 
-.btnclass {
-  @apply py-2 px-8 rounded-lg text-lg;
+.filter-btn {
+  @apply py-2 px-8 rounded-lg text-lg mb-2 mr-2;
 }
 
 .btn-hover {
@@ -44,4 +44,8 @@
 
 .current {
   @apply text-blue-500 shadow-sm;
+}
+
+.menu-link {
+  @apply text-2xl font-light self-center hover:text-gray-500;
 }

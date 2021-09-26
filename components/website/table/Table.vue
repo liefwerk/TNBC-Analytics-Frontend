@@ -15,12 +15,20 @@
           <table class="min-w-full divide-y divide-gray-200 border-collapse">
             <thead class="bg-white">
               <tr>
-                <th 
+                <th
+                  @click="sort(column.attribute)"
                   v-for="(column, index) in columns" 
-                  :key="index" 
+                  :key="index"
                   scope="col" 
                   class="px-6 py-3 text-left text-intxt font-medium text-gray-500 uppercase tracking-wider">
-                  {{ column.name }}
+                  <div class="flex flex-nowrap cursor-pointer">
+                    <!-- Commented out Sorting option until we add it to the official list of tasks -->
+                    <!--<div class="self-center mr-2" v-show="currentSort === column.attribute">
+                      <SortedAscIcon v-if="currentSortDir === 'asc'" class="h-4 w-4 text-blue-400" />
+                      <SortedDescIcon v-else class="h-4 w-4 text-blue-400" />
+                    </div>-->
+                    {{ column.name }}
+                  </div>
                 </th>
               </tr>
             </thead>
@@ -31,7 +39,7 @@
                   :key="j" 
                   :data-label="textColumn.attribute"
                   class="w-full lg:w-auto px-6 py-4">
-                  <div class="flex-shrink-0">
+                  <div class="flex-shrink-0 break-all">
                     {{ item[textColumn.attribute] }}
                   </div>
                 </td>
@@ -105,12 +113,16 @@
 import { Vue, Component, Prop } from 'nuxt-property-decorator'
 import ChevronLeftIcon from '@/components/icons/ChevronLeftIcon.vue'
 import ChevronRightIcon from '@/components/icons/ChevronRightIcon.vue'
+import SortedAscIcon from '@/components/icons/SortedAscIcon.vue'
+import SortedDescIcon from '@/components/icons/SortedDescIcon.vue'
 import { Options } from '@/constants/types/Table'
 
 @Component({ 
   components: {
     ChevronLeftIcon,
-    ChevronRightIcon
+    ChevronRightIcon,
+    SortedAscIcon,
+    SortedDescIcon
   }
 })
 export default class Table extends Vue {
@@ -184,6 +196,14 @@ export default class Table extends Vue {
         this.currentPage = this.lastPage
         this.activeItem = this.lastPage
       }
+  }
+
+  sort(s: string): void {
+    console.log('this function has been temporarily disabled.')
+    // if(s === this.currentSort) {
+    //   this.currentSortDir = this.currentSortDir==='asc'?'desc':'asc';
+    // }
+    // this.currentSort = s;
   }
 
   get itemsInPage(): any[] {

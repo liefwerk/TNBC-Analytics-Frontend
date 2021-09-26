@@ -5,18 +5,18 @@
         <h1 class="md:text-titlelg text-titlemd font-medium title-font mb-4 text-gray-900 font-sans font-semibold">Frequently Asked Questions</h1>
         <p class="lg:w-2/3 mx-auto leading-relaxed text-subtitle text-pcsecondery">Looking for answers? Questions & answers can be instantly filtered in FAQ page.</p>
       </div>
-      <div class="btnprimary">
+      <div class="btn-wrapper">
         <button 
-          class="btnclass border-2 btn-hover border-btnprimary text-inbtn cursor-pointer transition-500"
-          @click="resetFilter"
-          :class="selectedFilter === '' ? 'selected-button' : ''">
+          class="filter-btn mt-0 border-2 btn-hover border-btnprimary self-center cursor-pointer transition-500"
+          :class="selectedFilter === '' ? 'selected-button' : ''"
+          @click="resetFilter">
           All
         </button>
         <button 
           v-for="(faq, index) in filteredFaqsTypes" 
           :key="index"
           @click="handleFilter(faq)"
-          class="btnclass border-2 btn-hover border-btnprimary text-inbtn cursor-pointer transition-500"
+          class="filter-btn border-2 btn-hover border-btnprimary cursor-pointer transition-500"
           :class="faq.title === selectedFilter ? 'selected-button' : ''">
             {{faq.title}}
         </button>
