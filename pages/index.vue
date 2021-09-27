@@ -78,13 +78,13 @@ export default Vue.extend({
   },
   async asyncData({ $http }: any) {
     const _analytics: any = await $http.$get('https://tnbanalytics.pythonanywhere.com/statistics')
-    let analytics = _analytics.results[0]
+    let analytics = _analytics[0]
 
     const _treasury: any = await $http.$get('https://tnbanalytics.pythonanywhere.com/treasury')
-    let treasury = _treasury.results[0]
+    let treasury = _treasury[0]
 
     const _government: any = await $http.$get('https://tnbanalytics.pythonanywhere.com/government')
-    let government = _government.results[0]
+    let government = _government[0]
 
     const _transactions = await $http.post('https://tnbanalytics.pythonanywhere.com/homepage-chart', { days: '31' })
       .then((res: any) => res.json())
