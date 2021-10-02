@@ -18,7 +18,7 @@
         </div> 
       </div>
     </div>
-    <QRCode v-if="donation.title === 'thenewboston'" :value="stringifiedPublicKey" />
+    <QRCode v-if="donation.title == 'thenewboston'" :value="stringifiedPublicKey" />
     <QRCode v-else :value="donation.public_key" />
   </div>
 </template>

@@ -101,7 +101,7 @@ export default Vue.extend({
   },
   async asyncData({ $http }: any) {
     const _treasury: any = await $http.$get('https://tnbanalytics.pythonanywhere.com/treasury')
-    let treasury = _treasury.results[0]
+    let treasury = _treasury[0]
 
     const _transactions: any = await $http.$get(`https://tnbanalytics.pythonanywhere.com/transaction?limit=5&transaction_type=TREASURY`)
     

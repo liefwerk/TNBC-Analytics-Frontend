@@ -24,7 +24,7 @@
     </div>
     <div v-show="selectedFilter === ''">
       <div 
-        v-for="(item, index) in faqs.results" 
+        v-for="(item, index) in faqs" 
         :key="index"
         @click="toggleFaq(item)"
         class="relative flex flex-col flex-wrap md:flex-row md:flex-nowrap justify-start card mb-4 cursor-pointer">
@@ -87,7 +87,7 @@ export default Vue.extend({
   },
   async asyncData({ $http }: any) {
     const faqs: any = await $http.$get('https://tnbanalytics.pythonanywhere.com/faq')
-    let selectedFaq = faqs.results[0]
+    let selectedFaq = faqs[0]
     return { faqs, selectedFaq } as any
   },
   methods: {
@@ -103,12 +103,12 @@ export default Vue.extend({
   },
   computed:{
     filteredFaqs(): any {
-        let _array: any = this.faqs.results as unknown as FaqItem
+        let _array: any = this.faqs as unknown as FaqItem
         let filteredArray: any = _array.filter((faq: FaqItem) => faq.type.title === this.selectedFilter)
         return filteredArray
     },
     filteredFaqsTypes(): any {
-      let _faqs: any = this.faqs.results as unknown as FaqItem
+      let _faqs: any = this.faqs as unknown as FaqItem
       let _array: any = _faqs.map((faq: FaqItem) => faq.type)
 
       const _filteredArray = _array.filter((type: FaqItem, index: number, self: any) =>

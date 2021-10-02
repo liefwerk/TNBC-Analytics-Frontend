@@ -33,7 +33,7 @@ export default Vue.extend({
 
   async asyncData({ $http }: any) {
     const _donations = await $http.$get('https://tnbanalytics.pythonanywhere.com/donate')
-    let donations: Array<Donation> = _donations.results
+    let donations: Array<Donation> = _donations
     return { donations }
   },
   methods: {
