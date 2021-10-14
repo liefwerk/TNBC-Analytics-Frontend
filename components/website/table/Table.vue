@@ -3,15 +3,17 @@
     <div class="overflow-x-auto">
       <div class="py-2 align-middle inline-block min-w-full">
         <div class="shadow-md overflow-hidden border-b bg-white border-gray-200 sm:rounded-lg">
-        <!-- Commented out Search function until we find a correct way to handle the fetching -->
-        <!-- Might have to use built in watch function -->
-          <!--<div class="px-6 py-4 flex flex-nowrap">
+          <div class="px-6 py-4 flex flex-nowrap">
             <div class="flex flex-col flex-nowrap mr-2">
               <label class="flex-grow">Enter a Github Issue ID</label>
-              <input v-model="githubIssueId" placeholder="42" class="py-2 px-4 border-2 w-full rounded-md" @change.number="$emit('githubUserEntry', $event)" />
+              <input 
+                @input="$emit('githubUserEntry', $event)" 
+                v-model="githubIssueId" 
+                placeholder="42" 
+                class="py-2 px-4 border-2 w-full rounded-md" 
+                />
             </div>
-            <button class="self-end">Search</button>
-          </div>-->
+          </div>
           <table class="min-w-full divide-y divide-gray-200 border-collapse">
             <thead class="bg-white">
               <tr>
@@ -168,8 +170,7 @@ export default class Table extends Vue {
 
   changePageOffset(pageNumber: number): void {
     let offset = (pageNumber - 1) * this.maxItemsPerPage
-    console.log('changePageOffset', offset)
-    this.$emit('changePageOffset', offset, this.maxItemsPerPage)
+    this.$emit('changePageOffset', offset)
     this.currentPage = pageNumber
     this.activeItem = pageNumber
   }
