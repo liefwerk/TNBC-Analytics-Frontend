@@ -95,6 +95,7 @@ export default {
     },
   },
   ssr: false, // Disable Server Side rendering
+  defer: true,
 
   env: {
     baseUrl: 'https://tnbanalytics.pythonanywhere.com/' || 'http://127.0.0.1:3000/',
