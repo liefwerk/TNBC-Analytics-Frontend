@@ -2,7 +2,7 @@
   <div>
     <div class="mt-12 mb-20 mx-6 md:mx-12">
       <div class="mb-16">
-        <h1 class="text-titlelg mb-2 font-sans font-semibold font-light">Treasury Withdrawals</h1>
+        <h1 class="text-titlelg mb-2 font-sans font-semibold">Treasury Withdrawals</h1>
         <span class="text-subtitle text-pcsecondery">TNBC Withdrawed From Treasury Account</span>
       </div>
 

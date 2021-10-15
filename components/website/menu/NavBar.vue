@@ -3,6 +3,7 @@
     <nav class="md:px-8 w-full flex flex-row flex-nowrap justify-between" aria-label="Desktop navigation">
       <NuxtLink to="/" class="flex mr-2 font-bold text-3xl order-2 md:order-first">
        <img class="self-center" alt="logo" src="~/assets/img/logo.png" />
+        <span class="text-xs self-center ml-2 text-gray-400">Dev version</span>
       </NuxtLink>
       <ul class="self-center flex flex-nowrap order-1 text-gray-800">
         <li class="ml-4 md:ml-8 self-center text-md uppercase text-gray-700 hidden md:block hover:text-gray-400"><NuxtLink to="/">Home</NuxtLink></li>
