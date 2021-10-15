@@ -79,6 +79,9 @@ export default Vue.extend({
       treasury: {} as Treasury,
       transactions: [] as Array<Transaction>,
       graphData: [],
+      perPage: 5,
+      pageOffset: 0,
+      transactionType: 'transaction_type=TREASURY',
       columns: [
         {
           name: 'date',
@@ -103,7 +106,7 @@ export default Vue.extend({
     const _treasury: any = await $http.$get('https://tnbanalytics.pythonanywhere.com/treasury')
     let treasury = _treasury[0]
 
-    const _transactions: any = await $http.$get(`https://tnbanalytics.pythonanywhere.com/transaction?limit=5&transaction_type=TREASURY`)
+    const _transactions: any = await $http.$get(`https://tnbanalytics.pythonanywhere.com/transaction?limit=5&offset=0&transaction_type=TREASURY`)
     
     let tableOptions: Options = {
       total: _transactions.count,
@@ -129,7 +132,7 @@ export default Vue.extend({
     async handleGitHubIdSearch(event: any): Promise<void> {
       let value: number = Number(event.target.value as string)
       if (value > 0){
-        const _searchTransactions = await fetch(`https://tnbanalytics.pythonanywhere.com/transaction?github_issue_id=${value}&transaction_type=TREASURY`)
+        const _searchTransactions = await fetch(`https://tnbanalytics.pythonanywhere.com/transaction?github_issue_id=${value}&${this.transactionType}`)
           .then(res => res.json())
           .catch(err => console.log(err))
           
@@ -137,7 +140,7 @@ export default Vue.extend({
         this.tableOptions.previous = _searchTransactions.previous
         this.tableOptions.next = _searchTransactions.next
       } else if (value === 0) {
-        const _searchTransactions = await fetch(`https://tnbanalytics.pythonanywhere.com/transaction?limit=10&transaction_type=TREASURY`)
+        const _searchTransactions = await fetch(`https://tnbanalytics.pythonanywhere.com/transaction?limit=${this.perPage}&offset=${this.pageOffset}&${this.transactionType}`)
           .then(res => res.json())
           .catch(err => console.log(err))
 
@@ -171,19 +174,21 @@ export default Vue.extend({
     },
     async handlePageOffset(offset: number, perPage: number): Promise<void> {
       console.log('received emit from function', offset, perPage)
-      const _transactions = await fetch(`https://tnbanalytics.pythonanywhere.com/transaction?limit=${perPage}&offset=${offset}&transaction_type=TREASURY`)
+      const _transactions = await fetch(`https://tnbanalytics.pythonanywhere.com/transaction?limit=${this.perPage}&offset=${offset}&${this.transactionType}`)
         .then(res => res.json())
         .catch(err => console.log(err))
 
+      this.pageOffset = offset
       this.transactions = _transactions.results
       this.tableOptions.previous = _transactions.previous
       this.tableOptions.next = _transactions.next
     },
     async handleItemsChange(perPage: number): Promise<void> {
-      const _newTransactions = await fetch(`https://tnbanalytics.pythonanywhere.com/transaction?limit=${perPage}&transaction_type=TREASURY`)
+      const _newTransactions = await fetch(`https://tnbanalytics.pythonanywhere.com/transaction?limit=${perPage}&offset=${this.pageOffset}&${this.transactionType}`)
           .then(res => res.json())
           .catch(err => console.log(err))
 
+        this.perPage = perPage
         this.transactions = _newTransactions.results
         this.tableOptions.previous = _newTransactions.previous
         this.tableOptions.next = _newTransactions.next

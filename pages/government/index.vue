@@ -104,7 +104,7 @@ export default Vue.extend({
     const _government: any = await $http.$get('https://tnbanalytics.pythonanywhere.com/government')
     let government = _government[0]
 
-    const _transactions: any = await $http.$get(`https://tnbanalytics.pythonanywhere.com/transaction?limit=5&$transaction_type=GOVERNMENT`)
+    const _transactions: any = await $http.$get(`https://tnbanalytics.pythonanywhere.com/transaction?limit=5&offset=0&$transaction_type=GOVERNMENT`)
     
     let tableOptions: Options = {
       total: _transactions.count,
@@ -175,13 +175,14 @@ export default Vue.extend({
       const _transactions = await fetch(`https://tnbanalytics.pythonanywhere.com/transaction?limit=${this.perPage}&offset=${offset}&${this.transactionType}`)
         .then(res => res.json())
         .catch(err => console.log(err))
+        
       this.pageOffset = offset
       this.transactions = _transactions.results
       this.tableOptions.previous = _transactions.previous
       this.tableOptions.next = _transactions.next
     },
     async handleItemsChange(perPage: number): Promise<void> {
-      const _newTransactions = await fetch(`https://tnbanalytics.pythonanywhere.com/transaction?limit=${perPage}&${this.transactionType}`)
+      const _newTransactions = await fetch(`https://tnbanalytics.pythonanywhere.com/transaction?limit=${perPage}&offset=${this.pageOffset}&${this.transactionType}`)
           .then(res => res.json())
           .catch(err => console.log(err))
 

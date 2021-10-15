@@ -170,6 +170,7 @@ export default class Table extends Vue {
 
   changePageOffset(pageNumber: number): void {
     let offset = (pageNumber - 1) * this.maxItemsPerPage
+    console.log('called changePageOffset')
     this.$emit('changePageOffset', offset)
     this.currentPage = pageNumber
     this.activeItem = pageNumber
@@ -214,17 +215,11 @@ export default class Table extends Vue {
   }
 
   get sortedItems(): any[] {
-    return this.items.sort((a: any, b: any) => {
-      let modifier = 1;
-      if(this.currentSortDir === 'desc') modifier = -1;
-      if(a[this.currentSort] < b[this.currentSort]) return -1 * modifier;
-      if(a[this.currentSort] > b[this.currentSort]) return 1 * modifier;
-      return 0;
-    });
+    return this.items
   }
 
   get textColumns(): any[] {
-    return this.columns.filter((c: any) => c.attribute !== 'image' )
+    return this.columns
   }
 
 }
