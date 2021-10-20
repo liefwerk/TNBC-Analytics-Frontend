@@ -3,7 +3,7 @@
     <div class="overflow-x-auto">
       <div class="py-2 align-middle inline-block min-w-full">
         <div class="shadow-md overflow-hidden border-b bg-white border-gray-200 sm:rounded-lg">
-          <div class="px-6 py-4 flex flex-nowrap">
+          <div v-show="isPageGovernment" class="px-6 py-4 flex flex-nowrap">
             <div class="flex flex-col flex-nowrap mr-2">
               <label class="flex-grow">Enter a Github Issue ID</label>
               <input 
@@ -42,7 +42,17 @@
                   :data-label="textColumn.attribute"
                   class="w-full lg:w-auto px-6 py-4">
                   <div class="flex-shrink-0 break-all">
+                    <a 
+                      v-if="textColumn.attribute === 'githubIssueId'"
+                      :href="`https://github.com/thenewboston-developers/Projects/issues/${item[textColumn.attribute]}`"  
+                      rel="noreferrer noopener"
+                      target="_blank"
+                      class="text-blue-800 underline">
                     {{ item[textColumn.attribute] }}
+                    </a>
+                    <span v-else>
+                      {{ item[textColumn.attribute] }}
+                    </span>
                   </div>
                 </td>
               </tr>
@@ -220,6 +230,14 @@ export default class Table extends Vue {
 
   get textColumns(): any[] {
     return this.columns
+  }
+
+  get isPageGovernment(): boolean {
+    console.log(this.$route.name)
+    if (this.$route.name === 'government')
+      return true
+
+    return false
   }
 
 }

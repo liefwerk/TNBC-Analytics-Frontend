@@ -5,6 +5,7 @@
       :options="getTransactions" 
       :navigator="navigator">
     </highcharts>
+
   </div>
 </template>
 
