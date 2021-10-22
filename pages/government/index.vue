@@ -55,7 +55,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import formatDateMixin from '@/mixins/formatDateMixin'
 import Table from '@/components/website/table/Table.vue';
 import NumberCard from '@/components/website/cards/NumberCard.vue';
 import DefaultCard from '@/components/website/cards/DefaultCard.vue';
@@ -63,6 +62,7 @@ import GovernmentGraph from '@/components/website/graphs/GovernmentGraph.vue';
 import { Options } from '@/constants/types/Table'
 import { Transaction } from '@/constants/types/Graph'
 import { Government } from '@/constants/types/AnalyticsData'
+import moment from 'moment'
 
 export default Vue.extend({
   components: {
@@ -73,6 +73,11 @@ export default Vue.extend({
   },
   data() {
     return {
+      transactionUrl: {
+        protocol: 'http',
+        bank: '54.183.16.194',
+        publicKey: '6e5ea8507e38be7250cde9b8ff1f7c8e39a1460de16b38e6f4d5562ae36b5c1a'
+      },
       tableOptions: {} as Options,
       government: {} as Government,
       transactions: [] as Array<Transaction>,
@@ -104,8 +109,8 @@ export default Vue.extend({
     const _government: any = await $http.$get('https://tnbanalytics.pythonanywhere.com/government')
     let government = _government[0]
 
-    const _transactions: any = await $http.$get(`https://tnbanalytics.pythonanywhere.com/transaction?limit=5&offset=0&$transaction_type=GOVERNMENT`)
-    
+    const _transactions: any = await $http.$get(`http://54.183.16.194/bank_transactions?account_number=6e5ea8507e38be7250cde9b8ff1f7c8e39a1460de16b38e6f4d5562ae36b5c1a`)
+    console.log(_transactions)
     let tableOptions: Options = {
       total: _transactions.count,
       previous: _transactions.previous,
@@ -122,10 +127,6 @@ export default Vue.extend({
     return { government, transactions, tableOptions, graphData } as any
   },
   methods: {
-    formatDate(dateString: any): any {
-      const date = new Date(dateString);
-      return new Intl.DateTimeFormat('default', { dateStyle: 'medium' } as any).format(date);
-    },
     async handleGitHubIdSearch(event: any): Promise<void> {
       let value: number = Number(event.target.value as string)
       if (value > 0){
@@ -171,8 +172,9 @@ export default Vue.extend({
       }
     },
     async handlePageOffset(offset: number): Promise<void> {
-      console.log(offset)
-      const _transactions = await fetch(`https://tnbanalytics.pythonanywhere.com/transaction?limit=${this.perPage}&offset=${offset}&${this.transactionType}`)
+      const url = this.transactionUrl
+      const link = `${url.protocol}://${url.bank}/bank_transactions?limit=${this.perPage}&offset=${offset}&recipient=${url.publicKey}`
+      const _transactions = await fetch(link)
         .then(res => res.json())
         .catch(err => console.log(err))
         
@@ -182,15 +184,19 @@ export default Vue.extend({
       this.tableOptions.next = _transactions.next
     },
     async handleItemsChange(perPage: number): Promise<void> {
-      const _newTransactions = await fetch(`https://tnbanalytics.pythonanywhere.com/transaction?limit=${perPage}&offset=${this.pageOffset}&${this.transactionType}`)
+      const url = this.transactionUrl
+      const link = `${url.protocol}://${url.bank}/bank_transactions?limit=${perPage}&offset=${this.pageOffset}&recipient=${url.publicKey}`
+      console.log(link)
+      const _newTransactions = await fetch(link)
           .then(res => res.json())
           .catch(err => console.log(err))
 
-        this.perPage = perPage
-        this.transactions = _newTransactions.results
-        this.tableOptions.previous = _newTransactions.previous
-        this.tableOptions.next = _newTransactions.next
-        this.tableOptions.count = this.transactions.length
+      console.log(_newTransactions)
+      this.perPage = perPage
+      this.transactions = _newTransactions.results
+      this.tableOptions.previous = _newTransactions.previous
+      this.tableOptions.next = _newTransactions.next
+      this.tableOptions.count = this.transactions.length
     },
     async changeDateRange(value: any): Promise<void> {
       const _graphData: any = await fetch('https://tnbanalytics.pythonanywhere.com/government-chart', { 
@@ -207,19 +213,22 @@ export default Vue.extend({
   },
   computed: {
     getLastTransactionDate(): any {
-      let lastTransactionDate: any = this.formatDate(new Date(this.government.last_transaction_at))
-      return lastTransactionDate
+      const dateFromNow = moment(this.government.last_transaction_at).fromNow()
+      return dateFromNow
     },
     getTransactions(): any {
       let transactions: object[] = []
-      let _transactions: any = this.transactions.map((transaction: any) => {
-        let lastTransactionDate = this.formatDate(new Date(transaction.txs_sent_at))
+      const filteredTransactions = this.transactions.filter((transaction: any) => transaction.block.sender == this.transactionUrl.publicKey)
+      // console.log(filteredTransactions)
+      this.transactions.map((transaction: any) => {
+        const date = transaction.block.created_date
+        const lastTransactionDate = moment(date).format('MMM Do, YYYY')
         transactions.push(
           {
             date: lastTransactionDate,
             amount: transaction.amount,
-            githubIssueId: transaction.github_issue_id,
-            recipientPublicKey: transaction.recipient_account_number
+            githubIssueId: transaction.memo,
+            recipientPublicKey: transaction.recipient
           }
         )
       })

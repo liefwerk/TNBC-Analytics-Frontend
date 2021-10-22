@@ -57,7 +57,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import formatDateMixin from '@/mixins/formatDateMixin';
 import Table from '@/components/website/table/Table.vue';
 import NumberCard from '@/components/website/cards/NumberCard.vue';
 import DefaultCard from '@/components/website/cards/DefaultCard.vue';
@@ -65,6 +64,7 @@ import TreasuryGraph from '@/components/website/graphs/TreasuryGraph.vue';
 import { Options } from '@/constants/types/Table'
 import { Transaction } from '@/constants/types/Graph'
 import { Treasury } from '@/constants/types/AnalyticsData'
+import moment from 'moment'
 
 export default Vue.extend({
   components: {
@@ -75,6 +75,11 @@ export default Vue.extend({
   },
   data() {
     return {
+      transactionUrl: {
+        protocol: 'http',
+        bank: '54.183.16.194',
+        publicKey: '23676c35fce177aef2412e3ab12d22bf521ed423c6f55b8922c336500a1a27c5'
+      },
       tableOptions: {} as Options,
       treasury: {} as Treasury,
       transactions: [] as Array<Transaction>,
@@ -106,7 +111,9 @@ export default Vue.extend({
     const _treasury: any = await $http.$get('https://tnbanalytics.pythonanywhere.com/treasury')
     let treasury = _treasury[0]
 
-    const _transactions: any = await $http.$get(`https://tnbanalytics.pythonanywhere.com/transaction?limit=5&offset=0&transaction_type=TREASURY`)
+    const _transactions: any = await $http.$get(`http://54.183.16.194/bank_transactions?limit=5&recipient=6e5ea8507e38be7250cde9b8ff1f7c8e39a1460de16b38e6f4d5562ae36b5c1a`)
+    
+    let transactions = _transactions.results
     
     let tableOptions: Options = {
       total: _transactions.count,
@@ -115,8 +122,6 @@ export default Vue.extend({
       count: _transactions.results.length
     }
 
-    let transactions = _transactions.results
-
     const _graphData: any = await $http.post('https://tnbanalytics.pythonanywhere.com/treasury-chart', { days: '365' })
       .then((res: any) => res.json())
     let graphData = _graphData.data
@@ -124,11 +129,6 @@ export default Vue.extend({
     return { treasury, transactions, tableOptions, graphData } as any
   },
   methods: {
-    formatDate(dateString: any): any {
-      const date = new Date(dateString);
-      // Then specify how you want your dates to be formatted
-      return new Intl.DateTimeFormat('default', { dateStyle: 'medium' } as any).format(date);
-    },
     async handleGitHubIdSearch(event: any): Promise<void> {
       let value: number = Number(event.target.value as string)
       if (value > 0){
@@ -209,22 +209,25 @@ export default Vue.extend({
   },
   computed: {
     getLastTransactionDate(): any {
-      let lastTransactionDate = this.formatDate(new Date(this.treasury.last_transaction_at))
-      return lastTransactionDate
+      const dateFromNow = moment(this.treasury.last_transaction_at).fromNow()
+      return dateFromNow
     },
     getTransactions(): any {
       let transactions: object[] = []
-      let _transactions: any = this.transactions.map((transaction: any) => {
-        let lastTransactionDate = this.formatDate(new Date(transaction.txs_sent_at))
+      this.transactions.map((transaction: any) => {
+        const date = transaction.block.created_date
+        const lastTransactionDate = moment(date).format('MMM Do, YYYY')
         transactions.push(
           {
             date: lastTransactionDate,
             amount: transaction.amount,
-            githubIssueId: transaction.github_issue_id,
-            recipientPublicKey: transaction.recipient_account_number
+            // githubIssueId: transaction.github_issue_id,
+            githubIssueId: 0,
+            recipientPublicKey: transaction.recipient
           }
         )
       })
+
       return transactions
     },
     getFormatedData(): any {

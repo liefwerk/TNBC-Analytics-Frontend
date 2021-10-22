@@ -12,6 +12,8 @@ import TestGraph from '@/components/website/graphs/TestGraph.vue';
 import { Options } from '@/constants/types/Table'
 import { Transaction } from '@/constants/types/Graph'
 import { Government } from '@/constants/types/AnalyticsData'
+import _ from 'lodash'
+import moment from 'moment'
 
 export default Vue.extend({
   components: {
@@ -43,6 +45,20 @@ export default Vue.extend({
           name: 'recipient public key',
           attribute: 'recipientPublicKey'
         },
+      ],
+      startArray: [
+        {
+          "date": "2021-10-07",
+          "amount": 21
+        },
+        {
+          "date": "2021-10-07",
+          "amount": 477
+        },
+        {
+          "date": "2021-10-06",
+          "amount": 3
+        },
       ]
     }
   },
@@ -70,11 +86,23 @@ export default Vue.extend({
   },
   computed: {
     getFormatedData(): any {
-      console.log(this.graphData)
-      const _data = this.graphData.map((d: any) => (
-        [ Date.parse(d[0] as string), d[1] ]
-      ))
-      return _data;
+      
+      //// Algorithm example
+
+      // for (i=0  ){
+      //       $date = "2021-10-06";
+      //       for(i= ){
+      //           if(){
+      //               amunt = 687;
+      //               amount =amount + amount
+      //                      =21+ 477
+      //           }
+      //       }
+      //   }
+
+      let results = this.startArray
+
+      return results
     }
   }
 

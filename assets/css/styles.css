@@ -43,7 +43,7 @@
 }
 
 .current {
-  @apply text-blue-500 shadow-sm;
+  @apply text-blue-500 shadow-md font-bold;
 }
 
 .menu-link {
