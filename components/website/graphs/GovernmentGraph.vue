@@ -46,11 +46,10 @@ export default class GovernmentGraph extends Vue {
   }
 
   get transactions(): any {
-    let _data = this.data
     let chartOptions: any =
     {
       chart: {
-        type: 'spline'
+        type: 'column'
       },
       tooltip: {
         shared: true,

@@ -34,6 +34,7 @@
       </div>
       <div class="w-full md:w-1/2">
         <GovernmentGraph :data="getFormatedData" @handleFilter="changeDateRange"/>
+        <!-- {{ getFormatedData }} -->
       </div>
     </div>
 
@@ -109,20 +110,29 @@ export default Vue.extend({
     const _government: any = await $http.$get('https://tnbanalytics.pythonanywhere.com/government')
     let government = _government[0]
 
-    const _transactions: any = await $http.$get(`http://54.183.16.194/bank_transactions?account_number=6e5ea8507e38be7250cde9b8ff1f7c8e39a1460de16b38e6f4d5562ae36b5c1a`)
-    console.log(_transactions)
+    const pk = '6e5ea8507e38be7250cde9b8ff1f7c8e39a1460de16b38e6f4d5562ae36b5c1a'
+    const txs: any = 
+    await $http.$get(`http://54.183.16.194/bank_transactions?limit=5&account_number=${pk}`)
+
+    let transactions = txs.results
+
     let tableOptions: Options = {
-      total: _transactions.count,
-      previous: _transactions.previous,
-      next: _transactions.next,
-      count: _transactions.results.length
+      total: txs.count,
+      previous: txs.previous,
+      next: txs.next,
+      count: txs.results.length
     }
 
-    let transactions = _transactions.results
-
-    const _graphData: any = await $http.post('https://tnbanalytics.pythonanywhere.com/government-chart', { days: '31' })
+    const gd: any = await $http.get('http://bank.tnbexplorer.com/stats/api/?format=json&ordering=date')
       .then((res: any) => res.json())
-    let graphData = _graphData.data
+
+    if (gd && gd.length) {
+      gd.reduce((previousTotal: number, record: any) => {
+        record.changeInCoins = record.total - previousTotal;
+        return record.total;
+      }, 0);
+    }
+    let graphData = gd
 
     return { government, transactions, tableOptions, graphData } as any
   },
@@ -130,7 +140,8 @@ export default Vue.extend({
     async handleGitHubIdSearch(event: any): Promise<void> {
       let value: number = Number(event.target.value as string)
       if (value > 0){
-        const _searchTransactions = await fetch(`https://tnbanalytics.pythonanywhere.com/transaction?github_issue_id=${value}&${this.transactionType}`)
+        const _searchTransactions = 
+        await fetch(`https://tnbanalytics.pythonanywhere.com/transaction?github_issue_id=${value}&${this.transactionType}`)
           .then(res => res.json())
           .catch(err => console.log(err))
           
@@ -138,7 +149,8 @@ export default Vue.extend({
         this.tableOptions.previous = _searchTransactions.previous
         this.tableOptions.next = _searchTransactions.next
       } else if (value === 0) {
-        const _searchTransactions = await fetch(`https://tnbanalytics.pythonanywhere.com/transaction?limit=${this.perPage}&offset=${this.pageOffset}&${this.transactionType}`)
+        const _searchTransactions =
+        await fetch(`https://tnbanalytics.pythonanywhere.com/transaction?limit=${this.perPage}&offset=${this.pageOffset}&${this.transactionType}`)
           .then(res => res.json())
           .catch(err => console.log(err))
 
@@ -150,7 +162,7 @@ export default Vue.extend({
     async handlePreviousPage(): Promise<void>  {
       
       if (this.tableOptions.previous){
-        const _previousTransactions = await fetch(`${this.tableOptions.previous}`)
+        const _previousTransactions =await fetch(`${this.tableOptions.previous}`)
           .then(res => res.json())
           .catch(err => console.log(err))
 
@@ -173,7 +185,9 @@ export default Vue.extend({
     },
     async handlePageOffset(offset: number): Promise<void> {
       const url = this.transactionUrl
-      const link = `${url.protocol}://${url.bank}/bank_transactions?limit=${this.perPage}&offset=${offset}&recipient=${url.publicKey}`
+      const link = 
+      `${url.protocol}://${url.bank}/bank_transactions?limit=${this.perPage}&offset=${offset}&account_number=${url.publicKey}`
+
       const _transactions = await fetch(link)
         .then(res => res.json())
         .catch(err => console.log(err))
@@ -185,13 +199,13 @@ export default Vue.extend({
     },
     async handleItemsChange(perPage: number): Promise<void> {
       const url = this.transactionUrl
-      const link = `${url.protocol}://${url.bank}/bank_transactions?limit=${perPage}&offset=${this.pageOffset}&recipient=${url.publicKey}`
-      console.log(link)
+      const link = 
+      `${url.protocol}://${url.bank}/bank_transactions?limit=${perPage}&offset=${this.pageOffset}&account_number=${url.publicKey}`
+
       const _newTransactions = await fetch(link)
           .then(res => res.json())
           .catch(err => console.log(err))
 
-      console.log(_newTransactions)
       this.perPage = perPage
       this.transactions = _newTransactions.results
       this.tableOptions.previous = _newTransactions.previous
@@ -219,15 +233,16 @@ export default Vue.extend({
     getTransactions(): any {
       let transactions: object[] = []
       const filteredTransactions = this.transactions.filter((transaction: any) => transaction.block.sender == this.transactionUrl.publicKey)
-      // console.log(filteredTransactions)
       this.transactions.map((transaction: any) => {
         const date = transaction.block.created_date
         const lastTransactionDate = moment(date).format('MMM Do, YYYY')
+        const regex = /(?<=PROJECT_)[\d+.-]+/
+        let githubId = transaction.memo.match(regex)
         transactions.push(
           {
             date: lastTransactionDate,
             amount: transaction.amount,
-            githubIssueId: transaction.memo,
+            githubIssueId: githubId ? githubId[0] : null,
             recipientPublicKey: transaction.recipient
           }
         )
@@ -235,10 +250,29 @@ export default Vue.extend({
       return transactions
     },
     getFormatedData(): any {
-      const _data = this.graphData.map((d: any) => (
-        [ Date.parse(d[0] as string), d[1] ]
-      ))
-      return _data;
+      
+      let cumulatedData: any = []
+      this.graphData.forEach((data: any) => {
+        // const formatedDate = formatDate(new Date(data.date), dateFormat);
+        if (cumulatedData.length === 0) {
+          cumulatedData.push([
+            data.date,
+            data.changeInCoins,
+          ]);
+        } else {
+          const prev = cumulatedData[cumulatedData.length - 1];
+          if (prev.date !== data.date) {
+            cumulatedData.push([
+              data.date,
+              data.changeInCoins,
+            ]);
+          } else {
+            prev.changeInCoins += data.changeInCoins;
+          }
+        }
+      })
+      console.log(cumulatedData)
+      return cumulatedData;
     }
   }
 
