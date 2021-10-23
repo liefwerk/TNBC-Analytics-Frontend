@@ -137,6 +137,10 @@ export default Vue.extend({
     return { government, transactions, tableOptions, graphData } as any
   },
   methods: {
+    formatDate(dateString: any): any {
+      const date = new Date(dateString);
+      return new Intl.DateTimeFormat('default', { dateStyle: 'medium' } as any).format(date);
+    },
     async handleGitHubIdSearch(event: any): Promise<void> {
       let value: number = Number(event.target.value as string)
       if (value > 0){
@@ -253,17 +257,18 @@ export default Vue.extend({
       
       let cumulatedData: any = []
       this.graphData.forEach((data: any) => {
-        // const formatedDate = formatDate(new Date(data.date), dateFormat);
+        const formatedDate = this.formatDate(new Date(data.date))
         if (cumulatedData.length === 0) {
           cumulatedData.push([
-            data.date,
+            formatedDate,
             data.changeInCoins,
           ]);
         } else {
-          const prev = cumulatedData[cumulatedData.length - 1];
-          if (prev.date !== data.date) {
+          const prev = cumulatedData[cumulatedData.length - 1]
+          if (prev[0] !== formatedDate) {
+
             cumulatedData.push([
-              data.date,
+              formatedDate,
               data.changeInCoins,
             ]);
           } else {
@@ -271,7 +276,6 @@ export default Vue.extend({
           }
         }
       })
-      console.log(cumulatedData)
       return cumulatedData;
     }
   }
