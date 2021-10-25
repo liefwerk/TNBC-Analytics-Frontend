@@ -44,13 +44,20 @@
                   class="w-full lg:w-auto px-6 py-4">
                   <div class="flex-shrink-0 break-all">
                     <a 
-                      v-if="textColumn.attribute === 'githubIssueId'"
+                      v-if="textColumn.attribute === 'githubIssueId' && item[textColumn.attribute]"
                       :href="`https://github.com/thenewboston-developers/Projects/issues/${item[textColumn.attribute]}`"  
                       rel="noreferrer noopener"
                       target="_blank"
-                      class="text-blue-800 underline">
-                      {{ item[textColumn.attribute] }}
+                      class="text-blue-800">
+                      <span class="flex flex-nowrap underline hover:text-gray-600 hover:no-underline">
+                        <GithubLogo class="h-4 w-4 self-center mr-2" />{{ item[textColumn.attribute] }}  
+                      </span>
                     </a>
+                    <span v-else-if="textColumn.attribute === 'paymentFor' && item[textColumn.attribute]">
+                      <span class="bg-blue-900 text-xs py-1 px-3 text-white rounded-full shadow-sm select-none">
+                        {{ item[textColumn.attribute] }}
+                      </span>
+                    </span>
                     <span v-else>
                       {{ item[textColumn.attribute] }}
                     </span>
@@ -127,6 +134,7 @@ import { Vue, Component, Prop } from 'nuxt-property-decorator'
 import ChevronLeftIcon from '@/components/icons/ChevronLeftIcon.vue'
 import ChevronRightIcon from '@/components/icons/ChevronRightIcon.vue'
 import SortedAscIcon from '@/components/icons/SortedAscIcon.vue'
+import GithubLogo from '@/components/icons/GithubLogo.vue'
 import SortedDescIcon from '@/components/icons/SortedDescIcon.vue'
 import { Options } from '@/constants/types/Table'
 
@@ -135,7 +143,8 @@ import { Options } from '@/constants/types/Table'
     ChevronLeftIcon,
     ChevronRightIcon,
     SortedAscIcon,
-    SortedDescIcon
+    SortedDescIcon,
+    GithubLogo
   }
 })
 export default class Table extends Vue {

@@ -1,15 +1,5 @@
 <template>
   <div class="relative h-full card">
-    <div class="flex flex-nowrap">
-      <span class="mr-3 font-semibold">Filter by: </span>
-      <a
-        v-for="(option, index) in sortOptions" :key="index"
-        @click="handleFilterValue(option.value)"
-        :class="option.value === selectedFilterValue ? 'underline' : ''"
-        class="cursor-pointer hover:underline pr-2">
-        {{ option.name }}
-      </a>
-    </div>
     <highcharts
       v-if="data.length"
       :constructor-type="'stockChart'" 
@@ -29,7 +19,7 @@ import { Prop, Component, Vue } from 'nuxt-property-decorator';
 export default class GovernmentGraph extends Vue {
   @Prop({ required: true }) readonly data!: any
   public navigator: object = {
-    enabled: false
+    enabled: true
   }
 
   public selectedFilterValue: number = 31
@@ -51,9 +41,19 @@ export default class GovernmentGraph extends Vue {
       chart: {
         type: 'column'
       },
+      title: {
+        text: 'Payments reveived on the TNB Government wallet',
+        margin: 30
+      },
+      subtitle: {
+          text: 'From November 2nd 2020 until yesterday.'
+      },
       tooltip: {
         shared: true,
         valueSuffix: ' TNBC'
+      },
+      rangeSelector: {
+        enabled: true
       },
       xAxis: {
         categories: []

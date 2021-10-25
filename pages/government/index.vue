@@ -100,6 +100,10 @@ export default Vue.extend({
           attribute: 'githubIssueId'
         },
         {
+          name: 'payment for',
+          attribute: 'paymentFor'
+        },
+        {
           name: 'recipient public key',
           attribute: 'recipientPublicKey'
         },
@@ -236,17 +240,23 @@ export default Vue.extend({
     },
     getTransactions(): any {
       let transactions: object[] = []
+      // also filter amount === 1
       const filteredTransactions = this.transactions.filter((transaction: any) => transaction.block.sender == this.transactionUrl.publicKey)
       this.transactions.map((transaction: any) => {
         const date = transaction.block.created_date
         const lastTransactionDate = moment(date).format('MMM Do, YYYY')
-        const regex = /(?<=PROJECT_)[\d+.-]+/
-        let githubId = transaction.memo.match(regex)
+        const githubRegex = /(?<=PROJECT_)[\d+.-]+/
+        let githubId = transaction.memo.match(githubRegex)
+
+        const paymentForRegex = /(?<=TNB_)[\w].*?(?=_)/
+        let paymentFor = transaction.memo.match(paymentForRegex)
+
         transactions.push(
           {
             date: lastTransactionDate,
             amount: transaction.amount,
             githubIssueId: githubId ? githubId[0] : null,
+            paymentFor: paymentFor ? paymentFor[0] : null,
             recipientPublicKey: transaction.recipient
           }
         )
@@ -257,7 +267,8 @@ export default Vue.extend({
       
       let cumulatedData: any = []
       this.graphData.forEach((data: any) => {
-        const formatedDate = this.formatDate(new Date(data.date))
+        const date = moment.utc(data.date).format()
+        const formatedDate = moment(data.date).valueOf()
         if (cumulatedData.length === 0) {
           cumulatedData.push([
             formatedDate,
@@ -265,7 +276,7 @@ export default Vue.extend({
           ]);
         } else {
           const prev = cumulatedData[cumulatedData.length - 1]
-          if (prev[0] !== formatedDate) {
+          if (prev[0] !== date) {
 
             cumulatedData.push([
               formatedDate,
