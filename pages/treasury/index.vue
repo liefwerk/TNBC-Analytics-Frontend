@@ -97,10 +97,6 @@ export default Vue.extend({
           attribute: 'amount'
         },
         {
-          name: 'github issue id',
-          attribute: 'githubIssueId'
-        },
-        {
           name: 'recipient public key',
           attribute: 'recipientPublicKey'
         },
