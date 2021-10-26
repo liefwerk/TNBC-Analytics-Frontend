@@ -90,7 +90,7 @@
               <select 
                 class="border-2 p-2 rounded-lg w-20" 
                 v-model="maxItemsPerPage"
-                @change="$emit('changedMaxItems', maxItemsPerPage)">
+                @change="$emit('changePerPage', maxItemsPerPage)">
                 <option>5</option>
                 <option>10</option>
                 <option>15</option>
@@ -101,7 +101,7 @@
               <div v-if="notEnoughPages">
                 <nav class="relative z-0 inline-flex" aria-label="Table pagination">
                   <a
-                    v-show="options.previous"
+                    v-show="displayPages[0] !== activeItem"
                     @click="changeToPreviousPage"
                     class="relative inline-flex items-center mr-2 px-2 py-2 transition-500 hover:shadow-sm rounded-full bg-white text-sm font-medium text-gray-500 shadow-md cursor-pointer">
                     <ChevronLeftIcon class="h-4 w-4" />
