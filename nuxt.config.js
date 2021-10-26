@@ -59,6 +59,7 @@ export default {
     // https://go.nuxtjs.dev/pwa
     '@nuxt/http',
     '@nuxtjs/axios',
+    '@nuxtjs/proxy',
     '@nuxtjs/pwa',
     '@nuxtjs/toast',
   ],
@@ -78,11 +79,13 @@ export default {
     },
     '/api2/': {
       target: 'http://54.183.16.194/bank_transactions',
-      pathRewrite: { '^/api2/': '' }
+      pathRewrite: { '^/api2/': '' },
+      changeOrigin: false
     },
     '/bank/': {
       target: 'http://bank.tnbexplorer.com/stats/api/',
-      pathRewrite: { '^/bank/': '' }
+      pathRewrite: { '^/bank/': '' },
+      changeOrigin: false
     },
   },
 
