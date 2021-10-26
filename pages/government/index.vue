@@ -113,13 +113,12 @@ export default Vue.extend({
       ]
     }
   },
-  async asyncData({ $http }: any) {
+  async asyncData({ $http, $axios }: any) {
     const _government: any = await $http.$get('https://tnbanalytics.pythonanywhere.com/government')
     let government = _government[0]
 
     const pk = '6e5ea8507e38be7250cde9b8ff1f7c8e39a1460de16b38e6f4d5562ae36b5c1a'
-    const txs: any = 
-    await $http.$get(`http://54.183.16.194/bank_transactions?limit=5&account_number=${pk}`)
+    const txs: any = await $axios.$get(`/api2/?account_number=${pk}`)
 
     let transactions = txs.results
 
@@ -130,16 +129,16 @@ export default Vue.extend({
       count: txs.results.length
     }
 
-    const gd: any = await $http.get('http://bank.tnbexplorer.com/stats/api/?format=json&ordering=date')
-      .then((res: any) => res.json())
+    const gd: any = await $axios.get('/bank/?format=json&ordering=date')
 
-    if (gd && gd.length) {
-      gd.reduce((previousTotal: number, record: any) => {
+    let graphData = gd.data
+
+    if (graphData && graphData.length) {
+      graphData.reduce((previousTotal: number, record: any) => {
         record.changeInCoins = record.total - previousTotal;
         return record.total;
       }, 0);
     }
-    let graphData = gd
 
     return { government, transactions, tableOptions, graphData } as any
   },
@@ -353,6 +352,7 @@ export default Vue.extend({
     },
     getFormatedData(): any {
       let cumulatedData: any = []
+      console.log(this.graphData)
       this.graphData.forEach((data: any) => {
         const date = moment.utc(data.date).format()
         const formatedDate = moment(data.date).valueOf()

@@ -58,11 +58,16 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/pwa
     '@nuxt/http',
+    '@nuxtjs/axios',
     '@nuxtjs/pwa',
     '@nuxtjs/toast',
   ],
 
   http: {
+    proxy: true, // Can be also an object with default options
+  },
+
+  axios: {
     proxy: true // Can be also an object with default options
   },
 
@@ -70,7 +75,15 @@ export default {
     '/api/': {
       target: 'https://tnbanalytics.pythonanywhere.com/',
       pathRewrite: { '^/api/': '' }
-    }
+    },
+    '/api2/': {
+      target: 'http://54.183.16.194/bank_transactions',
+      pathRewrite: { '^/api2/': '' }
+    },
+    '/bank/': {
+      target: 'http://bank.tnbexplorer.com/stats/api/',
+      pathRewrite: { '^/bank/': '' }
+    },
   },
 
   toast: {
