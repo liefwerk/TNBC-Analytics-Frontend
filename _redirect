@@ -1,0 +1,5 @@
+# Redirects from what the browser requests to what we serve
+# example:
+# /home              /
+/api2/              http://54.183.16.194/bank_transactions	
+/bank/              http://bank.tnbexplorer.com/stats/api/	

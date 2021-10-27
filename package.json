@@ -10,7 +10,8 @@
         "dev": "nuxt",
         "build": "nuxt build",
         "start": "nuxt start",
-        "generate": "nuxt generate"
+        "generate": "nuxt generate",
+        "deploy": "push-dir --dir=dist --branch=gh-pages --cleanup"
     },
     "dependencies": {
         "@nuxt/http": "^0.6.4",
@@ -32,6 +33,7 @@
     },
     "devDependencies": {
         "nuxt-property-decorator": "^2.9.1",
-        "postcss": "^8.3.5"
+        "postcss": "^8.3.5",
+        "push-dir": "^0.4.1"
     }
 }
