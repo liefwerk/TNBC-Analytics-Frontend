@@ -1,0 +1,70 @@
+<template>
+  <div class="relative h-full card">
+    <highcharts
+      v-if="data.length"
+      :constructor-type="'stockChart'" 
+      :options="transactions" 
+      :navigator="navigator">
+    </highcharts>
+    <div v-else class="text-center absolute top-1/2 transform -translate-y-1/2 -right-1/2 -translate-x-1/2 w-full">
+      <p class="text-lg font-semibold text-gray-500">There is no data available from the last {{ selectedFilterValue }} days.</p>
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import { Prop, Component, Vue } from 'nuxt-property-decorator';
+
+@Component
+export default class GovernmentGraph extends Vue {
+  @Prop({ required: true }) readonly data!: any
+  public navigator: object = {
+    enabled: true
+  }
+
+  public selectedFilterValue: number = 31
+
+  public sortOptions: Array<Object> = [
+    { name: 'day', value: "1" },
+    { name: 'week', value: "7" },
+    { name: 'month', value: "31" },
+  ]
+
+  handleFilterValue(value: number): void {
+    this.$emit('handleFilter', value)
+    this.selectedFilterValue = value
+  }
+
+  get transactions(): any {
+    let chartOptions: any =
+    {
+      chart: {
+        type: 'column'
+      },
+      title: {
+        text: 'Payments sent from the TNB Government wallet',
+        margin: 30
+      },
+      subtitle: {
+          text: 'From November 2nd 2020 until yesterday.'
+      },
+      tooltip: {
+        shared: true,
+        valueSuffix: ' TNBC'
+      },
+      xAxis: {
+        categories: []
+      },
+      series: [
+        {
+          name: 'Transactions',
+          data: this.data
+        }
+      ]
+    }
+
+    return chartOptions
+  }
+
+}
+</script>

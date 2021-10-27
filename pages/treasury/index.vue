@@ -7,34 +7,32 @@
       </div>
 
       <div class="flex flex-wrap mx-auto">
-        <div class="w-full md:w-1/2">
-          <div class="flex flex-wrap md:grid md:justify-items-stretch md:grid-cols-2 xl:grid-cols-3 break-words">
+        <div class="w-full mb-8">
+          <div class="flex flex-wrap md:grid md:justify-items-stretch md:grid-cols-2 xl:grid-cols-4 gap-4 break-words">
             <NumberCard 
               title="Balance"
               :number="treasury.balance"
               class="text-red-400" />
             <NumberCard 
               title="N° of Transactions"
-              :number="treasury.total_transactions"
-              class="text-blue-400" />
+              :number="analytics.totalOfTransactions"
+              class="text-blue-400 self-start" />
             <NumberCard 
               title="Last Transaction"
-              :number="treasury.last_transaction_amount"
-              class="text-green-400" />
-          </div>
-          <div>
-            <DefaultCard 
-              title="Public Key"
-              :number="treasury.account_number"
-              class="break-all" />
-
+              :number="analytics.lastTransaction"
+             class="text-green-400 self-start" />
             <DefaultCard 
               title="Last Transaction Date"
-              :number="getLastTransactionDate" />
+              :number="analytics.lastTransactionDate" />
           </div>
+          <DefaultCard 
+            title="Public Key"
+            :number="treasury.account_number"
+            class="break-all" />
         </div>
-        <div class="w-full md:w-1/2">
-          <TreasuryGraph :data="getFormatedData" @handleFilter="changeDateRange" />
+        <div class="flex flex-wrap w-full md:grid md:justify-items-stretch md:grid-cols-2 gap-4">
+          <TreasuryGraph :data="getFormatedData" />
+          <TreasuryGraphCumulated :data="getFormatedCumulatedData" />
         </div>
       </div>
 
@@ -61,6 +59,7 @@ import Table from '@/components/website/table/Table.vue';
 import NumberCard from '@/components/website/cards/NumberCard.vue';
 import DefaultCard from '@/components/website/cards/DefaultCard.vue';
 import TreasuryGraph from '@/components/website/graphs/TreasuryGraph.vue';
+import TreasuryGraphCumulated from '@/components/website/graphs/TreasuryGraphCumulated.vue';
 import { Options } from '@/constants/types/Table'
 import { Transaction } from '@/constants/types/Graph'
 import { Treasury } from '@/constants/types/AnalyticsData'
@@ -71,7 +70,8 @@ export default Vue.extend({
     Table,
     NumberCard,
     DefaultCard,
-    TreasuryGraph
+    TreasuryGraph,
+    TreasuryGraphCumulated
   },
   data() {
     return {
@@ -83,6 +83,7 @@ export default Vue.extend({
       tableOptions: {} as Options,
       treasury: {} as Treasury,
       transactions: [] as Array<Transaction>,
+      analytics: {},
       graphData: [],
       perPage: 5,
       pageOffset: 0,
@@ -107,7 +108,9 @@ export default Vue.extend({
     const _treasury: any = await $http.$get('https://tnbanalytics.pythonanywhere.com/treasury')
     let treasury = _treasury[0]
 
-    const _transactions: any = await $http.$get(`http://54.183.16.194/bank_transactions?limit=5&recipient=6e5ea8507e38be7250cde9b8ff1f7c8e39a1460de16b38e6f4d5562ae36b5c1a`)
+    const pk = '23676c35fce177aef2412e3ab12d22bf521ed423c6f55b8922c336500a1a27c5'
+    const _transactions: any =
+    await $http.$get(`http://54.183.16.194/bank_transactions?limit=5&account_number=${pk}&block__sender=${pk}&fee=NONE`)
     
     let transactions = _transactions.results
     
@@ -118,11 +121,18 @@ export default Vue.extend({
       count: _transactions.results.length
     }
 
-    const _graphData: any = await $http.post('https://tnbanalytics.pythonanywhere.com/treasury-chart', { days: '365' })
-      .then((res: any) => res.json())
-    let graphData = _graphData.data
+    // const _graphData: any = await $http.get(`http://54.183.16.194/bank_transactions?limit=5&account_number=${pk}&block__sender=${pk}&fee=NONE`)
 
-    return { treasury, transactions, tableOptions, graphData } as any
+    let graphData = _transactions.results
+
+    let analytics = {
+        balance:  9900,
+        lastTransaction:  transactions[0].amount,
+        lastTransactionDate:  moment(transactions[0].block.created_date).fromNow(),
+        totalOfTransactions:  tableOptions.total,
+    }
+
+    return { treasury, transactions, tableOptions, graphData, analytics } as any
   },
   methods: {
     async handleGitHubIdSearch(event: any): Promise<void> {
@@ -201,6 +211,23 @@ export default Vue.extend({
       .then((res: any) => res.json())
       .catch(err => console.log(err))
       this.graphData = _graphData.data
+    },
+    formatTransactions(unformatedTransactions): any {
+      let formatedTransactions: any = []
+      unformatedTransactions
+        .map((transaction: any) => {
+          const date = transaction.block.created_date
+          const lastTransactionDate = moment(date).format('MMM Do, YYYY')
+        
+          formatedTransactions.push(
+            {
+              date: lastTransactionDate,
+              amount: transaction.amount,
+              recipientPublicKey: transaction.recipient
+            }
+          )
+        })
+      return formatedTransactions
     }
   },
   computed: {
@@ -209,28 +236,34 @@ export default Vue.extend({
       return dateFromNow
     },
     getTransactions(): any {
-      let transactions: object[] = []
-      this.transactions.map((transaction: any) => {
-        const date = transaction.block.created_date
-        const lastTransactionDate = moment(date).format('MMM Do, YYYY')
-        transactions.push(
-          {
-            date: lastTransactionDate,
-            amount: transaction.amount,
-            // githubIssueId: transaction.github_issue_id,
-            githubIssueId: 0,
-            recipientPublicKey: transaction.recipient
-          }
-        )
-      })
-
-      return transactions
+      return this.formatTransactions(this.transactions)
     },
     getFormatedData(): any {
-      const _data = this.graphData.map((d: any) => (
-        [ Date.parse(d[0] as string), d[1] ]
-      ))
-      return _data;
+      let _: any = []
+      this.graphData.map(function (d: any){
+        const formatedDate = moment(d.block.created_date).valueOf()
+        _.push([formatedDate, d.amount])
+      })
+      return _;
+    },
+    getFormatedCumulatedData(): any {
+      let _temp: any = []
+      let dates: any = []
+      let amounts: any = []
+      let cumulatedAmounts: any = []
+      
+      this.graphData.map(function (d: any){
+        const formatedDate = moment(d.block.created_date).valueOf()
+        _temp.push(formatedDate)
+        dates = [].concat(_temp as any).reverse()
+        amounts.push(d.amount)
+        amounts.reverse()
+      })
+      amounts.reduce(function (prev: number, curr: number) {
+        cumulatedAmounts.push(prev + curr)
+        return prev + curr
+      }, 0)
+      return dates.map((date, index) => [date, cumulatedAmounts[index]])
     }
   }
 

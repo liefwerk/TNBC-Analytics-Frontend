@@ -28,10 +28,13 @@ export default class TreasuryGraph extends Vue {
     let chartOptions: any =
       {
         chart: {
-          type: 'column'
+          type: 'spline'
+        },
+        rangeSelector: {
+          enabled: true
         },
         title: {
-          text: 'Payments sent',
+          text: 'Total of payments sent',
           margin: 30
         },
         subtitle: {

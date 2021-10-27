@@ -6,34 +6,33 @@
     </div>
 
     <div class="flex flex-wrap mx-auto">
-      <div class="w-full md:w-1/2">
-        <div class="flex flex-wrap md:grid md:justify-items-stretch md:grid-cols-2 xl:grid-cols-3 break-words">
+      <div class="w-full mb-8">
+        <div class="flex flex-wrap md:grid md:justify-items-stretch md:grid-cols-2 xl:grid-cols-4 gap-4 break-words">
           <NumberCard 
             title="Balance"
             :number="government.balance"
-            class="text-red-400" />
+            class="text-red-400 self-start" />
           <NumberCard 
             title="N° of Transactions"
-            :number="government.total_transactions"
-            class="text-blue-400" />
+            :number="analytics.totalOfTransactions"
+            class="text-blue-400 self-start" />
           <NumberCard 
             title="Last Transaction"
-            :number="government.last_transaction_amount"
-            class="text-green-400" />
-        </div>
-        <div>
-          <DefaultCard 
-            title="Public Key"
-            :number="government.account_number"
-            class="break-all" />
-
+            :number="analytics.lastTransaction"
+            class="text-green-400 self-start" />
           <DefaultCard 
             title="Last Transaction Date"
-            :number="getLastTransactionDate" />
+            :number="analytics.lastTransactionDate"
+            class="break-all w-1/2 self-start" />
         </div>
+        <DefaultCard 
+          title="Public Key"
+          :number="government.account_number"
+          class="break-all w-1/2 self-start" />
       </div>
-      <div class="w-full md:w-1/2">
-        <GovernmentGraph :data="getFormatedData" @handleFilter="changeDateRange"/>
+      <div class="flex flex-wrap w-full md:grid md:justify-items-stretch md:grid-cols-2 gap-4">
+        <GovernmentGraphIn :data="getFormatedData" @handleFilter="changeDateRange"/>
+        <GovernmentGraphOut :data="getFormatedData" @handleFilter="changeDateRange"/>
       </div>
     </div>
 
@@ -45,7 +44,6 @@
         @nextPage="handleNextPage"
         @changePageOffset="handlePageOffset"
         @changePerPage="handlePerPageChange"
-        @githubUserEntry="handleGitHubIdSearch"
         :options="tableOptions"
         :columns="columns"
         :items="getFormatedTransactions" />
@@ -58,9 +56,9 @@ import Vue from 'vue';
 import Table from '@/components/website/table/Table.vue';
 import NumberCard from '@/components/website/cards/NumberCard.vue';
 import DefaultCard from '@/components/website/cards/DefaultCard.vue';
-import GovernmentGraph from '@/components/website/graphs/GovernmentGraph.vue';
+import GovernmentGraphIn from '~/components/website/graphs/GovernmentGraphIn.vue';
+import GovernmentGraphOut from '~/components/website/graphs/GovernmentGraphOut.vue';
 import { Options } from '@/constants/types/Table'
-import { Transaction } from '@/constants/types/Graph'
 import { Government } from '@/constants/types/AnalyticsData'
 import moment from 'moment'
 
@@ -69,7 +67,8 @@ export default Vue.extend({
     Table,
     NumberCard,
     DefaultCard,
-    GovernmentGraph
+    GovernmentGraphIn,
+    GovernmentGraphOut
   },
   data() {
     return {
@@ -80,16 +79,12 @@ export default Vue.extend({
       },
       tableOptions: {} as Options,
       government: {} as Government,
-      transactions: [] as Array<Transaction>,
-      filteredTransactions: [],
+      transactions: [] as Array<any>,
+      analytics: {},
       graphData: [],
       perPage: 5,
       pageOffset: 0,
       columns: [
-        {
-          name: 'id',
-          attribute: 'id'
-        },
         {
           name: 'date',
           attribute: 'date'
@@ -118,7 +113,7 @@ export default Vue.extend({
     let government = _government[0]
 
     const pk = '6e5ea8507e38be7250cde9b8ff1f7c8e39a1460de16b38e6f4d5562ae36b5c1a'
-    const txs: any = await $axios.$get(`http://54.183.16.194/bank_transactions?account_number=${pk}`)
+    const txs: any = await $axios.$get(`http://54.183.16.194/bank_transactions?limit=5&account_number=${pk}&block__sender=${pk}&fee=NONE`)
 
     let transactions = txs.results
 
@@ -132,7 +127,7 @@ export default Vue.extend({
     const gd: any = await $axios.get('http://bank.tnbexplorer.com/stats/api?format=json&ordering=date')
 
     let graphData = gd.data
-
+    console.log(graphData)
     if (graphData && graphData.length) {
       graphData.reduce((previousTotal: number, record: any) => {
         record.changeInCoins = record.total - previousTotal;
@@ -140,120 +135,19 @@ export default Vue.extend({
       }, 0);
     }
 
-    return { government, transactions, tableOptions, graphData } as any
-  },
-  mounted() {
-    let filteredTransactions = this.transactions.filter((transaction: any) => transaction.amount !== 1)
-    this.fetchNextTransactionsUntilComplete(filteredTransactions)
+    let analytics = {
+        balance:  9900,
+        lastTransaction:  transactions[0].amount,
+        lastTransactionDate:  moment(transactions[0].block.created_date).fromNow(),
+        totalOfTransactions:  tableOptions.total,
+    }
+
+    return { government, transactions, tableOptions, graphData, analytics } as any
   },
   methods: {
-    async fetchPreviousTransactionsUntilComplete(transactions): Promise<any> {
-      const perPage = this.perPage
-      let transactionsLength = transactions.length
-      
-      while (transactionsLength < perPage) {
-        
-        let page: any = this.tableOptions.previous
-        if (page === null || page === 'null') {
-          break;
-        } else {
-          await fetch(page)
-            .then((res: any) => res.json())
-            .then((res) => {
-              this.tableOptions.next = res.next
-              this.tableOptions.previous = res.previous
-              this.tableOptions.count = res.results.length
-
-              let filteredTransactions = res.results.filter((transaction: any) => transaction.amount !== 1)
-
-              filteredTransactions.map((txs) => transactions.push(txs))
-
-              transactionsLength = transactions.length
-            })
-            .catch(err => {
-              console.log(err)
-            })
-        } 
-      }
-      this.filteredTransactions = (transactionsLength > this.perPage) ? transactions.slice(0, this.perPage) : transactions
-      return this.filteredTransactions
-    },
-    async fetchNextTransactionsUntilComplete(transactions): Promise<any> {
-      const perPage = this.perPage
-      let transactionsLength = transactions.length
-      const url = this.transactionUrl
-      const link = 
-        `${url.protocol}://${url.bank}/bank_transactions?limit=${this.perPage}&account_number=${url.publicKey}`
-      
-      let stop = 0
-      let arrayofIds: any = []
-      while (transactionsLength < perPage) {
-        
-        let page: any = this.tableOptions.next
-        let toFetch: any = (this.tableOptions.count == this.perPage) ? page : link
-        await fetch(toFetch)
-          .then((res: any) => res.json())
-          .then((res) => {
-            this.tableOptions.next = res.next
-            this.tableOptions.previous = res.previous
-            this.tableOptions.count = res.results.length
-            let filteredTransactions = res.results.filter((transaction: any) => transaction.amount !== 1)
-            transactions.forEach((transaction) => arrayofIds.push(transaction.id))
-
-            filteredTransactions.map((txs: any) => {
-              if (!arrayofIds.includes(txs.id)) {
-                arrayofIds.push(txs.id)
-                transactions.push(txs)
-              } else {
-                stop++
-              }
-            })
-            transactionsLength = transactions.length
-          })
-          .catch(err => console.log(err))
-
-          if (stop > 10) {
-            break;
-          }
-          
-      }
-
-      this.filteredTransactions = (transactionsLength > this.perPage) ? transactions.slice(0, this.perPage) : transactions
-      return this.filteredTransactions
-    },
     formatDate(dateString: any): any {
       const date = new Date(dateString);
       return new Intl.DateTimeFormat('default', { dateStyle: 'medium' } as any).format(date);
-    },
-    async handleGitHubIdSearch(event: any): Promise<void> {
-      // let value: number = Number(event.target.value as string)
-      // if (value > 0){
-      //   const url = this.transactionUrl
-      //   const link = 
-      //   `${url.protocol}://${url.bank}/bank_transactions?limit=${this.perPage}&account_number=${url.publicKey}`
-
-      //   // const _searchTransactions = 
-      //   await fetch(link)
-      //     .then(res => res.json())
-      //     .catch(err => console.log(err))
-          
-      //   this.transactions = _searchTransactions.results
-      //   this.tableOptions.previous = _searchTransactions.previous
-      //   this.tableOptions.next = _searchTransactions.next
-
-      // } else if (value === 0) {
-      //   const url = this.transactionUrl
-      //   const link = 
-      //   `${url.protocol}://${url.bank}/bank_transactions?limit=${this.perPage}&${this.pageOffset}&account_number=${url.publicKey}`
-      //   const _searchTransactions =
-      //   await fetch(link)
-      //     .then(res => res.json())
-      //     .catch(err => console.log(err))
-
-      //   this.transactions = _searchTransactions.results
-      //   this.tableOptions.previous = _searchTransactions.previous
-      //   this.tableOptions.next = _searchTransactions.next
-      // }
     },
     async handlePreviousPage(): Promise<void>  {
       if (this.tableOptions.previous){
@@ -261,8 +155,9 @@ export default Vue.extend({
           .then(res => res.json())
           .catch(err => console.log(err))
 
-        this.transactions = _previousTransactions.results.filter((transaction: any) => transaction.amount !== 1)
-        this.fetchPreviousTransactionsUntilComplete(this.transactions)
+        this.transactions = _previousTransactions.results
+        this.tableOptions.previous = _previousTransactions.previous
+        this.tableOptions.next = _previousTransactions.next
       }
 
     },
@@ -272,14 +167,16 @@ export default Vue.extend({
           .then(res => res.json())
           .catch(err => console.log(err))
 
-        this.transactions = _nextTransactions.results.filter((transaction: any) => transaction.amount !== 1)
-        this.fetchNextTransactionsUntilComplete(this.transactions)
+        this.transactions = _nextTransactions.results
+        this.tableOptions.previous = _nextTransactions.previous
+        this.tableOptions.next = _nextTransactions.next
+        // this.tableOptions.count = _previousTransactions.results.length
       }
     },
     async handlePageOffset(offset: number): Promise<void> {
       const url = this.transactionUrl
       const link = 
-      `${url.protocol}://${url.bank}/bank_transactions?limit=${this.perPage}&offset=${offset}&account_number=${url.publicKey}`
+      `${url.protocol}://${url.bank}/bank_transactions?limit=${this.perPage}&offset=${offset}&account_number=${url.publicKey}&fee=NONE`
 
       const _transactions = await fetch(link)
         .then(res => res.json())
@@ -294,15 +191,17 @@ export default Vue.extend({
     async handlePerPageChange(perPage: number): Promise<void> {
       const url = this.transactionUrl
       const link = 
-      `${url.protocol}://${url.bank}/bank_transactions?limit=${perPage}&offset=${this.pageOffset}&account_number=${url.publicKey}`
+      `${url.protocol}://${url.bank}/bank_transactions?limit=${perPage}&offset=${this.pageOffset}&account_number=${url.publicKey}&fee=NONE`
 
       const _newTransactions = await fetch(link)
           .then(res => res.json())
           .catch(err => console.log(err))
 
       this.perPage = perPage
-      this.transactions = _newTransactions.results.filter((transaction: any) => transaction.amount !== 1)
-      this.fetchNextTransactionsUntilComplete(this.transactions).then((res) => this.formatTransactions(res))
+      this.transactions = _newTransactions.results
+      this.tableOptions.previous = _newTransactions.previous
+      this.tableOptions.next = _newTransactions.next
+      this.tableOptions.count = _newTransactions.results.length
       
     },
     async changeDateRange(value: any): Promise<void> {
@@ -319,7 +218,6 @@ export default Vue.extend({
     },
     formatTransactions(unformatedTransactions): any {
       let formatedTransactions: any = []
-      console.log(unformatedTransactions)
       unformatedTransactions.map((transaction: any) => {
           const date = transaction.block.created_date
           const lastTransactionDate = moment(date).format('MMM Do, YYYY')
@@ -330,7 +228,6 @@ export default Vue.extend({
           let paymentFor = transaction.memo.match(paymentForRegex)
           formatedTransactions.push(
             {
-              id: transaction.id,
               date: lastTransactionDate,
               amount: transaction.amount,
               githubIssueId: githubId ? githubId[0] : null,
@@ -343,16 +240,11 @@ export default Vue.extend({
     }
   },
   computed: {
-    getLastTransactionDate(): any {
-      const dateFromNow = moment(this.government.last_transaction_at).fromNow()
-      return dateFromNow
-    },
     getFormatedTransactions(): any {
-      return this.formatTransactions(this.filteredTransactions)
+      return this.formatTransactions(this.transactions)
     },
     getFormatedData(): any {
       let cumulatedData: any = []
-      console.log(this.graphData)
       this.graphData.forEach((data: any) => {
         const date = moment.utc(data.date).format()
         const formatedDate = moment(data.date).valueOf()
