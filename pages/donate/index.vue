@@ -19,7 +19,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import DonateCard from '@/components/website/cards/DonateCard.vue'
-import { Donation } from '@/constants/types/Donate'
+import { Donation } from '@/types/Donate'
 
 export default Vue.extend({
   data(){

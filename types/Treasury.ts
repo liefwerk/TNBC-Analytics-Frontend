@@ -3,6 +3,7 @@ export interface Analytics {
 	lastTransaction: number,
 	lastTransactionDate: string,
 	totalOfTransactions: number,
+	lastTransactionKey: string
 }
 
 export interface FormatedTransaction {

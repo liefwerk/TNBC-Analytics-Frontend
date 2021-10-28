@@ -28,7 +28,7 @@
 import { Prop, Component, Vue } from 'nuxt-property-decorator'
 import QRCode from '@/components/website/QRCode.vue'
 import CopyIcon from '@/components/icons/CopyIcon.vue'
-import { Member } from '@/constants/types/Team'
+import { Member } from '@/types/Team'
 
 @Component({
   components: {

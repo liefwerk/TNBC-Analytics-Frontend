@@ -25,14 +25,16 @@
               title="Last Transaction Date"
               :number="analytics.lastTransactionDate" />
           </div>
-          <DefaultCard 
-            title="Public Key"
-            :number="treasury.account_number"
-            class="break-all" />
-          <DefaultCard 
-            title="Last transaction's public key"
-            :number="treasury.account_number"
-            class="break-all" />
+          <div class="flex flex-wrap w-full md:grid md:justify-items-stretch md:grid-cols-2 gap-4">
+            <DefaultCard 
+              title="Public Key"
+              :number="treasury.account_number"
+              class="break-all" />
+            <DefaultCard 
+              title="Last Transaction's Recipient's Key"
+              :number="analytics.lastTransactionKey"
+              class="break-all" />
+          </div>
         </div>
         <div class="flex flex-wrap w-full md:grid md:justify-items-stretch md:grid-cols-2 gap-4">
           <TreasuryGraph :data="getFormatedData" />
@@ -132,7 +134,8 @@ export default Vue.extend({
         balance: 9900,
         lastTransaction: transactions[0].amount,
         lastTransactionDate: moment(transactions[0].block.created_date).fromNow(),
-        totalOfTransactions: tableOptions.total
+        totalOfTransactions: tableOptions.total,
+        lastTransactionKey: transactions[0].recipient
     }
 
     return { treasury, transactions, tableOptions, graphData, analytics } as any

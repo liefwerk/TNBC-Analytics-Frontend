@@ -25,10 +25,16 @@
             :number="analytics.lastTransactionDate"
             class="break-all w-1/2 self-start" />
         </div>
-        <DefaultCard 
-          title="Public Key"
-          :number="government.account_number"
-          class="break-all w-1/2 self-start" />
+        <div class="flex flex-wrap w-full md:grid md:justify-items-stretch md:grid-cols-2 gap-4">
+          <DefaultCard 
+            title="Public Key"
+            :number="government.account_number"
+            class="break-all w-1/2 self-start" />
+          <DefaultCard 
+            title="Last Transaction's Recipient's Key"
+            :number="analytics.lastTransactionKey"
+            class="break-all" />
+        </div>
       </div>
       <div class="flex flex-wrap w-full md:grid md:justify-items-stretch md:grid-cols-2 gap-4">
         <GovernmentGraphIn :data="getFormatedInCumulatedData" @handleFilter="changeDateRange"/>
@@ -58,8 +64,8 @@ import NumberCard from '@/components/website/cards/NumberCard.vue';
 import DefaultCard from '@/components/website/cards/DefaultCard.vue';
 import GovernmentGraphIn from '~/components/website/graphs/GovernmentGraphIn.vue';
 import GovernmentGraphOut from '~/components/website/graphs/GovernmentGraphOut.vue';
-import { Options } from '@/constants/types/Table'
-import { Government } from '@/constants/types/AnalyticsData'
+import { Options } from '@/types/Table'
+import { Government } from '@/types/TnbAnalyticsApi'
 import moment from 'moment'
 
 export default Vue.extend({
@@ -144,6 +150,7 @@ export default Vue.extend({
         lastTransaction:  transactions[0].amount,
         lastTransactionDate:  moment(transactions[0].block.created_date).fromNow(),
         totalOfTransactions:  nTxs.data.count,
+        lastTransactionKey: transactions[0].recipient
     }
 
     return { government, transactions, tableOptions, graphTxsIn, analytics, graphTxsCumulated } as any

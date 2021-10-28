@@ -65,7 +65,7 @@
 import Vue from 'vue'
 import FaqCard from '@/components/website/cards/FaqCard.vue'
 import Spinner from '@/components/website/spinner/Spinner.vue'
-import { FaqItem, FaqItemType } from '@/constants/types/Faq'
+import { FaqItem, FaqItemType } from '@/types/Faq'
   
 export default Vue.extend({
 

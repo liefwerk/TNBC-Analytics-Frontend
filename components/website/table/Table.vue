@@ -138,7 +138,7 @@ import ChevronRightIcon from '@/components/icons/ChevronRightIcon.vue'
 import SortedAscIcon from '@/components/icons/SortedAscIcon.vue'
 import GithubLogo from '@/components/icons/GithubLogo.vue'
 import SortedDescIcon from '@/components/icons/SortedDescIcon.vue'
-import { Options } from '@/constants/types/Table'
+import { Options } from '@/types/Table'
 
 @Component({ 
   components: {
