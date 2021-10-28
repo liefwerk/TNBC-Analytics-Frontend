@@ -1,6 +1,6 @@
 <template>
   <div class="mt-12 mb-20 mx-6 md:mx-12">
-    <h1 class="text-titlelg text-center mb-20 font-sans font-semibold">Team Members</h1>
+    <h1 class="text-titlelg text-center mb-20 font-sans font-semibold">Contributors of TNBC Analytics</h1>
     <div v-if="!team.length" class="text-xl">
       <p>Loading...</p>
     </div>

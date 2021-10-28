@@ -35,14 +35,17 @@ export default class GovernmentGraph extends Vue {
     let chartOptions: any =
     {
       chart: {
-        type: 'column'
+        type: 'column',
+        alignTicks: false
       },
       title: {
         text: 'Payments sent from the TNB Government wallet',
-        margin: 30
+        margin: 30,
+        align: 'left'
       },
       subtitle: {
-          text: 'From November 2nd 2020 until yesterday.'
+        text: 'From November 2nd 2020 until yesterday.',
+        align: 'left'
       },
       tooltip: {
         shared: true,
@@ -51,10 +54,23 @@ export default class GovernmentGraph extends Vue {
       xAxis: {
         categories: []
       },
+      rangeSelector: {
+        selected: 1
+      },
       series: [
         {
           name: 'Transactions',
-          data: this.data
+          data: this.data,
+          dataGrouping: {
+           approximation: 'sum',
+            enabled: true,
+            forced: true,
+            smoothed:true,
+            units: [[
+              'month', // unit name
+              [1] // allowed multiples
+            ]]
+          },
         }
       ]
     }

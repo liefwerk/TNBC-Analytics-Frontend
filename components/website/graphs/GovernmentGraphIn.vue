@@ -35,14 +35,16 @@ export default class GovernmentGraph extends Vue {
     let chartOptions: any =
     {
       chart: {
-        type: 'column'
+        type: 'spline'
       },
       title: {
         text: 'Payments reveived on the TNB Government wallet',
-        margin: 30
+        margin: 30,
+        align: 'left'
       },
       subtitle: {
-          text: 'From November 2nd 2020 until yesterday.'
+        text: 'From the TNB Treasury Account',
+        align: 'left'
       },
       tooltip: {
         shared: true,

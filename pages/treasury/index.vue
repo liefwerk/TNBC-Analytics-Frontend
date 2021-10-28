@@ -29,6 +29,10 @@
             title="Public Key"
             :number="treasury.account_number"
             class="break-all" />
+          <DefaultCard 
+            title="Last transaction's public key"
+            :number="treasury.account_number"
+            class="break-all" />
         </div>
         <div class="flex flex-wrap w-full md:grid md:justify-items-stretch md:grid-cols-2 gap-4">
           <TreasuryGraph :data="getFormatedData" />
@@ -60,9 +64,10 @@ import NumberCard from '@/components/website/cards/NumberCard.vue';
 import DefaultCard from '@/components/website/cards/DefaultCard.vue';
 import TreasuryGraph from '@/components/website/graphs/TreasuryGraph.vue';
 import TreasuryGraphCumulated from '@/components/website/graphs/TreasuryGraphCumulated.vue';
-import { Options } from '@/constants/types/Table'
-import { Transaction } from '@/constants/types/Graph'
-import { Treasury } from '@/constants/types/AnalyticsData'
+import { Treasury, Pagination } from '~/types/TnbAnalyticsApi'
+import { Transaction } from '@/types/TnbBankApi'
+import { Analytics, FormatedTransaction } from '@/types/Treasury'
+import { Options } from '@/types/Table'
 import moment from 'moment'
 
 export default Vue.extend({
@@ -83,10 +88,10 @@ export default Vue.extend({
       tableOptions: {} as Options,
       treasury: {} as Treasury,
       transactions: [] as Array<Transaction>,
-      analytics: {},
-      graphData: [],
-      perPage: 5,
-      pageOffset: 0,
+      analytics: {} as Analytics,
+      graphData: [] as Array<Transaction>,
+      perPage: 5 as number,
+      pageOffset: 0 as number,
       transactionType: 'transaction_type=TREASURY',
       columns: [
         {
@@ -105,14 +110,14 @@ export default Vue.extend({
     }
   },
   async asyncData({ $http }: any) {
-    const _treasury: any = await $http.$get('https://tnbanalytics.pythonanywhere.com/treasury')
-    let treasury = _treasury[0]
+    const _treasury: Array<Treasury> = await $http.$get('https://tnbanalytics.pythonanywhere.com/treasury')
+    let treasury: Treasury = _treasury[0] 
 
-    const pk = '23676c35fce177aef2412e3ab12d22bf521ed423c6f55b8922c336500a1a27c5'
-    const _transactions: any =
+    const pk: string = '23676c35fce177aef2412e3ab12d22bf521ed423c6f55b8922c336500a1a27c5'
+    const _transactions: Pagination =
     await $http.$get(`http://54.183.16.194/bank_transactions?limit=5&account_number=${pk}&block__sender=${pk}&fee=NONE`)
     
-    let transactions = _transactions.results
+    let transactions: Array<Transaction> = _transactions.results
     
     let tableOptions: Options = {
       total: _transactions.count,
@@ -121,15 +126,13 @@ export default Vue.extend({
       count: _transactions.results.length
     }
 
-    // const _graphData: any = await $http.get(`http://54.183.16.194/bank_transactions?limit=5&account_number=${pk}&block__sender=${pk}&fee=NONE`)
+    let graphData: Array<Transaction> = _transactions.results
 
-    let graphData = _transactions.results
-
-    let analytics = {
-        balance:  9900,
-        lastTransaction:  transactions[0].amount,
-        lastTransactionDate:  moment(transactions[0].block.created_date).fromNow(),
-        totalOfTransactions:  tableOptions.total,
+    let analytics: Analytics = {
+        balance: 9900,
+        lastTransaction: transactions[0].amount,
+        lastTransactionDate: moment(transactions[0].block.created_date).fromNow(),
+        totalOfTransactions: tableOptions.total
     }
 
     return { treasury, transactions, tableOptions, graphData, analytics } as any
@@ -180,7 +183,7 @@ export default Vue.extend({
     },
     async handlePageOffset(offset: number, perPage: number): Promise<void> {
       console.log('received emit from function', offset, perPage)
-      const _transactions = await fetch(`https://tnbanalytics.pythonanywhere.com/transaction?limit=${this.perPage}&offset=${offset}&${this.transactionType}`)
+      const _transactions: Pagination = await fetch(`https://tnbanalytics.pythonanywhere.com/transaction?limit=${this.perPage}&offset=${offset}&${this.transactionType}`)
         .then(res => res.json())
         .catch(err => console.log(err))
 
@@ -212,8 +215,8 @@ export default Vue.extend({
       .catch(err => console.log(err))
       this.graphData = _graphData.data
     },
-    formatTransactions(unformatedTransactions): any {
-      let formatedTransactions: any = []
+    formatTransactions(unformatedTransactions): Array<FormatedTransaction> {
+      let formatedTransactions: Array<FormatedTransaction> = []
       unformatedTransactions
         .map((transaction: any) => {
           const date = transaction.block.created_date
@@ -231,29 +234,29 @@ export default Vue.extend({
     }
   },
   computed: {
-    getLastTransactionDate(): any {
+    getLastTransactionDate(): string {
       const dateFromNow = moment(this.treasury.last_transaction_at).fromNow()
       return dateFromNow
     },
-    getTransactions(): any {
+    getTransactions(): Array<FormatedTransaction> {
       return this.formatTransactions(this.transactions)
     },
-    getFormatedData(): any {
+    getFormatedData(): Array<number> {
       let _: any = []
       this.graphData.map(function (d: any){
-        const formatedDate = moment(d.block.created_date).valueOf()
+        const formatedDate: number = moment(d.block.created_date).valueOf()
         _.push([formatedDate, d.amount])
       })
       return _;
     },
-    getFormatedCumulatedData(): any {
-      let _temp: any = []
-      let dates: any = []
-      let amounts: any = []
-      let cumulatedAmounts: any = []
+    getFormatedCumulatedData(): Array<Array<Number>> {
+      let _temp: Array<number> = []
+      let dates: Array<number> = []
+      let amounts: Array<number> = []
+      let cumulatedAmounts: Array<number> = []
       
       this.graphData.map(function (d: any){
-        const formatedDate = moment(d.block.created_date).valueOf()
+        const formatedDate: number = moment(d.block.created_date).valueOf()
         _temp.push(formatedDate)
         dates = [].concat(_temp as any).reverse()
         amounts.push(d.amount)

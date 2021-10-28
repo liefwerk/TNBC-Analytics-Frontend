@@ -10,7 +10,7 @@
         <div class="flex flex-wrap md:grid md:justify-items-stretch md:grid-cols-2 xl:grid-cols-4 gap-4 break-words">
           <NumberCard 
             title="Balance"
-            :number="government.balance"
+            :number="analytics.balance"
             class="text-red-400 self-start" />
           <NumberCard 
             title="N° of Transactions"
@@ -32,7 +32,7 @@
       </div>
       <div class="flex flex-wrap w-full md:grid md:justify-items-stretch md:grid-cols-2 gap-4">
         <GovernmentGraphIn :data="getFormatedInCumulatedData" @handleFilter="changeDateRange"/>
-        <GovernmentGraphOut :data="getFormatedInTransactions" @handleFilter="changeDateRange"/>
+        <GovernmentGraphOut :data="getFormatedOutTransactions" @handleFilter="changeDateRange"/>
       </div>
     </div>
 
@@ -83,6 +83,7 @@ export default Vue.extend({
       analytics: {},
       graphTxsIn: [],
       graphTxsCumulated: [],
+      numberOfTransactions: 0,
       perPage: 5,
       pageOffset: 0,
       columns: [
@@ -125,7 +126,7 @@ export default Vue.extend({
       count: txs.results.length
     }
 
-    const gd: any = await $axios.get('http://bank.tnbexplorer.com/stats/api?format=json&ordering=date')
+    const gd: any = await $axios.get('http://bank.tnbexplorer.com/stats/api')
     const gd2: any = await $axios.get('http://54.183.16.194/bank_transactions?id=&account_number=&block__sender=23676c35fce177aef2412e3ab12d22bf521ed423c6f55b8922c336500a1a27c5&block__balance_key=&fee=&recipient=6e5ea8507e38be7250cde9b8ff1f7c8e39a1460de16b38e6f4d5562ae36b5c1a')
 
     const graphTxsCumulated = gd2.data.results
@@ -137,12 +138,12 @@ export default Vue.extend({
         return record.total;
       }, 0);
     }
-
+    const nTxs: any = await $axios.get('http://54.183.16.194/bank_transactions')
     let analytics = {
-        balance:  9900,
+        balance: graphTxsIn[graphTxsIn.length - 1].total,
         lastTransaction:  transactions[0].amount,
         lastTransactionDate:  moment(transactions[0].block.created_date).fromNow(),
-        totalOfTransactions:  tableOptions.total,
+        totalOfTransactions:  nTxs.data.count,
     }
 
     return { government, transactions, tableOptions, graphTxsIn, analytics, graphTxsCumulated } as any
@@ -222,22 +223,22 @@ export default Vue.extend({
     formatTransactions(unformatedTransactions): any {
       let formatedTransactions: any = []
       unformatedTransactions.map((transaction: any) => {
-          const date = transaction.block.created_date
-          const lastTransactionDate = moment(date).format('MMM Do, YYYY')
-          const githubRegex = /(?<=PROJECT_)[\d+.-]+/
-          let githubId = transaction.memo.match(githubRegex)
+        const date = transaction.block.created_date
+        const lastTransactionDate = moment(date).format('MMM Do, YYYY')
+        const githubRegex = /(?<=PROJECT_)[\d+.-]+/
+        let githubId = transaction.memo.match(githubRegex)
 
-          const paymentForRegex = /(?<=TNB_)[\w].*?(?=_)/
-          let paymentFor = transaction.memo.match(paymentForRegex)
-          formatedTransactions.push(
-            {
-              date: lastTransactionDate,
-              amount: transaction.amount,
-              githubIssueId: githubId ? githubId[0] : null,
-              paymentFor: paymentFor ? paymentFor[0] : null,
-              recipientPublicKey: transaction.recipient
-            }
-          )
+        const paymentForRegex = /(?<=TNB_)[\w].*?(?=_)/
+        let paymentFor = transaction.memo.match(paymentForRegex)
+        formatedTransactions.push(
+          {
+            date: lastTransactionDate,
+            amount: transaction.amount,
+            githubIssueId: githubId ? githubId[0] : null,
+            paymentFor: paymentFor ? paymentFor[0] : null,
+            recipientPublicKey: transaction.recipient
+          }
+        )
       })
       return formatedTransactions
     }
@@ -246,7 +247,7 @@ export default Vue.extend({
     getFormatedTransactions(): any {
       return this.formatTransactions(this.transactions)
     },
-    getFormatedInTransactions(): any {
+    getFormatedOutTransactions(): any {
       let cumulatedData: any = []
       this.graphTxsIn.forEach((data: any) => {
         const date = moment.utc(data.date).format()
@@ -277,7 +278,6 @@ export default Vue.extend({
       let amounts: any = []
       let cumulatedAmounts: any = []
       
-      console.log(this.graphTxsCumulated)
       this.graphTxsCumulated.map(function (d: any){
         const formatedDate = moment(d.block.created_date).valueOf()
         _temp.push(formatedDate)

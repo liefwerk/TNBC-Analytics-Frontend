@@ -28,10 +28,12 @@ export default class TreasuryGraph extends Vue {
         },
         title: {
           text: 'Withdrawals amounts',
-          margin: 30
+          margin: 30,
+          align: 'left'
         },
         subtitle: {
-          text: 'From the TNB Treasury Account'
+          text: 'From the TNB Treasury Account',
+          align: 'left'
         },
         tooltip: {
           shared: true,

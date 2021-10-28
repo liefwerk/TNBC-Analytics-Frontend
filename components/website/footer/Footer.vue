@@ -49,7 +49,7 @@
     <div class="md:mx-10 flex-grow w-full md:w-auto md:flex-grow-0">
       <h5 class="my-4 opacity-60">About</h5>
       <ul class="mt-3 text-sm">
-        <li class="pb-4 hover:text-gray-300"><nuxt-link to="/team">Team</nuxt-link></li>
+        <li class="pb-4 hover:text-gray-300"><nuxt-link to="/contributors">Contributors</nuxt-link></li>
         <li class="pb-4 hover:text-gray-300"><nuxt-link to="/donate">Donation</nuxt-link></li>
       </ul>
     </div>
