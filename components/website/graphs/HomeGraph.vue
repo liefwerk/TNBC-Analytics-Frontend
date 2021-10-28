@@ -2,8 +2,7 @@
   <div>
     <highcharts
       :constructor-type="'stockChart'" 
-      :options="getTransactions" 
-      :navigator="navigator">
+      :options="getTransactions">
     </highcharts>
   </div>
 </template>
@@ -32,9 +31,7 @@ interface Transaction {
 export default Vue.extend({
   name: 'HomeGraph',
   data(){
-    return {
-      navigator: { enabled: true }
-    }
+    return {}
   },
   props: {
     transactions: {

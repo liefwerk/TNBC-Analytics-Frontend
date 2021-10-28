@@ -31,8 +31,8 @@
           class="break-all w-1/2 self-start" />
       </div>
       <div class="flex flex-wrap w-full md:grid md:justify-items-stretch md:grid-cols-2 gap-4">
-        <GovernmentGraphIn :data="getFormatedData" @handleFilter="changeDateRange"/>
-        <GovernmentGraphOut :data="getFormatedData" @handleFilter="changeDateRange"/>
+        <GovernmentGraphIn :data="getFormatedInCumulatedData" @handleFilter="changeDateRange"/>
+        <GovernmentGraphOut :data="getFormatedInTransactions" @handleFilter="changeDateRange"/>
       </div>
     </div>
 
@@ -81,7 +81,8 @@ export default Vue.extend({
       government: {} as Government,
       transactions: [] as Array<any>,
       analytics: {},
-      graphData: [],
+      graphTxsIn: [],
+      graphTxsCumulated: [],
       perPage: 5,
       pageOffset: 0,
       columns: [
@@ -125,11 +126,13 @@ export default Vue.extend({
     }
 
     const gd: any = await $axios.get('http://bank.tnbexplorer.com/stats/api?format=json&ordering=date')
+    const gd2: any = await $axios.get('http://54.183.16.194/bank_transactions?id=&account_number=&block__sender=23676c35fce177aef2412e3ab12d22bf521ed423c6f55b8922c336500a1a27c5&block__balance_key=&fee=&recipient=6e5ea8507e38be7250cde9b8ff1f7c8e39a1460de16b38e6f4d5562ae36b5c1a')
 
-    let graphData = gd.data
-    console.log(graphData)
-    if (graphData && graphData.length) {
-      graphData.reduce((previousTotal: number, record: any) => {
+    const graphTxsCumulated = gd2.data.results
+    
+    let graphTxsIn = gd.data
+    if (graphTxsIn && graphTxsIn.length) {
+      graphTxsIn.reduce((previousTotal: number, record: any) => {
         record.changeInCoins = record.total - previousTotal;
         return record.total;
       }, 0);
@@ -142,7 +145,7 @@ export default Vue.extend({
         totalOfTransactions:  tableOptions.total,
     }
 
-    return { government, transactions, tableOptions, graphData, analytics } as any
+    return { government, transactions, tableOptions, graphTxsIn, analytics, graphTxsCumulated } as any
   },
   methods: {
     formatDate(dateString: any): any {
@@ -205,7 +208,7 @@ export default Vue.extend({
       
     },
     async changeDateRange(value: any): Promise<void> {
-      const _graphData: any = await fetch('https://tnbanalytics.pythonanywhere.com/government-chart', { 
+      const _graphTxsIn: any = await fetch('https://tnbanalytics.pythonanywhere.com/government-chart', { 
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -214,7 +217,7 @@ export default Vue.extend({
       })
       .then((res: any) => res.json())
       .catch(err => console.log(err))
-      this.graphData = _graphData.data
+      this.graphTxsIn = _graphTxsIn.data
     },
     formatTransactions(unformatedTransactions): any {
       let formatedTransactions: any = []
@@ -243,9 +246,9 @@ export default Vue.extend({
     getFormatedTransactions(): any {
       return this.formatTransactions(this.transactions)
     },
-    getFormatedData(): any {
+    getFormatedInTransactions(): any {
       let cumulatedData: any = []
-      this.graphData.forEach((data: any) => {
+      this.graphTxsIn.forEach((data: any) => {
         const date = moment.utc(data.date).format()
         const formatedDate = moment(data.date).valueOf()
         if (cumulatedData.length === 0) {
@@ -267,6 +270,26 @@ export default Vue.extend({
         }
       })
       return cumulatedData;
+    },
+    getFormatedInCumulatedData(): any {
+      let _temp: any = []
+      let dates: any = []
+      let amounts: any = []
+      let cumulatedAmounts: any = []
+      
+      console.log(this.graphTxsCumulated)
+      this.graphTxsCumulated.map(function (d: any){
+        const formatedDate = moment(d.block.created_date).valueOf()
+        _temp.push(formatedDate)
+        dates = [].concat(_temp as any).reverse()
+        amounts.push(d.amount)
+        amounts.reverse()
+      })
+      amounts.reduce(function (prev: number, curr: number) {
+        cumulatedAmounts.push(prev + curr)
+        return prev + curr
+      }, 0)
+      return dates.map((date, index) => [date, cumulatedAmounts[index]])
     }
   }
 

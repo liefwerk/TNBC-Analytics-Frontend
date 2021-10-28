@@ -53,9 +53,11 @@
                         <GithubLogo class="h-4 w-4 self-center mr-2" />{{ item[textColumn.attribute] }}  
                       </span>
                     </a>
+                    <span v-else-if="textColumn.attribute === 'githubIssueId' && !item[textColumn.attribute]">—</span>
                     <span v-else-if="textColumn.attribute === 'paymentFor' && item[textColumn.attribute]">
                       <span class="bg-blue-900 text-xs py-1 px-3 text-white rounded-full shadow-sm select-none">
-                        {{ item[textColumn.attribute] }}
+                        <span v-if="item[textColumn.attribute] === 'TS'">TIMESHEET</span>
+                        <span v-else>{{ item[textColumn.attribute] }}</span>
                       </span>
                     </span>
                     <span v-else>

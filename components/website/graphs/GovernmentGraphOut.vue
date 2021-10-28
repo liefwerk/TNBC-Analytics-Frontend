@@ -3,8 +3,7 @@
     <highcharts
       v-if="data.length"
       :constructor-type="'stockChart'" 
-      :options="transactions" 
-      :navigator="navigator">
+      :options="transactions">
     </highcharts>
     <div v-else class="text-center absolute top-1/2 transform -translate-y-1/2 -right-1/2 -translate-x-1/2 w-full">
       <p class="text-lg font-semibold text-gray-500">There is no data available from the last {{ selectedFilterValue }} days.</p>
@@ -18,9 +17,6 @@ import { Prop, Component, Vue } from 'nuxt-property-decorator';
 @Component
 export default class GovernmentGraph extends Vue {
   @Prop({ required: true }) readonly data!: any
-  public navigator: object = {
-    enabled: true
-  }
 
   public selectedFilterValue: number = 31
 
