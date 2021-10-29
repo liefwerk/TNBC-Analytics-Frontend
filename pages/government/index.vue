@@ -281,22 +281,13 @@ export default Vue.extend({
     },
     getFormatedInCumulatedData(): any {
       let _temp: any = []
-      let dates: any = []
-      let amounts: any = []
-      let cumulatedAmounts: any = []
       
       this.graphTxsCumulated.map(function (d: any){
         const formatedDate = moment(d.block.created_date).valueOf()
-        _temp.push(formatedDate)
-        dates = [].concat(_temp as any).reverse()
-        amounts.push(d.amount)
-        amounts.reverse()
+        _temp.push([formatedDate, d.amount])
       })
-      amounts.reduce(function (prev: number, curr: number) {
-        cumulatedAmounts.push(prev + curr)
-        return prev + curr
-      }, 0)
-      return dates.map((date, index) => [date, cumulatedAmounts[index]])
+
+      return _temp
     }
   }
 

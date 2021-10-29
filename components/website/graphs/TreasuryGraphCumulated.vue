@@ -30,7 +30,7 @@ export default class TreasuryGraph extends Vue {
           enabled: true
         },
         title: {
-          text: 'Cumulated value of Withdrawals amounts',
+          text: 'Values of Withdrawals amounts',
           margin: 30,
           align: 'left'
         },
