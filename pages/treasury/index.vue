@@ -2,39 +2,43 @@
   <div>
     <div class="mt-12 mb-20 mx-6 md:mx-12">
       <div class="mb-16">
-        <h1 class="text-titlelg mb-2 font-sans font-semibold font-light">Treasury Withdrawals</h1>
+        <h1 class="text-titlelg mb-2 font-sans font-semibold">Treasury Withdrawals</h1>
         <span class="text-subtitle text-pcsecondery">TNBC Withdrawed From Treasury Account</span>
       </div>
 
       <div class="flex flex-wrap mx-auto">
-        <div class="w-full md:w-1/2">
-          <div class="flex flex-wrap md:grid md:justify-items-stretch md:grid-cols-2 xl:grid-cols-3 break-words">
+        <div class="w-full mb-8">
+          <div class="flex flex-wrap md:grid md:justify-items-stretch md:grid-cols-2 xl:grid-cols-4 gap-4 break-words">
             <NumberCard 
               title="Balance"
               :number="treasury.balance"
               class="text-red-400" />
             <NumberCard 
               title="N° of Transactions"
-              :number="treasury.total_transactions"
-              class="text-blue-400" />
+              :number="analytics.totalOfTransactions"
+              class="text-blue-400 self-start" />
             <NumberCard 
               title="Last Transaction"
-              :number="treasury.last_transaction_amount"
-              class="text-green-400" />
+              :number="analytics.lastTransaction"
+             class="text-green-400 self-start" />
+            <DefaultCard 
+              title="Last Transaction Date"
+              :number="analytics.lastTransactionDate" />
           </div>
-          <div>
+          <div class="flex flex-wrap w-full md:grid md:justify-items-stretch md:grid-cols-2 gap-4">
             <DefaultCard 
               title="Public Key"
               :number="treasury.account_number"
               class="break-all" />
-
             <DefaultCard 
-              title="Last Transaction Date"
-              :number="getLastTransactionDate" />
+              title="Last Transaction's Recipient's Key"
+              :number="analytics.lastTransactionKey"
+              class="break-all" />
           </div>
         </div>
-        <div class="w-full md:w-1/2">
-          <TreasuryGraph :data="getFormatedData" @handleFilter="changeDateRange" />
+        <div class="flex flex-wrap w-full md:grid md:justify-items-stretch md:grid-cols-2 gap-4">
+          <TreasuryGraph :data="getFormatedData" />
+          <TreasuryGraphCumulated :data="getFormatedCumulatedData" />
         </div>
       </div>
 
@@ -57,28 +61,40 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import formatDateMixin from '@/mixins/formatDateMixin';
 import Table from '@/components/website/table/Table.vue';
 import NumberCard from '@/components/website/cards/NumberCard.vue';
 import DefaultCard from '@/components/website/cards/DefaultCard.vue';
 import TreasuryGraph from '@/components/website/graphs/TreasuryGraph.vue';
-import { Options } from '@/constants/types/Table'
-import { Transaction } from '@/constants/types/Graph'
-import { Treasury } from '@/constants/types/AnalyticsData'
+import TreasuryGraphCumulated from '@/components/website/graphs/TreasuryGraphCumulated.vue';
+import { Treasury, Pagination } from '~/types/TnbAnalyticsApi'
+import { Transaction } from '@/types/TnbBankApi'
+import { Analytics, FormatedTransaction } from '@/types/Treasury'
+import { Options } from '@/types/Table'
+import moment from 'moment'
 
 export default Vue.extend({
   components: {
     Table,
     NumberCard,
     DefaultCard,
-    TreasuryGraph
+    TreasuryGraph,
+    TreasuryGraphCumulated
   },
   data() {
     return {
+      transactionUrl: {
+        protocol: 'http',
+        bank: '54.183.16.194',
+        publicKey: '23676c35fce177aef2412e3ab12d22bf521ed423c6f55b8922c336500a1a27c5'
+      },
       tableOptions: {} as Options,
       treasury: {} as Treasury,
       transactions: [] as Array<Transaction>,
-      graphData: [],
+      analytics: {} as Analytics,
+      graphData: [] as Array<Transaction>,
+      perPage: 5 as number,
+      pageOffset: 0 as number,
+      transactionType: 'transaction_type=TREASURY',
       columns: [
         {
           name: 'date',
@@ -89,10 +105,6 @@ export default Vue.extend({
           attribute: 'amount'
         },
         {
-          name: 'github issue id',
-          attribute: 'githubIssueId'
-        },
-        {
           name: 'recipient public key',
           attribute: 'recipientPublicKey'
         },
@@ -100,10 +112,14 @@ export default Vue.extend({
     }
   },
   async asyncData({ $http }: any) {
-    const _treasury: any = await $http.$get('https://tnbanalytics.pythonanywhere.com/treasury')
-    let treasury = _treasury[0]
+    const _treasury: Array<Treasury> = await $http.$get('https://tnbanalytics.pythonanywhere.com/treasury')
+    let treasury: Treasury = _treasury[0] 
 
-    const _transactions: any = await $http.$get(`https://tnbanalytics.pythonanywhere.com/transaction?limit=5&transaction_type=TREASURY`)
+    const pk: string = '23676c35fce177aef2412e3ab12d22bf521ed423c6f55b8922c336500a1a27c5'
+    const _transactions: Pagination =
+    await $http.$get(`http://54.183.16.194/bank_transactions?limit=5&account_number=${pk}&block__sender=${pk}&fee=NONE`)
+    
+    let transactions: Array<Transaction> = _transactions.results
     
     let tableOptions: Options = {
       total: _transactions.count,
@@ -112,24 +128,23 @@ export default Vue.extend({
       count: _transactions.results.length
     }
 
-    let transactions = _transactions.results
+    let graphData: Array<Transaction> = _transactions.results
 
-    const _graphData: any = await $http.post('https://tnbanalytics.pythonanywhere.com/treasury-chart', { days: '365' })
-      .then((res: any) => res.json())
-    let graphData = _graphData.data
+    let analytics: Analytics = {
+        balance: 9900,
+        lastTransaction: transactions[0].amount,
+        lastTransactionDate: moment(transactions[0].block.created_date).fromNow(),
+        totalOfTransactions: tableOptions.total,
+        lastTransactionKey: transactions[0].recipient
+    }
 
-    return { treasury, transactions, tableOptions, graphData } as any
+    return { treasury, transactions, tableOptions, graphData, analytics } as any
   },
   methods: {
-    formatDate(dateString: any): any {
-      const date = new Date(dateString);
-      // Then specify how you want your dates to be formatted
-      return new Intl.DateTimeFormat('default', { dateStyle: 'medium' } as any).format(date);
-    },
     async handleGitHubIdSearch(event: any): Promise<void> {
       let value: number = Number(event.target.value as string)
       if (value > 0){
-        const _searchTransactions = await fetch(`https://tnbanalytics.pythonanywhere.com/transaction?github_issue_id=${value}&transaction_type=TREASURY`)
+        const _searchTransactions = await fetch(`https://tnbanalytics.pythonanywhere.com/transaction?github_issue_id=${value}&${this.transactionType}`)
           .then(res => res.json())
           .catch(err => console.log(err))
           
@@ -137,7 +152,7 @@ export default Vue.extend({
         this.tableOptions.previous = _searchTransactions.previous
         this.tableOptions.next = _searchTransactions.next
       } else if (value === 0) {
-        const _searchTransactions = await fetch(`https://tnbanalytics.pythonanywhere.com/transaction?limit=10&transaction_type=TREASURY`)
+        const _searchTransactions = await fetch(`https://tnbanalytics.pythonanywhere.com/transaction?limit=${this.perPage}&offset=${this.pageOffset}&${this.transactionType}`)
           .then(res => res.json())
           .catch(err => console.log(err))
 
@@ -171,19 +186,21 @@ export default Vue.extend({
     },
     async handlePageOffset(offset: number, perPage: number): Promise<void> {
       console.log('received emit from function', offset, perPage)
-      const _transactions = await fetch(`https://tnbanalytics.pythonanywhere.com/transaction?limit=${perPage}&offset=${offset}&transaction_type=TREASURY`)
+      const _transactions: Pagination = await fetch(`https://tnbanalytics.pythonanywhere.com/transaction?limit=${this.perPage}&offset=${offset}&${this.transactionType}`)
         .then(res => res.json())
         .catch(err => console.log(err))
 
+      this.pageOffset = offset
       this.transactions = _transactions.results
       this.tableOptions.previous = _transactions.previous
       this.tableOptions.next = _transactions.next
     },
     async handleItemsChange(perPage: number): Promise<void> {
-      const _newTransactions = await fetch(`https://tnbanalytics.pythonanywhere.com/transaction?limit=${perPage}&transaction_type=TREASURY`)
+      const _newTransactions = await fetch(`https://tnbanalytics.pythonanywhere.com/transaction?limit=${perPage}&offset=${this.pageOffset}&${this.transactionType}`)
           .then(res => res.json())
           .catch(err => console.log(err))
 
+        this.perPage = perPage
         this.transactions = _newTransactions.results
         this.tableOptions.previous = _newTransactions.previous
         this.tableOptions.next = _newTransactions.next
@@ -200,33 +217,49 @@ export default Vue.extend({
       .then((res: any) => res.json())
       .catch(err => console.log(err))
       this.graphData = _graphData.data
+    },
+    formatTransactions(unformatedTransactions): Array<FormatedTransaction> {
+      let formatedTransactions: Array<FormatedTransaction> = []
+      unformatedTransactions
+        .map((transaction: any) => {
+          const date = transaction.block.created_date
+          const lastTransactionDate = moment(date).format('MMM Do, YYYY')
+        
+          formatedTransactions.push(
+            {
+              date: lastTransactionDate,
+              amount: transaction.amount,
+              recipientPublicKey: transaction.recipient
+            }
+          )
+        })
+      return formatedTransactions
     }
   },
   computed: {
-    getLastTransactionDate(): any {
-      let lastTransactionDate = this.formatDate(new Date(this.treasury.last_transaction_at))
-      return lastTransactionDate
+    getLastTransactionDate(): string {
+      const dateFromNow = moment(this.treasury.last_transaction_at).fromNow()
+      return dateFromNow
     },
-    getTransactions(): any {
-      let transactions: object[] = []
-      let _transactions: any = this.transactions.map((transaction: any) => {
-        let lastTransactionDate = this.formatDate(new Date(transaction.txs_sent_at))
-        transactions.push(
-          {
-            date: lastTransactionDate,
-            amount: transaction.amount,
-            githubIssueId: transaction.github_issue_id,
-            recipientPublicKey: transaction.recipient_account_number
-          }
-        )
+    getTransactions(): Array<FormatedTransaction> {
+      return this.formatTransactions(this.transactions)
+    },
+    getFormatedData(): Array<number> {
+      let _: any = []
+      this.graphData.map(function (d: any){
+        const formatedDate: number = moment(d.block.created_date).valueOf()
+        _.push([formatedDate, d.amount])
       })
-      return transactions
+      return _;
     },
-    getFormatedData(): any {
-      const _data = this.graphData.map((d: any) => (
-        [ Date.parse(d[0] as string), d[1] ]
-      ))
-      return _data;
+    getFormatedCumulatedData(): Array<Array<Number>> {
+      let _temp: any = []
+      
+      this.graphData.map(function (d: any){
+        const formatedDate: number = moment(d.block.created_date).valueOf()
+        _temp.push([formatedDate, d.amount])
+      })
+      return _temp
     }
   }
 

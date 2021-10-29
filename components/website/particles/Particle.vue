@@ -1,5 +1,13 @@
 <template>
-  <div class="h-96">
+  <div class="h-96 relative">
+    <div class="text-white bg-gray-900 py-2 px-4 text-xs cursor-pointer">
+      <div v-if="!areParticlesPaused" @click="pauseParticles">
+        Pause the animation
+      </div>
+      <div v-else @click="playParticles">
+        Play the animation
+      </div>
+    </div>
     <div :id="id" class="particles-js m-0 p-0 text-center h-full"></div>
   </div>
 </template>
@@ -12,11 +20,12 @@ import { tsParticles } from 'tsparticles'
 export default class Particles extends Vue {
 
   public id: string = 'particles-instance-' + Math.floor(Math.random() * 5000)
+  public areParticlesPaused: boolean = false
 
   public particlesOptions: any = {
     "particles": {
         "number": {
-          "value": 150
+          "value": 100
         },
         "color": {
           "value": "#ffffff"
@@ -124,10 +133,10 @@ export default class Particles extends Vue {
     if (process.client) {
       let width = window.innerWidth
       if (width < 768){
-        this.particlesOptions.particles.number.value = 50;
+        this.particlesOptions.particles.number.value = 35;
         this.initParticleJS()
       } else {
-        this.particlesOptions.particles.number.value = 150;
+        this.particlesOptions.particles.number.value = 100;
         this.initParticleJS()
       }
     }
@@ -135,9 +144,29 @@ export default class Particles extends Vue {
   
   initParticleJS () {
     tsParticles.load(this.id, this.particlesOptions).then((container) => {})
+    .then(() => {
+      let particles: any = tsParticles.domItem(0)
+      if (this.areParticlesPaused){
+        particles.pause()
+      } else {
+        particles.play()
+      }
+    })
     .catch((error) => {
       console.error(error);
     });
+  }
+
+  public pauseParticles () {
+    let particles: any = tsParticles.domItem(0)
+    particles.pause()
+    this.areParticlesPaused = true
+  }
+
+  public playParticles () {
+    let particles: any = tsParticles.domItem(0)
+    particles.play()
+    this.areParticlesPaused = false
   }
 
 }

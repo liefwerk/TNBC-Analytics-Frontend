@@ -1,20 +1,9 @@
 <template>
   <div class="relative h-full card">
-    <div class="flex flex-nowrap">
-      <span class="mr-3 font-semibold">Filter by: </span>
-      <a
-        v-for="(option, index) in sortOptions" :key="index"
-        @click="handleFilterValue(option.value)"
-        :class="option.value === selectedFilterValue ? 'underline' : ''"
-        class="cursor-pointer hover:underline pr-2">
-        {{ option.name }}
-      </a>
-    </div>
     <highcharts
       v-if="data.length"
       :constructor-type="'stockChart'" 
-      :options="transactions" 
-      :navigator="navigator">
+      :options="transactions">
     </highcharts>
     <div v-else class="text-center absolute top-1/2 transform -translate-y-1/2 -right-1/2 -translate-x-1/2 w-full">
       <p class="text-lg font-semibold text-gray-500">There is no data available from the last {{ selectedFilterValue }} days.</p>
@@ -28,9 +17,6 @@ import { Prop, Component, Vue } from 'nuxt-property-decorator';
 @Component
 export default class GovernmentGraph extends Vue {
   @Prop({ required: true }) readonly data!: any
-  public navigator: object = {
-    enabled: false
-  }
 
   public selectedFilterValue: number = 31
 
@@ -46,16 +32,28 @@ export default class GovernmentGraph extends Vue {
   }
 
   get transactions(): any {
-    let _data = this.data
     let chartOptions: any =
     {
       chart: {
         type: 'spline'
       },
+      title: {
+        text: 'Payments reveived on the TNB Government wallet',
+        margin: 30,
+        align: 'left'
+      },
+      subtitle: {
+        text: 'From the TNB Treasury Account',
+        align: 'left'
+      },
       tooltip: {
         shared: true,
         valueSuffix: ' TNBC'
       },
+      scrollbar: {
+        enabled: false
+      },
+      navigator: { enabled: false },
       xAxis: {
         categories: []
       },

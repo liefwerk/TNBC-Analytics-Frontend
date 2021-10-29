@@ -35,7 +35,8 @@ export default class GovernmentGraph extends Vue {
     let chartOptions: any =
     {
       chart: {
-        type: 'areaspline'
+        type: 'column',
+        alignTicks: false
       },
       title: {
         text: 'Payments sent from the TNB Government wallet',
@@ -43,7 +44,7 @@ export default class GovernmentGraph extends Vue {
         align: 'left'
       },
       subtitle: {
-        text: 'From a month ago until yesterday.',
+        text: 'From November 2nd 2020 until yesterday.',
         align: 'left'
       },
       tooltip: {
@@ -66,7 +67,7 @@ export default class GovernmentGraph extends Vue {
             forced: true,
             smoothed:true,
             units: [[
-              'day', // unit name
+              'month', // unit name
               [1] // allowed multiples
             ]]
           },

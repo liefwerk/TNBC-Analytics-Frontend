@@ -3,15 +3,18 @@
     <div class="overflow-x-auto">
       <div class="py-2 align-middle inline-block min-w-full">
         <div class="shadow-md overflow-hidden border-b bg-white border-gray-200 sm:rounded-lg">
-        <!-- Commented out Search function until we find a correct way to handle the fetching -->
-        <!-- Might have to use built in watch function -->
-          <!--<div class="px-6 py-4 flex flex-nowrap">
+          <!-- Deactivated search until we figure out a way to search by github ID -->
+          <!-- <div v-show="isPageGovernment" class="px-6 py-4 flex flex-nowrap">
             <div class="flex flex-col flex-nowrap mr-2">
               <label class="flex-grow">Enter a Github Issue ID</label>
-              <input v-model="githubIssueId" placeholder="42" class="py-2 px-4 border-2 w-full rounded-md" @change.number="$emit('githubUserEntry', $event)" />
+              <input 
+                @input="$emit('githubUserEntry', $event)" 
+                v-model="githubIssueId" 
+                placeholder="42" 
+                class="py-2 px-4 border-2 w-full rounded-md" 
+                />
             </div>
-            <button class="self-end">Search</button>
-          </div>-->
+          </div> -->
           <table class="min-w-full divide-y divide-gray-200 border-collapse">
             <thead class="bg-white">
               <tr>
@@ -40,7 +43,26 @@
                   :data-label="textColumn.attribute"
                   class="w-full lg:w-auto px-6 py-4">
                   <div class="flex-shrink-0 break-all">
-                    {{ item[textColumn.attribute] }}
+                    <a 
+                      v-if="textColumn.attribute === 'githubIssueId' && item[textColumn.attribute]"
+                      :href="`https://github.com/thenewboston-developers/Projects/issues/${item[textColumn.attribute]}`"  
+                      rel="noreferrer noopener"
+                      target="_blank"
+                      class="text-blue-800">
+                      <span class="flex flex-nowrap underline hover:text-gray-600 hover:no-underline">
+                        <GithubLogo class="h-4 w-4 self-center mr-2" />{{ item[textColumn.attribute] }}  
+                      </span>
+                    </a>
+                    <span v-else-if="textColumn.attribute === 'githubIssueId' && !item[textColumn.attribute]">—</span>
+                    <span v-else-if="textColumn.attribute === 'paymentFor' && item[textColumn.attribute]">
+                      <span class="bg-blue-900 text-xs py-1 px-3 text-white rounded-full shadow-sm select-none">
+                        <span v-if="item[textColumn.attribute] === 'TS'">TIMESHEET</span>
+                        <span v-else>{{ item[textColumn.attribute] }}</span>
+                      </span>
+                    </span>
+                    <span v-else>
+                      {{ item[textColumn.attribute] }}
+                    </span>
                   </div>
                 </td>
               </tr>
@@ -70,7 +92,7 @@
               <select 
                 class="border-2 p-2 rounded-lg w-20" 
                 v-model="maxItemsPerPage"
-                @change="$emit('changedMaxItems', maxItemsPerPage)">
+                @change="$emit('changePerPage', maxItemsPerPage)">
                 <option>5</option>
                 <option>10</option>
                 <option>15</option>
@@ -81,7 +103,7 @@
               <div v-if="notEnoughPages">
                 <nav class="relative z-0 inline-flex" aria-label="Table pagination">
                   <a
-                    v-show="options.previous"
+                    v-show="displayPages[0] !== activeItem"
                     @click="changeToPreviousPage"
                     class="relative inline-flex items-center mr-2 px-2 py-2 transition-500 hover:shadow-sm rounded-full bg-white text-sm font-medium text-gray-500 shadow-md cursor-pointer">
                     <ChevronLeftIcon class="h-4 w-4" />
@@ -114,15 +136,17 @@ import { Vue, Component, Prop } from 'nuxt-property-decorator'
 import ChevronLeftIcon from '@/components/icons/ChevronLeftIcon.vue'
 import ChevronRightIcon from '@/components/icons/ChevronRightIcon.vue'
 import SortedAscIcon from '@/components/icons/SortedAscIcon.vue'
+import GithubLogo from '@/components/icons/GithubLogo.vue'
 import SortedDescIcon from '@/components/icons/SortedDescIcon.vue'
-import { Options } from '@/constants/types/Table'
+import { Options } from '@/types/Table'
 
 @Component({ 
   components: {
     ChevronLeftIcon,
     ChevronRightIcon,
     SortedAscIcon,
-    SortedDescIcon
+    SortedDescIcon,
+    GithubLogo
   }
 })
 export default class Table extends Vue {
@@ -168,8 +192,8 @@ export default class Table extends Vue {
 
   changePageOffset(pageNumber: number): void {
     let offset = (pageNumber - 1) * this.maxItemsPerPage
-    console.log('changePageOffset', offset)
-    this.$emit('changePageOffset', offset, this.maxItemsPerPage)
+    console.log('called changePageOffset')
+    this.$emit('changePageOffset', offset)
     this.currentPage = pageNumber
     this.activeItem = pageNumber
   }
@@ -213,17 +237,19 @@ export default class Table extends Vue {
   }
 
   get sortedItems(): any[] {
-    return this.items.sort((a: any, b: any) => {
-      let modifier = 1;
-      if(this.currentSortDir === 'desc') modifier = -1;
-      if(a[this.currentSort] < b[this.currentSort]) return -1 * modifier;
-      if(a[this.currentSort] > b[this.currentSort]) return 1 * modifier;
-      return 0;
-    });
+    return this.items
   }
 
   get textColumns(): any[] {
-    return this.columns.filter((c: any) => c.attribute !== 'image' )
+    return this.columns
+  }
+
+  get isPageGovernment(): boolean {
+    console.log(this.$route.name)
+    if (this.$route.name === 'government')
+      return true
+
+    return false
   }
 
 }

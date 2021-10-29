@@ -24,10 +24,13 @@ export default class TreasuryGraph extends Vue {
     let chartOptions: any =
       {
         chart: {
-          type: 'column'
+          type: 'spline'
+        },
+        rangeSelector: {
+          enabled: true
         },
         title: {
-          text: 'Withdrawals amounts',
+          text: 'Values of Withdrawals amounts',
           margin: 30,
           align: 'left'
         },
