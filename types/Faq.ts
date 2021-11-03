@@ -2,10 +2,10 @@ export interface FaqItem {
   uuid: string,
   question: string,
   answer: string,
-  type: FaqItemType
+  faqType_id: FaqItemType
 }
 
 export interface FaqItemType {
-  uuid: string,
+  id: string,
   title: string
 }

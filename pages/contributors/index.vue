@@ -27,7 +27,7 @@ export default Vue.extend({
     return {}
   },
   async asyncData({ $http }: any) {
-    const team = await $http.$get('https://tnbanalytics.pythonanywhere.com/team?limit=10')
+    const team = await $http.$get('https://tnbc-analytics.herokuapp.com/api/contributors/')
     
     return { team }
   }

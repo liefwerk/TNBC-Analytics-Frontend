@@ -3,8 +3,7 @@
     <div class="flex flex-col text-center flex-shrink md:text-left mb-4 md:my-0 self-center">
       <img 
         class="w-auto h-6 self-center md:self-start"
-        :src="donation.qr_image"
-        :alt="donation.title">
+        :src="donation.logo">
       <div
         @click="copyThat(donation.public_key)"
         class="py-1 md:py-0 md:my-4">
@@ -47,7 +46,7 @@ export default class DonateCard extends Vue {
   }
 
   get stringifiedPublicKey(): Object {
-    let publicKey ={ "address": this.donation.public_key }
+    let publicKey = { "address": this.donation.public_key }
     return JSON.stringify(publicKey)
   }
 }

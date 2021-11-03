@@ -1,7 +1,7 @@
 export interface Member {
-  account_number: string,
-  discord_username: string,
-  github_username: string,
+  tnbc_pk: string,
+  discord: string,
+  github: string,
   image: string,
   name: string,
   role: string,
