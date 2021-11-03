@@ -2,7 +2,7 @@
   <div class="fcprimary mt-12 mb-20 mx-6 md:mx-12">
     <div class="py-4 mx-auto">
       <div class="flex flex-col text-center w-full mt-8 mb-16">
-        <h1 class="md:text-titlelg text-titlemd font-medium title-font mb-4 text-gray-900 font-sans font-semibold">Frequently Asked Questions</h1>
+        <h1 class="md:text-titlelg text-titlemd title-font mb-4 text-gray-900 font-sans font-semibold">Frequently Asked Questions</h1>
         <p class="lg:w-2/3 mx-auto leading-relaxed text-subtitle text-pcsecondery">Looking for answers? Questions & answers can be instantly filtered in FAQ page.</p>
       </div>
       <div class="btn-wrapper">
@@ -86,7 +86,7 @@ export default Vue.extend({
     }
   },
   async asyncData({ $http }: any) {
-    const faqs: any = await $http.$get('https://tnbanalytics.pythonanywhere.com/faq')
+    const faqs: any = await $http.$get('https://tnbc-analytics.herokuapp.com/api/faqs')
     let selectedFaq = faqs[0]
     return { faqs, selectedFaq } as any
   },
@@ -104,16 +104,16 @@ export default Vue.extend({
   computed:{
     filteredFaqs(): any {
         let _array: any = this.faqs as unknown as FaqItem
-        let filteredArray: any = _array.filter((faq: FaqItem) => faq.type.title === this.selectedFilter)
+        let filteredArray: any = _array.filter((faq: FaqItem) => faq.faqType_id.title === this.selectedFilter)
         return filteredArray
     },
     filteredFaqsTypes(): any {
       let _faqs: any = this.faqs as unknown as FaqItem
-      let _array: any = _faqs.map((faq: FaqItem) => faq.type)
+      let _array: any = _faqs.map((faq: FaqItem) => faq.faqType_id)
 
-      const _filteredArray = _array.filter((type: FaqItem, index: number, self: any) =>
+      const _filteredArray = _array.filter((item: FaqItemType, index: number, self: any) =>
         index === self.findIndex((t: FaqItemType) => (
-          t.uuid === type.uuid
+          t.id === item.id
         ))
       )
       return _filteredArray

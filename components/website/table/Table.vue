@@ -56,7 +56,7 @@
                     <span v-else-if="textColumn.attribute === 'githubIssueId' && !item[textColumn.attribute]">—</span>
                     <span v-else-if="textColumn.attribute === 'paymentFor' && item[textColumn.attribute]">
                       <span class="bg-blue-900 text-xs py-1 px-3 text-white rounded-full shadow-sm select-none">
-                        <span v-if="item[textColumn.attribute] === 'TS'">TIMESHEET</span>
+                        <span v-if="item[textColumn.attribute] === 'TS'">CORE TEAM</span>
                         <span v-else>{{ item[textColumn.attribute] }}</span>
                       </span>
                     </span>
