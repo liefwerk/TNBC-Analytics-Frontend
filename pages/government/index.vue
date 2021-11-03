@@ -9,8 +9,8 @@
       <div class="w-full mb-8">
         <div class="flex flex-wrap md:grid md:justify-items-stretch md:grid-cols-2 xl:grid-cols-4 gap-4 break-words">
           <NumberCard 
-            title="Balance"
-            :number="analytics.balance"
+            title="Distributed Coins"
+            :number="analytics.distributed_coins"
             class="text-red-400 self-start" />
           <NumberCard 
             title="N° of Transactions"
@@ -146,7 +146,7 @@ export default Vue.extend({
     }
     const nTxs: any = await $axios.get('http://54.183.16.194/bank_transactions')
     let analytics = {
-        balance: graphTxsIn[graphTxsIn.length - 1].total,
+        distributed_coins: graphTxsIn[graphTxsIn.length - 1].total,
         lastTransaction:  transactions[0].amount,
         lastTransactionDate:  moment(transactions[0].block.created_date).fromNow(),
         totalOfTransactions:  nTxs.data.count,
@@ -232,8 +232,8 @@ export default Vue.extend({
       unformatedTransactions.map((transaction: any) => {
         const date = transaction.block.created_date
         const lastTransactionDate = moment(date).format('MMM Do, YYYY')
-        const githubRegex = /(?<=PROJECT_)[\d+.-]+/
-        let githubId = transaction.memo.match(githubRegex)
+        const projectGithubRegex = /(?<=PROJECT_|BOUNTY_)[\d+.-]+/
+        let projectGithubId = transaction.memo.match(projectGithubRegex)
 
         const paymentForRegex = /(?<=TNB_)[\w].*?(?=_)/
         let paymentFor = transaction.memo.match(paymentForRegex)
@@ -241,7 +241,7 @@ export default Vue.extend({
           {
             date: lastTransactionDate,
             amount: transaction.amount,
-            githubIssueId: githubId ? githubId[0] : null,
+            githubIssueId: projectGithubId ? projectGithubId[0] : null,
             paymentFor: paymentFor ? paymentFor[0] : null,
             recipientPublicKey: transaction.recipient
           }

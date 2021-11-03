@@ -79,12 +79,16 @@ export default Vue.extend({
       treasury: {} as Treasury,
       government: {} as Government,
       totalAccounts: null as null | number,
-      treasury_withdrawals: null as null | number
+      treasury_withdrawals: null as null | number,
+      transactionCount: null as null | number
     }
   },
   async asyncData({ $http, $axios }: any) {
     const _analytics: Array<Analytics> = await $axios.$get('https://tnbanalytics.pythonanywhere.com/statistics')
     let analytics: Analytics = _analytics[0]
+
+    const _transactionsCount = await $axios.$get('http://54.183.16.194/bank_transactions?limit=1')
+    let transactionCount = _transactionsCount.count
 
     const _treasury: Array<Treasury> = await $axios.$get('https://tnbanalytics.pythonanywhere.com/treasury')
     let treasury: Treasury = _treasury[0]
@@ -107,7 +111,7 @@ export default Vue.extend({
     const _additionalApi: AdditionalApi = await $http.$get('https://raw.githubusercontent.com/itsnikhil/tnb-analysis/master/web/js/static.json')
     const totalAccounts: number = _additionalApi.Accounts
 
-    return { analytics, transactions, treasury, government, totalAccounts }
+    return { analytics, transactions, treasury, government, totalAccounts, transactionCount }
   },
   methods: {
     async calculateTreasuryWithdrawals(): Promise<any> {
@@ -156,7 +160,7 @@ export default Vue.extend({
       return this.government.total_tnbc_spent
     },
     getTotalTransactions(): number {
-      return this.government.total_transactions + this.treasury.total_transactions
+      return this.transactionCount as any
     },
     getFormatedData(): any {
       let cumulatedData: any = []

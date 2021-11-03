@@ -35,7 +35,7 @@ export default class GovernmentGraph extends Vue {
     let chartOptions: any =
     {
       chart: {
-        type: 'spline'
+        type: 'areaspline'
       },
       title: {
         text: 'Payments reveived on the TNB Government wallet',
