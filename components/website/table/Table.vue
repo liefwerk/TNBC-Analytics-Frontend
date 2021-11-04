@@ -44,16 +44,16 @@
                   class="w-full lg:w-auto px-6 py-4">
                   <div class="flex-shrink-0 break-all">
                     <a 
-                      v-if="textColumn.attribute === 'githubIssueId' && item[textColumn.attribute]"
-                      :href="`https://github.com/thenewboston-developers/Projects/issues/${item[textColumn.attribute]}`"  
+                      v-if="textColumn.attribute === 'githubLink' && item[textColumn.attribute]"
+                      :href="`${item[textColumn.attribute].url}`"  
                       rel="noreferrer noopener"
                       target="_blank"
                       class="text-blue-800">
                       <span class="flex flex-nowrap underline hover:text-gray-600 hover:no-underline">
-                        <GithubLogo class="h-4 w-4 self-center mr-2" />{{ item[textColumn.attribute] }}  
+                        <GithubLogo class="h-4 w-4 self-center mr-2" />{{ item[textColumn.attribute].id }}  
                       </span>
                     </a>
-                    <span v-else-if="textColumn.attribute === 'githubIssueId' && !item[textColumn.attribute]">—</span>
+                    <span v-else-if="textColumn.attribute === 'githubLink' && !item[textColumn.attribute]">—</span>
                     <span v-else-if="textColumn.attribute === 'paymentFor' && item[textColumn.attribute]">
                       <span class="bg-blue-900 text-xs py-1 px-3 text-white rounded-full shadow-sm select-none">
                         <span v-if="item[textColumn.attribute] === 'TS'">CORE TEAM</span>
