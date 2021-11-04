@@ -12,7 +12,7 @@
       </div>
       <div class="relative w-3/4 mx-auto font-sans shadow-md">
         <div class="absolute transform -translate-y-full mx-auto bg-gray-900 w-full text-center text-white p-2">
-          <p>Average blocktime of 0.015 seconds and 3,238 transactions per second, TNBC is the best Crypto Currency.</p>
+          <p>With an average blocktime of 0.015 seconds and 3,238 transactions per second, TNBC is the best cryptocurrency.</p>
         </div>
         <div class="grid grid-cols-1 md:flex md:flex-nowrap justify-center text-gray-800 bg-white md:w-full md:mx-auto px-6 py-2 divide-y md:divide-y-0 md:divide-x divide-gray-300">
           <HomeCard 
@@ -38,8 +38,8 @@
             <p class="w-full text-left self-end text-xl">{{ getTreasuryWithdrawals }}</p>
           </div>
           <div class="flex flex-col justify-between flex-nowrap w-full md:w-1/2 lg:w-1/4 p-4 border-t lg:border-b border-gray-400">
-            <p class="text-sm mb-2">Total Govt payment</p>
-            <p class="w-full text-left self-end text-xl">{{ getGovernmentPayments }}</p>
+            <p class="text-sm mb-2">Distributed Coins</p>
+            <p class="w-full text-left self-end text-xl">{{ getDistributedCoins }}</p>
           </div>
           <div class="flex flex-col justify-between flex-nowrap w-full md:w-1/2 lg:w-1/4 p-4 border-t md:border-r lg:border-r-0 md:border-b border-gray-400">
             <p class="text-sm mb-2">Transaction Count</p>
@@ -161,7 +161,7 @@ export default Vue.extend({
       this.treasury_withdrawals ? this.treasury_withdrawals : this.calculateTreasuryWithdrawals()
       return this.treasury_withdrawals
     },
-    getGovernmentPayments(): number {
+    getDistributedCoins(): number {
       return this.distributedCoins as any
     },
     getTotalTransactions(): number {

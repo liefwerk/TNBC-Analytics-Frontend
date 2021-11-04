@@ -24,10 +24,10 @@ export default class TreasuryGraph extends Vue {
     let chartOptions: any =
       {
         chart: {
-          type: 'spline'
+          type: 'areaspline'
         },
         rangeSelector: {
-          enabled: true
+          enabled: false
         },
         title: {
           text: 'Values of Withdrawals amounts',

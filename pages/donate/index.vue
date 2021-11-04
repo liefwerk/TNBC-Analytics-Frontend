@@ -35,12 +35,6 @@ export default Vue.extend({
     const _donations = await $http.$get('https://tnbc-analytics.herokuapp.com/api/donates')
     let donations: Array<Donation> = _donations
     return { donations }
-  },
-  methods: {
-    stringifiedAccountNumber(publicKey: string): Object {
-      let accountNumber = { "address": publicKey }
-      return JSON.stringify(accountNumber)
-    }
   }
 
 })

@@ -11,3 +11,9 @@ export interface FormatedTransaction {
 	amount: number,
 	recipientPublicKey: string
 }
+
+export interface FormatedPieChartTransaction {
+	name: string,
+	y: number
+}
+

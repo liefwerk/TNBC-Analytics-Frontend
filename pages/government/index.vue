@@ -9,8 +9,8 @@
       <div class="w-full mb-8">
         <div class="flex flex-wrap md:grid md:justify-items-stretch md:grid-cols-2 xl:grid-cols-4 gap-4 break-words">
           <NumberCard 
-            title="Distributed Coins"
-            :number="analytics.distributed_coins"
+            title="Balance"
+            :number="analytics.balance"
             class="text-red-400 self-start" />
           <NumberCard 
             title="N° of Transactions"
@@ -103,7 +103,7 @@ export default Vue.extend({
         },
         {
           name: 'github issue id',
-          attribute: 'githubIssueId'
+          attribute: 'githubLink'
         },
         {
           name: 'payment for',
@@ -120,6 +120,7 @@ export default Vue.extend({
     const _government: any = await $http.$get('https://tnbanalytics.pythonanywhere.com/government')
     let government = _government[0]
 
+  
     const pk = '6e5ea8507e38be7250cde9b8ff1f7c8e39a1460de16b38e6f4d5562ae36b5c1a'
     const txs: any = await $axios.$get(`http://54.183.16.194/bank_transactions?limit=5&account_number=${pk}&block__sender=${pk}&fee=NONE`)
 
@@ -144,13 +145,16 @@ export default Vue.extend({
         return record.total;
       }, 0);
     }
+
+    const _balance = await $http.$get(`http://54.219.234.129/accounts/${pk}/balance`)
     const nTxs: any = await $axios.get('http://54.183.16.194/bank_transactions')
+
     let analytics = {
-        distributed_coins: graphTxsIn[graphTxsIn.length - 1].total,
-        lastTransaction:  transactions[0].amount,
-        lastTransactionDate:  moment(transactions[0].block.created_date).fromNow(),
-        totalOfTransactions:  nTxs.data.count,
-        lastTransactionKey: transactions[0].recipient
+      balance: _balance.balance,
+      lastTransaction:  transactions[0].amount,
+      lastTransactionDate:  moment(transactions[0].block.created_date).fromNow(),
+      totalOfTransactions:  nTxs.data.count,
+      lastTransactionKey: transactions[0].recipient
     }
 
     return { government, transactions, tableOptions, graphTxsIn, analytics, graphTxsCumulated } as any
@@ -181,7 +185,6 @@ export default Vue.extend({
         this.transactions = _nextTransactions.results
         this.tableOptions.previous = _nextTransactions.previous
         this.tableOptions.next = _nextTransactions.next
-        // this.tableOptions.count = _previousTransactions.results.length
       }
     },
     async handlePageOffset(offset: number): Promise<void> {
@@ -227,25 +230,46 @@ export default Vue.extend({
       .catch(err => console.log(err))
       this.graphTxsIn = _graphTxsIn.data
     },
+    prepareGithubIssue(type: string, issueId: number): any {
+      console.log(typeof type, type)
+      let url: null | string = null
+      switch(type){
+        case 'PROJECT':
+          return url = `https://github.com/thenewboston-developers/Projects/issues/${issueId}`
+          break;
+        case 'BOUNTY':
+          return url = `https://github.com/thenewboston-developers/Website/issues/${issueId}`
+          break;
+        case 'TS':
+          return url = `https://github.com/thenewboston-developers/Website/issues/${issueId}`
+          break;
+        default:
+          console.log('is not anything', type)
+          return url = null
+          break;
+      }
+    },
     formatTransactions(unformatedTransactions): any {
       let formatedTransactions: any = []
       unformatedTransactions.map((transaction: any) => {
         const date = transaction.block.created_date
         const lastTransactionDate = moment(date).format('MMM Do, YYYY')
-        const projectGithubRegex = /(?<=PROJECT_|BOUNTY_)[\d+.-]+/
-        let projectGithubId = transaction.memo.match(projectGithubRegex)
+        const githubRegex = /(?<=PROJECT_|BOUNTY_|TS_)[\d+.-]+/
+        let githubId = transaction.memo.match(githubRegex)
 
         const paymentForRegex = /(?<=TNB_)[\w].*?(?=_)/
         let paymentFor = transaction.memo.match(paymentForRegex)
+
         formatedTransactions.push(
           {
             date: lastTransactionDate,
             amount: transaction.amount,
-            githubIssueId: projectGithubId ? projectGithubId[0] : null,
+            githubLink: githubId ? {id: githubId[0], url: this.prepareGithubIssue(paymentFor[0], githubId[0])} : null,
             paymentFor: paymentFor ? paymentFor[0] : null,
             recipientPublicKey: transaction.recipient
           }
         )
+        console.log(formatedTransactions)
       })
       return formatedTransactions
     }
