@@ -9,8 +9,8 @@
       <div class="w-full mb-8">
         <div class="flex flex-wrap md:grid md:justify-items-stretch md:grid-cols-2 xl:grid-cols-4 gap-4 break-words">
           <NumberCard 
-            title="Distributed Coins"
-            :number="analytics.distributed_coins"
+            title="Balance"
+            :number="analytics.balance"
             class="text-red-400 self-start" />
           <NumberCard 
             title="N° of Transactions"
@@ -120,6 +120,7 @@ export default Vue.extend({
     const _government: any = await $http.$get('https://tnbanalytics.pythonanywhere.com/government')
     let government = _government[0]
 
+  
     const pk = '6e5ea8507e38be7250cde9b8ff1f7c8e39a1460de16b38e6f4d5562ae36b5c1a'
     const txs: any = await $axios.$get(`http://54.183.16.194/bank_transactions?limit=5&account_number=${pk}&block__sender=${pk}&fee=NONE`)
 
@@ -144,13 +145,16 @@ export default Vue.extend({
         return record.total;
       }, 0);
     }
+
+    const _balance = await $http.$get(`http://54.219.234.129/accounts/${pk}/balance`)
     const nTxs: any = await $axios.get('http://54.183.16.194/bank_transactions')
+
     let analytics = {
-        distributed_coins: graphTxsIn[graphTxsIn.length - 1].total,
-        lastTransaction:  transactions[0].amount,
-        lastTransactionDate:  moment(transactions[0].block.created_date).fromNow(),
-        totalOfTransactions:  nTxs.data.count,
-        lastTransactionKey: transactions[0].recipient
+      balance: _balance.balance,
+      lastTransaction:  transactions[0].amount,
+      lastTransactionDate:  moment(transactions[0].block.created_date).fromNow(),
+      totalOfTransactions:  nTxs.data.count,
+      lastTransactionKey: transactions[0].recipient
     }
 
     return { government, transactions, tableOptions, graphTxsIn, analytics, graphTxsCumulated } as any

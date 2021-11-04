@@ -1,13 +1,9 @@
 <template>
   <div class="relative h-full card">
     <highcharts 
-      v-if="data.length"
       :constructor-type="'stockChart'" 
       :options="transactions">
     </highcharts>
-    <div v-else class="text-center absolute top-1/2 transform -translate-y-1/2 -right-1/2 -translate-x-1/2 w-full">
-      <p class="text-lg font-semibold text-gray-500">There is no data available from the last {{ selectedFilterValue }} days.</p>
-    </div>
   </div>
 </template>
 
@@ -18,16 +14,18 @@ import { Prop, Component, Vue } from 'nuxt-property-decorator';
 export default class TreasuryGraph extends Vue {
   @Prop({ required: true }) readonly data!: any
 
-  public selectedFilterValue: number = 31
-
   get transactions(): any {
     let chartOptions: any =
       {
         chart: {
-          type: 'column'
+          type: 'pie',
+          plotBackgroundColor: null,
+          plotBorderWidth: null,
+          plotShadow: false,
         },
+        colors: ['#2a297a', '#336faf'],
         title: {
-          text: 'Withdrawals amounts',
+          text: "Shares of withdrawals' amounts",
           margin: 30,
           align: 'left'
         },
@@ -35,16 +33,35 @@ export default class TreasuryGraph extends Vue {
           text: 'From the TNB Treasury Account',
           align: 'left'
         },
-        tooltip: {
-          shared: true,
-          valueSuffix: ' TNBC'
+        navigator: { enabled: false },
+        accessibility: {
+          point: {
+            valueSuffix: '%'
+          }
         },
-        xAxis: {
-          type: 'datetime'
+        tooltip: {
+          enabled: false,
+          pointFormat: '<b>{point.percentage:.1f}%</b>',
+        },
+        plotOptions: {
+          pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+                enabled: true,
+                format: '<b>{point.percentage:.1f} %'
+            },
+            showInLegend: true
+          }
+        },
+        legend: {
+          enabled: true,
+          floating: true,
         },
         series: [
           {
             name: 'Transactions',
+            colorByPoint: true,
             data: this.data
           }
         ]

@@ -17,7 +17,7 @@
         </div> 
       </div>
     </div>
-    <QRCode v-if="donation.title == 'thenewboston'" :value="stringifiedPublicKey" />
+    <QRCode v-if="donation.public_key == pk" :value="stringifiedPublicKey" />
     <QRCode v-else :value="donation.public_key" />
   </div>
 </template>
@@ -37,6 +37,8 @@ import { Donation } from '@/types/Donate'
 export default class DonateCard extends Vue {
   @Prop({ required: true }) readonly donation!: Donation
 
+  public pk = 'a5dbcded3501291743e0cb4c6a186afa2c87a54f4a876c620dbd68385cba80d0'
+
   async copyThat(accountNumber: string): Promise<void> {
     if (accountNumber as string)
       await navigator.clipboard.writeText(accountNumber)
@@ -47,6 +49,7 @@ export default class DonateCard extends Vue {
 
   get stringifiedPublicKey(): Object {
     let publicKey = { "address": this.donation.public_key }
+    console.log(publicKey)
     return JSON.stringify(publicKey)
   }
 }

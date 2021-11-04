@@ -60,6 +60,9 @@
                         <span v-else>{{ item[textColumn.attribute] }}</span>
                       </span>
                     </span>
+                    <span v-else-if="textColumn.attribute === 'paymentFor' && !item[textColumn.attribute]">
+                      Contributor payments and bounties
+                    </span>
                     <span v-else>
                       {{ item[textColumn.attribute] }}
                     </span>

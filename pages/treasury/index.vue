@@ -11,7 +11,7 @@
           <div class="flex flex-wrap md:grid md:justify-items-stretch md:grid-cols-2 xl:grid-cols-4 gap-4 break-words">
             <NumberCard 
               title="Balance"
-              :number="treasury.balance"
+              :number="analytics.balance"
               class="text-red-400" />
             <NumberCard 
               title="N° of Transactions"
@@ -28,7 +28,7 @@
           <div class="flex flex-wrap w-full md:grid md:justify-items-stretch md:grid-cols-2 gap-4">
             <DefaultCard 
               title="Public Key"
-              :number="treasury.account_number"
+              :number="transactionUrl.publicKey"
               class="break-all" />
             <DefaultCard 
               title="Last Transaction's Recipient's Key"
@@ -37,8 +37,8 @@
           </div>
         </div>
         <div class="flex flex-wrap w-full md:grid md:justify-items-stretch md:grid-cols-2 gap-4">
-          <TreasuryGraph :data="getFormatedData" />
-          <TreasuryGraphCumulated :data="getFormatedCumulatedData" />
+          <TreasuryGraph :data="getFormatedPieChartData" />
+          <TreasuryGraphCumulated :data="getFormatedSplineChartData" />
         </div>
       </div>
 
@@ -64,11 +64,11 @@ import Vue from 'vue';
 import Table from '@/components/website/table/Table.vue';
 import NumberCard from '@/components/website/cards/NumberCard.vue';
 import DefaultCard from '@/components/website/cards/DefaultCard.vue';
-import TreasuryGraph from '@/components/website/graphs/TreasuryGraph.vue';
+import TreasuryGraph from '~/components/website/graphs/TreasuryPieGraph.vue';
 import TreasuryGraphCumulated from '@/components/website/graphs/TreasuryGraphCumulated.vue';
-import { Treasury, Pagination } from '~/types/TnbAnalyticsApi'
+import { Pagination } from '~/types/TnbAnalyticsApi'
 import { Transaction } from '@/types/TnbBankApi'
-import { Analytics, FormatedTransaction } from '@/types/Treasury'
+import { Analytics, FormatedTransaction, FormatedPieChartTransaction } from '@/types/Treasury'
 import { Options } from '@/types/Table'
 import moment from 'moment'
 
@@ -88,7 +88,6 @@ export default Vue.extend({
         publicKey: '23676c35fce177aef2412e3ab12d22bf521ed423c6f55b8922c336500a1a27c5'
       },
       tableOptions: {} as Options,
-      treasury: {} as Treasury,
       transactions: [] as Array<Transaction>,
       analytics: {} as Analytics,
       graphData: [] as Array<Transaction>,
@@ -105,6 +104,10 @@ export default Vue.extend({
           attribute: 'amount'
         },
         {
+          name: 'Payment For',
+          attribute: 'paymentFor'
+        },
+        {
           name: 'recipient public key',
           attribute: 'recipientPublicKey'
         },
@@ -112,13 +115,13 @@ export default Vue.extend({
     }
   },
   async asyncData({ $http }: any) {
-    const _treasury: Array<Treasury> = await $http.$get('https://tnbanalytics.pythonanywhere.com/treasury')
-    let treasury: Treasury = _treasury[0] 
 
     const pk: string = '23676c35fce177aef2412e3ab12d22bf521ed423c6f55b8922c336500a1a27c5'
     const _transactions: Pagination =
-    await $http.$get(`http://54.183.16.194/bank_transactions?limit=5&account_number=${pk}&block__sender=${pk}&fee=NONE`)
+    await $http.$get(`http://54.183.16.194/bank_transactions?limit=10&account_number=${pk}&block__sender=${pk}&fee=NONE`)
     
+    const _balance = await $http.$get(`http://54.219.234.129/accounts/${pk}/balance`)
+
     let transactions: Array<Transaction> = _transactions.results
     
     let tableOptions: Options = {
@@ -131,14 +134,14 @@ export default Vue.extend({
     let graphData: Array<Transaction> = _transactions.results
 
     let analytics: Analytics = {
-        balance: 9900,
+        balance: _balance.balance,
         lastTransaction: transactions[0].amount,
         lastTransactionDate: moment(transactions[0].block.created_date).fromNow(),
         totalOfTransactions: tableOptions.total,
         lastTransactionKey: transactions[0].recipient
     }
 
-    return { treasury, transactions, tableOptions, graphData, analytics } as any
+    return { transactions, tableOptions, graphData, analytics } as any
   },
   methods: {
     async handleGitHubIdSearch(event: any): Promise<void> {
@@ -238,11 +241,11 @@ export default Vue.extend({
   },
   computed: {
     getLastTransactionDate(): string {
-      const dateFromNow = moment(this.treasury.last_transaction_at).fromNow()
-      return dateFromNow
+      return this.analytics.lastTransactionDate
     },
     getTransactions(): Array<FormatedTransaction> {
-      return this.formatTransactions(this.transactions)
+      let txs = this.formatTransactions(this.transactions)
+      return txs
     },
     getFormatedData(): Array<number> {
       let _: any = []
@@ -252,7 +255,7 @@ export default Vue.extend({
       })
       return _;
     },
-    getFormatedCumulatedData(): Array<Array<Number>> {
+    getFormatedSplineChartData(): Array<Array<Number>> {
       let _temp: any = []
       
       this.graphData.map(function (d: any){
@@ -260,6 +263,37 @@ export default Vue.extend({
         _temp.push([formatedDate, d.amount])
       })
       return _temp
+    },
+    getFormatedPieChartData(): any {
+      let bank_transactions = this.transactions;
+      let treasuryTxs = [];
+      const pk = '23676c35fce177aef2412e3ab12d22bf521ed423c6f55b8922c336500a1a27c5';
+      for (const txs of bank_transactions){
+        let recipient = txs.recipient;
+        let amount = 0;
+        if(recipient != pk){
+          for(const tx of bank_transactions){
+            if(recipient === tx.recipient){
+              amount = amount + tx.amount;
+            }
+          }
+          let obj: FormatedPieChartTransaction = {
+            name: recipient,
+            y: amount,
+          }
+          treasuryTxs.push(obj as never);
+        }
+      }
+      const treasuryGraph: any = treasuryTxs.reduce((acc: any, current: any) => {
+        const x = acc.find((item: any) => item.name === current.name);
+        if (!x) {
+          return acc.concat([current]);
+        } else {
+          return acc;
+        }
+      }, []);
+      console.log('treasuryGraph : ', treasuryGraph);
+      return treasuryGraph
     }
   }
 
