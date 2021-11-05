@@ -31,7 +31,6 @@
         <p class="text-inbtn font-normal text-center my-4 text-gray-500">This graph represents all the transactions made by TNB government on the last 30 days.</p>
       </div>
       <div class="mx-4 my-10 md:mx-auto md:w-3/4">
-        <!-- <HomeGraph :data="getFormatedData" /> -->
         <GovernmentGraphOut :data="getFormatedOutTransactions" />
         <div class="flex flex-wrap md:w-10/12 md:mx-auto my-8 lg:divide-x divide-gray-400 border-l border-r border-gray-400">
           <div class="flex flex-col justify-between flex-nowrap w-full md:w-1/2 lg:w-1/4 p-4 border-t md:border-r lg:border-r-0 lg:border-b border-gray-400">
@@ -113,7 +112,6 @@ export default Vue.extend({
 
     const pk = '6e5ea8507e38be7250cde9b8ff1f7c8e39a1460de16b38e6f4d5562ae36b5c1a'
     const _transactions: any = await $axios.get(`http://54.183.16.194/bank_transactions?account_number=${pk}&fee=NONE&limit=100`)
-    console.log(_transactions)
     let transactions: Array<Transaction> = _transactions.data.results
 
     const _additionalApi: AdditionalApi = await $http.$get('https://raw.githubusercontent.com/itsnikhil/tnb-analysis/master/web/js/static.json')
@@ -125,8 +123,6 @@ export default Vue.extend({
     async calculateTreasuryWithdrawals(): Promise<any> {
 
       if (localStorage.getItem('treasury_withdrawals')) {
-        console.log('is in localstorage')
-        console.log(Number(JSON.parse(localStorage.getItem('treasury_withdrawals') as string)))
         this.treasury_withdrawals = Number(JSON.parse(localStorage.getItem('treasury_withdrawals') as string))
 
       } else if (!localStorage.getItem('treasury_withdrawals')) {
