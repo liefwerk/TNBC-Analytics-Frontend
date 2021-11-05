@@ -37,8 +37,8 @@
         </div>
       </div>
       <div class="flex flex-wrap w-full md:grid md:justify-items-stretch md:grid-cols-2 gap-4">
-        <GovernmentGraphIn :data="getFormatedInCumulatedData" @handleFilter="changeDateRange"/>
-        <HomeGraph :data="getFormatedData" />
+        <GovernmentGraphIn :data="getFormatedInCumulatedData" />
+        <GovernmentGraphCumulatedPie :data="getFormatedData" />
       </div>
     </div>
 
@@ -63,7 +63,7 @@ import Table from '@/components/website/table/Table.vue';
 import NumberCard from '@/components/website/cards/NumberCard.vue';
 import DefaultCard from '@/components/website/cards/DefaultCard.vue';
 import GovernmentGraphIn from '~/components/website/graphs/GovernmentGraphIn.vue';
-import HomeGraph from '~/components/website/graphs/HomeGraph.vue';
+import GovernmentGraphCumulatedPie from '~/components/website/graphs/GovernmentGraphCumulatedPie.vue';
 import { Options } from '@/types/Table'
 import { Government } from '@/types/TnbAnalyticsApi'
 import { ExplorerTransaction } from "@/types/TnbExplorerApi"
@@ -75,7 +75,7 @@ export default Vue.extend({
     NumberCard,
     DefaultCard,
     GovernmentGraphIn,
-    HomeGraph
+    GovernmentGraphCumulatedPie
   },
   data() {
     return {
@@ -89,7 +89,6 @@ export default Vue.extend({
       transactions: [] as Array<any>,
       analytics: {},
       payments: {} as Array<ExplorerTransaction>,
-      graphTxsIn: [],
       graphTxsCumulated: [],
       numberOfTransactions: 0,
       perPage: 5,
@@ -134,18 +133,9 @@ export default Vue.extend({
       count: txs.results.length
     }
 
-    const gd: any = await $axios.get('http://bank.tnbexplorer.com/stats/api')
     const gd2: any = await $axios.get('http://54.183.16.194/bank_transactions?id=&account_number=&block__sender=23676c35fce177aef2412e3ab12d22bf521ed423c6f55b8922c336500a1a27c5&block__balance_key=&fee=&recipient=6e5ea8507e38be7250cde9b8ff1f7c8e39a1460de16b38e6f4d5562ae36b5c1a')
 
     const graphTxsCumulated = gd2.data.results
-    
-    let graphTxsIn = gd.data
-    if (graphTxsIn && graphTxsIn.length) {
-      graphTxsIn.reduce((previousTotal: number, record: any) => {
-        record.changeInCoins = record.total - previousTotal;
-        return record.total;
-      }, 0);
-    }
 
     const _balance = await $http.$get(`http://54.219.234.129/accounts/${pk}/balance`)
     const totalTxs: any = await $axios.get(`http://54.183.16.194/bank_transactions?account_number=${pk}&limit=1`)
@@ -161,16 +151,10 @@ export default Vue.extend({
     const today = moment().format('YYYY-MM-DD')
     const aMonthAgo = moment().subtract(1, 'month').format('YYYY-MM-DD')
 
-    const _payments: any = await $axios.get(`http://bank.tnbexplorer.com/stats/api?start=${aMonthAgo}&end=${today}`)
-    let payments: Array<ExplorerTransaction> = _payments.data
-    if (payments as Array<ExplorerTransaction> && payments.length as number) {
-      payments.reduce((previousTotal: number, record: ExplorerTransaction): number => {
-        record.changeInCoins = record.total - previousTotal;
-        return record.total;
-      }, 0);
-    }
+    const _payments: any = await $axios.get(`http://54.183.16.194/bank_transactions?account_number=${pk}&limit=100&fee=NONE`)
+    let payments: Array<ExplorerTransaction> = _payments.data.results
 
-    return { government, transactions, payments, tableOptions, graphTxsIn, analytics, graphTxsCumulated } as any
+    return { government, transactions, payments, tableOptions, analytics, graphTxsCumulated } as any
   },
   methods: {
     formatDate(dateString: any): any {
@@ -231,35 +215,17 @@ export default Vue.extend({
       this.tableOptions.count = _newTransactions.results.length
       
     },
-    async changeDateRange(value: any): Promise<void> {
-      const _graphTxsIn: any = await fetch('https://tnbanalytics.pythonanywhere.com/government-chart', { 
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({days: value})
-      })
-      .then((res: any) => res.json())
-      .catch(err => console.log(err))
-      this.graphTxsIn = _graphTxsIn.data
-    },
     prepareGithubIssue(type: string, issueId: number): any {
-      console.log(typeof type, type)
       let url: null | string = null
       switch(type){
         case 'PROJECT':
           return url = `https://github.com/thenewboston-developers/Projects/issues/${issueId}`
-          break;
         case 'BOUNTY':
           return url = `https://github.com/thenewboston-developers/Website/issues/${issueId}`
-          break;
         case 'TS':
           return url = `https://github.com/thenewboston-developers/Website/issues/${issueId}`
-          break;
         default:
-          console.log('is not anything', type)
           return url = null
-          break;
       }
     },
     formatTransactions(unformatedTransactions): any {
@@ -282,7 +248,6 @@ export default Vue.extend({
             recipientPublicKey: transaction.recipient
           }
         )
-        console.log(formatedTransactions)
       })
       return formatedTransactions
     }
@@ -290,31 +255,6 @@ export default Vue.extend({
   computed: {
     getFormatedTransactions(): any {
       return this.formatTransactions(this.transactions)
-    },
-    getFormatedOutTransactions(): any {
-      let cumulatedData: any = []
-      this.graphTxsIn.forEach((data: any) => {
-        const date = moment.utc(data.date).format()
-        const formatedDate = moment(data.date).valueOf()
-        if (cumulatedData.length === 0) {
-          cumulatedData.push([
-            formatedDate,
-            data.changeInCoins,
-          ]);
-        } else {
-          const prev = cumulatedData[cumulatedData.length - 1]
-          if (prev[0] !== date) {
-
-            cumulatedData.push([
-              formatedDate,
-              data.changeInCoins,
-            ]);
-          } else {
-            prev.changeInCoins += data.changeInCoins;
-          }
-        }
-      })
-      return cumulatedData;
     },
     getFormatedInCumulatedData(): any {
       let _temp: any = []
@@ -327,29 +267,45 @@ export default Vue.extend({
       return _temp
     },
     getFormatedData(): any {
-      let cumulatedData: any = []
-      this.payments.forEach((data: any) => {
-        const date = moment.utc(data.date).format()
-        const formatedDate = moment(data.date).valueOf()
-        if (cumulatedData.length === 0) {
-          cumulatedData.push([
-            formatedDate,
-            data.changeInCoins,
-          ]);
-        } else {
-          const prev = cumulatedData[cumulatedData.length - 1]
-          if (prev[0] !== date) {
-
-            cumulatedData.push([
-              formatedDate,
-              data.changeInCoins,
-            ]);
-          } else {
-            prev.changeInCoins += data.changeInCoins;
+      console.log('start of fn')
+      let data: any = []
+      let bank_transactions: any = this.payments;
+      for (const txs of bank_transactions){
+        console.log('inside for loop')
+        let recipient = txs.recipient;
+        let txsDate = txs.block.created_date.split("T");
+        let formatedDate = moment(txs.block.created_date).valueOf()
+        let amount = 0;
+        if(recipient != this.transactionUrl.publicKey){
+          for (const tx of bank_transactions){
+            let txDate = tx.block.created_date.split("T");
+            if(txsDate[0] === txDate[0]){
+              amount = amount + tx.amount;
+            }
           }
+          let obj = {
+            "date" : txsDate[0],
+            "amount" : amount,
+          }
+          data.push(obj);
         }
-      })
-      return cumulatedData;
+      }
+      const graph = data.reduce((acc, current) => {
+        const x = acc.find(item => item.date === current.date);
+        if (!x) {
+          return acc.concat([current]);
+        } else {
+          return acc;
+        }
+      }, []);
+      console.log(graph)
+      let array: any = []
+      graph.forEach((element: any) => {
+        let formatedDate = moment(element.date).fromNow()
+        array.push([formatedDate, element.amount])
+      });
+      console.log(array)
+      return array;
     },
   }
 

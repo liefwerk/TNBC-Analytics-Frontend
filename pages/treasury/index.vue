@@ -292,7 +292,6 @@ export default Vue.extend({
           return acc;
         }
       }, []);
-      console.log('treasuryGraph : ', treasuryGraph);
       return treasuryGraph
     }
   }

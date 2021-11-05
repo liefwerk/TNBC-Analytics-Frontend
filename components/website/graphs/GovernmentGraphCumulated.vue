@@ -13,19 +13,13 @@ import { Prop, Component, Vue } from 'nuxt-property-decorator';
 @Component
 export default class GovernmentGraph extends Vue {
   @Prop({ required: true }) readonly data!: any
-
-  public sortOptions: Array<Object> = [
-    { name: 'day', value: "1" },
-    { name: 'week', value: "7" },
-    { name: 'month', value: "31" },
-  ]
-
+  
   get transactions(): any {
     let chartOptions: any =
     {
       chart: {
-        type: 'column',
-        alignTicks: false
+        type: 'areaspline',
+        alignTicks: true
       },
       title: {
         text: 'Payments sent from the TNB Government wallet',
@@ -37,26 +31,26 @@ export default class GovernmentGraph extends Vue {
         align: 'left'
       },
       tooltip: {
-        shared: true,
+        shared: false,
         valueSuffix: ' TNBC'
-      },
-      rangeSelector: {
-        selected: 1
       },
       series: [
         {
           name: 'Transactions',
           data: this.data,
-          dataGrouping: {
-           approximation: 'sum',
-            enabled: true,
-            forced: true,
-            anchor: true,
-            units: [[
-              'month', // unit name
-              [1] // allowed multiples
-            ]]
-          },
+          // dataGrouping: {
+          //   approximation: 'average',
+          //   enabled: true,
+          //   groupAll: true,
+          //   forced: true,
+          //   start: this.data[0][0],
+          //   last: this.data[this.data.length - 1][0],
+          //   anchor: false,
+          //   units: [[
+          //     'day', // unit name
+          //     [1] // allowed multiples
+          //   ]]
+          // },
         }
       ]
     }
