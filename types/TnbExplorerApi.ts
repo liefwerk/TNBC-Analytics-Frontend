@@ -1,4 +1,4 @@
-export interface Transaction {
+export interface ExplorerTransaction {
 	accounts: ​​number,
 	changeInCoins: number,
 	date: string,
