@@ -31,7 +31,7 @@
         <p class="text-inbtn font-normal text-center my-4 text-gray-500">This graph represents all the transactions made by TNB government on the last 30 days.</p>
       </div>
       <div class="mx-4 my-10 md:mx-auto md:w-3/4">
-        <GovernmentGraphOut :data="getFormatedOutTransactions" />
+        <LazyTotalPaymentsSentGraph @setDistributedCoins="setDistributedCoins" />
         <div class="flex flex-wrap md:w-10/12 md:mx-auto my-8 lg:divide-x divide-gray-400 border-l border-r border-gray-400">
           <div class="flex flex-col justify-between flex-nowrap w-full md:w-1/2 lg:w-1/4 p-4 border-t md:border-r lg:border-r-0 lg:border-b border-gray-400">
             <p class="text-sm mb-2">Total Treasury Withdrawals</p>
@@ -57,18 +57,17 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import GovernmentGraphOut from '@/components/website/graphs/GovernmentGraphOut.vue'
+import LazyTotalPaymentsSentGraph from '~/components/website/graphs/TotalPaymentsSentGraph.vue'
 import Particle from '@/components/website/particles/Particle.vue'
 import HomeCard from '@/components/website/cards/HomeCard.vue'
 import { Analytics, Treasury, Government } from '~/types/TnbAnalyticsApi'
 import { Transaction } from '~/types/TnbBankApi'
 import { AdditionalApi } from '~/types/AdditionalApi'
-import moment from 'moment'
 
 export default Vue.extend({
   components: {
     Particle,
-    GovernmentGraphOut,
+    LazyTotalPaymentsSentGraph,
     HomeCard
   },
   data(){
@@ -76,7 +75,7 @@ export default Vue.extend({
       analytics: {} as Analytics,
       transactions: {} as Array<Transaction>,
       treasury: {} as Treasury,
-      graphTxsIn: [],
+      graphTxs: [],
       government: {} as Government,
       totalAccounts: null as null | number,
       treasury_withdrawals: null as null | number,
@@ -90,18 +89,6 @@ export default Vue.extend({
 
     const _transactionsCount = await $axios.$get('http://54.183.16.194/bank_transactions?limit=1&date=-1')
     let transactionCount = _transactionsCount.count
-    
-    const gd: any = await $axios.get('http://bank.tnbexplorer.com/stats/api')
-    let _gdRsults = gd.data
-    let distributedCoins =_gdRsults[_gdRsults.length - 1].total
-
-    let graphTxsIn = gd.data
-    if (graphTxsIn && graphTxsIn.length) {
-      graphTxsIn.reduce((previousTotal: number, record: any) => {
-        record.changeInCoins = record.total - previousTotal;
-        return record.total;
-      }, 0);
-    }
 
     const _treasury: Array<Treasury> = await $axios.$get('https://tnbanalytics.pythonanywhere.com/treasury')
     let treasury: Treasury = _treasury[0]
@@ -117,7 +104,7 @@ export default Vue.extend({
     const _additionalApi: AdditionalApi = await $http.$get('https://raw.githubusercontent.com/itsnikhil/tnb-analysis/master/web/js/static.json')
     const totalAccounts: number = _additionalApi.Accounts
 
-    return { analytics, transactions, treasury, government, totalAccounts, transactionCount, distributedCoins, graphTxsIn }
+    return { analytics, transactions, treasury, government, totalAccounts, transactionCount }
   },
   methods: {
     async calculateTreasuryWithdrawals(): Promise<any> {
@@ -153,6 +140,9 @@ export default Vue.extend({
        
         localStorage.setItem('treasury_withdrawals', JSON.stringify(total) as string)
       }
+    },
+    setDistributedCoins(value){
+      this.distributedCoins = value
     }
   },
   computed: {
@@ -165,32 +155,7 @@ export default Vue.extend({
     },
     getTotalTransactions(): number {
       return this.transactionCount as any
-    },
-    getFormatedOutTransactions(): any {
-      let cumulatedData: any = []
-      this.graphTxsIn.forEach((data: any) => {
-        const date = moment.utc(data.date).format()
-        const formatedDate = moment(data.date).valueOf()
-        if (cumulatedData.length === 0) {
-          cumulatedData.push([
-            formatedDate,
-            data.changeInCoins,
-          ]);
-        } else {
-          const prev = cumulatedData[cumulatedData.length - 1]
-          if (prev[0] !== date) {
-
-            cumulatedData.push([
-              formatedDate,
-              data.changeInCoins,
-            ]);
-          } else {
-            prev.changeInCoins += data.changeInCoins;
-          }
-        }
-      })
-      return cumulatedData;
-    },
+    }
   }
 
 })
