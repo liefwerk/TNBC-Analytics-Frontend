@@ -37,8 +37,8 @@
         </div>
       </div>
       <div class="flex flex-wrap w-full md:grid md:justify-items-stretch md:grid-cols-2 gap-4">
-        <GovernmentGraphIn :data="getFormatedInCumulatedData" />
-        <GovernmentGraphCumulatedPie :data="getFormatedData" />
+        <LazyPaymentReceivedGovGraph />
+        <LazyPaymentsSentGovPieGraph />
       </div>
     </div>
 
@@ -62,8 +62,8 @@ import Vue from 'vue';
 import Table from '@/components/website/table/Table.vue';
 import NumberCard from '@/components/website/cards/NumberCard.vue';
 import DefaultCard from '@/components/website/cards/DefaultCard.vue';
-import GovernmentGraphIn from '~/components/website/graphs/GovernmentGraphIn.vue';
-import GovernmentGraphCumulatedPie from '~/components/website/graphs/GovernmentGraphCumulatedPie.vue';
+import LazyPaymentReceivedGovGraph from '~/components/website/graphs/PaymentsReceivedGovGraph.vue';
+import LazyPaymentsSentGovPieGraph from '~/components/website/graphs/PaymentsSentGovPieGraph.vue';
 import { Options } from '@/types/Table'
 import { Government } from '@/types/TnbAnalyticsApi'
 import { ExplorerTransaction } from "@/types/TnbExplorerApi"
@@ -74,8 +74,8 @@ export default Vue.extend({
     Table,
     NumberCard,
     DefaultCard,
-    GovernmentGraphIn,
-    GovernmentGraphCumulatedPie
+    LazyPaymentReceivedGovGraph,
+    LazyPaymentsSentGovPieGraph
   },
   data() {
     return {
@@ -88,8 +88,8 @@ export default Vue.extend({
       government: {} as Government,
       transactions: [] as Array<any>,
       analytics: {},
-      payments: {} as Array<ExplorerTransaction>,
-      graphTxsCumulated: [],
+      sentTxs: {} as Array<ExplorerTransaction>,
+      receivedTxs: [],
       numberOfTransactions: 0,
       perPage: 5,
       pageOffset: 0,
@@ -133,10 +133,6 @@ export default Vue.extend({
       count: txs.results.length
     }
 
-    const gd2: any = await $axios.get('http://54.183.16.194/bank_transactions?id=&account_number=&block__sender=23676c35fce177aef2412e3ab12d22bf521ed423c6f55b8922c336500a1a27c5&block__balance_key=&fee=&recipient=6e5ea8507e38be7250cde9b8ff1f7c8e39a1460de16b38e6f4d5562ae36b5c1a')
-
-    const graphTxsCumulated = gd2.data.results
-
     const _balance = await $http.$get(`http://54.219.234.129/accounts/${pk}/balance`)
     const totalTxs: any = await $axios.get(`http://54.183.16.194/bank_transactions?account_number=${pk}&limit=1`)
 
@@ -148,19 +144,9 @@ export default Vue.extend({
       lastTransactionKey: transactions[0].recipient
     }
 
-    const today = moment().format('YYYY-MM-DD')
-    const aMonthAgo = moment().subtract(1, 'month').format('YYYY-MM-DD')
-
-    const _payments: any = await $axios.get(`http://54.183.16.194/bank_transactions?account_number=${pk}&limit=100&fee=NONE`)
-    let payments: Array<ExplorerTransaction> = _payments.data.results
-
-    return { government, transactions, payments, tableOptions, analytics, graphTxsCumulated } as any
+    return { government, transactions, tableOptions, analytics } as any
   },
   methods: {
-    formatDate(dateString: any): any {
-      const date = new Date(dateString);
-      return new Intl.DateTimeFormat('default', { dateStyle: 'medium' } as any).format(date);
-    },
     async handlePreviousPage(): Promise<void>  {
       if (this.tableOptions.previous){
         const _previousTransactions = await fetch(`${this.tableOptions.previous}`)
@@ -255,58 +241,7 @@ export default Vue.extend({
   computed: {
     getFormatedTransactions(): any {
       return this.formatTransactions(this.transactions)
-    },
-    getFormatedInCumulatedData(): any {
-      let _temp: any = []
-      
-      this.graphTxsCumulated.map(function (d: any){
-        const formatedDate = moment(d.block.created_date).valueOf()
-        _temp.push([formatedDate, d.amount])
-      })
-
-      return _temp
-    },
-    getFormatedData(): any {
-      console.log('start of fn')
-      let data: any = []
-      let bank_transactions: any = this.payments;
-      for (const txs of bank_transactions){
-        console.log('inside for loop')
-        let recipient = txs.recipient;
-        let txsDate = txs.block.created_date.split("T");
-        let formatedDate = moment(txs.block.created_date).valueOf()
-        let amount = 0;
-        if(recipient != this.transactionUrl.publicKey){
-          for (const tx of bank_transactions){
-            let txDate = tx.block.created_date.split("T");
-            if(txsDate[0] === txDate[0]){
-              amount = amount + tx.amount;
-            }
-          }
-          let obj = {
-            "date" : txsDate[0],
-            "amount" : amount,
-          }
-          data.push(obj);
-        }
-      }
-      const graph = data.reduce((acc, current) => {
-        const x = acc.find(item => item.date === current.date);
-        if (!x) {
-          return acc.concat([current]);
-        } else {
-          return acc;
-        }
-      }, []);
-      console.log(graph)
-      let array: any = []
-      graph.forEach((element: any) => {
-        let formatedDate = moment(element.date).fromNow()
-        array.push([formatedDate, element.amount])
-      });
-      console.log(array)
-      return array;
-    },
+    }
   }
 
 })
