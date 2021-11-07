@@ -49,7 +49,7 @@ export default class TreasuryGraph extends Vue {
             cursor: 'pointer',
             dataLabels: {
                 enabled: true,
-                format: '<b>{point.percentage:.1f} %'
+                format: '<b>{point.y}</b> - {point.percentage:.1f} %'
             },
             showInLegend: true
           }

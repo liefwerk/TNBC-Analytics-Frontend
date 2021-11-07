@@ -109,7 +109,7 @@ export default class PaymentsSentGovPieGraph extends Vue {
           cursor: 'pointer',
           dataLabels: {
               enabled: true,
-              format: '<b>{point.percentage:.1f} % - {point.name}'
+              format: '<b>{point.percentage:.1f} % - {point.y}'
           },
           showInLegend: true
         }
