@@ -3,7 +3,7 @@
     <div class="py-4 mx-auto">
       <div class="flex flex-col text-center w-full mt-8 mb-16">
         <h1 class="md:text-titlelg text-titlemd title-font mb-4 text-gray-900 font-sans font-semibold">Frequently Asked Questions</h1>
-        <p class="lg:w-2/3 mx-auto leading-relaxed text-subtitle text-pcsecondery">Looking for answers? Questions & answers can be instantly filtered in FAQ page.</p>
+        <p class="lg:w-2/3 mx-auto leading-relaxed text-subtitle text-pcsecondery">Detailed information of related topics are given below.</p>
       </div>
       <div class="btn-wrapper">
         <button 
