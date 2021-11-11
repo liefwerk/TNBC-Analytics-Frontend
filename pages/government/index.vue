@@ -1,8 +1,8 @@
 <template>
   <div class="mt-12 mb-20 mx-6 md:mx-12">
     <div class="mb-16">
-      <h1 class="text-titlelg mb-2 font-sans font-semibold">Government Payments</h1>
-      <span class="text-subtitle text-pcsecondery">TNBC Released From Government Account</span>
+      <h1 class="text-titlelg mb-2 font-sans font-semibold">Government</h1>
+      <span class="text-subtitle text-pcsecondery">TNBC withdrawal and distribution information</span>
     </div>
 
     <div class="flex flex-wrap mx-auto">
@@ -13,11 +13,11 @@
             :number="analytics.balance"
             class="text-red-400 self-start" />
           <NumberCard 
-            title="N° of Transactions"
+            title="Number of Transactions"
             :number="analytics.totalOfTransactions"
             class="text-blue-400 self-start" />
           <NumberCard 
-            title="Last Transaction"
+            title="Last Transaction Amount"
             :number="analytics.lastTransaction"
             class="text-green-400 self-start" />
           <DefaultCard 
@@ -43,8 +43,8 @@
     </div>
 
     <div class="mt-10">
-      <h2 class="text-titlemd font-sans font-semibold">Payments</h2>
-      <p class="mb-4">Paid by the Government of TNBC</p>
+      <h2 class="text-titlemd font-sans font-semibold">Distributions</h2>
+      <p class="mb-4">TNBC distributed to the contributors</p>
       <Table
         @previousPage="handlePreviousPage"
         @nextPage="handleNextPage"
@@ -107,7 +107,7 @@ export default Vue.extend({
           attribute: 'githubLink'
         },
         {
-          name: 'payment for',
+          name: 'purpose',
           attribute: 'paymentFor'
         },
         {

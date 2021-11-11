@@ -90,12 +90,12 @@ export default class PaymentsSentGovPieGraph extends Vue {
       },
       colors: ['#336fdf', '#2a297a', '#336faf'],
       title: {
-        text: 'Payments sent from the TNB Government wallet',
+        text: 'Periodic distributions of TNBC',
         margin: 30,
         align: 'left'
       },
       subtitle: {
-        text: 'From November 2nd 2020 until yesterday.',
+        text: 'From Government Account',
         align: 'left'
       },
       navigator: { enabled: false },

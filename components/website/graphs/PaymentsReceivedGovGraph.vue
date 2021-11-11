@@ -47,12 +47,12 @@ export default class GovernmentGraph extends Vue {
         type: 'areaspline'
       },
       title: {
-        text: 'Payments reveived on the TNB Government wallet',
+        text: 'Deposits to Government account',
         margin: 30,
         align: 'left'
       },
       subtitle: {
-        text: 'From the TNB Treasury Account',
+        text: 'From Treasury Account',
         align: 'left'
       },
       tooltip: {

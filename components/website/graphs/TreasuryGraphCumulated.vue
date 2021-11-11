@@ -30,12 +30,12 @@ export default class TreasuryGraph extends Vue {
           enabled: false
         },
         title: {
-          text: 'Values of Withdrawals amounts',
+          text: 'Periodic withdrawals of TNBC',
           margin: 30,
           align: 'left'
         },
         subtitle: {
-          text: 'From the TNB Treasury Account',
+          text: 'From Treasury Account',
           align: 'left'
         },
         tooltip: {

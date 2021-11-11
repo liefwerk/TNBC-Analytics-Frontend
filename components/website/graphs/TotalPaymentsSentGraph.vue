@@ -86,12 +86,12 @@ export default class GovernmentGraph extends Vue {
         alignTicks: false
       },
       title: {
-        text: 'Payments sent from the TNB Government wallet',
+        text: '',
         margin: 30,
         align: 'left'
       },
       subtitle: {
-        text: 'From November 2nd 2020 until yesterday.',
+        text: '',
         align: 'left'
       },
       tooltip: {

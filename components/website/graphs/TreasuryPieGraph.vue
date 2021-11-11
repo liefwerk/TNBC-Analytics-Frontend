@@ -25,12 +25,12 @@ export default class TreasuryGraph extends Vue {
         },
         colors: ['#2a297a', '#336faf'],
         title: {
-          text: "Shares of withdrawals' amounts",
+          text: "Withdrawal amounts to each Government account",
           margin: 30,
           align: 'left'
         },
         subtitle: {
-          text: 'From the TNB Treasury Account',
+          text: 'From Treasury Account',
           align: 'left'
         },
         navigator: { enabled: false },

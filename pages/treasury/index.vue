@@ -2,8 +2,8 @@
   <div>
     <div class="mt-12 mb-20 mx-6 md:mx-12">
       <div class="mb-16">
-        <h1 class="text-titlelg mb-2 font-sans font-semibold">Treasury Withdrawals</h1>
-        <span class="text-subtitle text-pcsecondery">TNBC Withdrawed From Treasury Account</span>
+        <h1 class="text-titlelg mb-2 font-sans font-semibold">Treasury</h1>
+        <span class="text-subtitle text-pcsecondery">Minted TNBC and its withdrawal information</span>
       </div>
 
       <div class="flex flex-wrap mx-auto">
@@ -14,11 +14,11 @@
               :number="analytics.balance"
               class="text-red-400" />
             <NumberCard 
-              title="N° of Transactions"
+              title="Number of Transactions"
               :number="analytics.totalOfTransactions"
               class="text-blue-400 self-start" />
             <NumberCard 
-              title="Last Transaction"
+              title="Last Transaction Amount"
               :number="analytics.lastTransaction"
              class="text-green-400 self-start" />
             <DefaultCard 
@@ -44,7 +44,7 @@
 
       <div class="mt-10">
         <h2 class="text-titlemd font-sans font-semibold">Withdrawals</h2>
-        <p class="mb-4">Withdrawed from the Government's treasury</p>
+        <p class="mb-4">TNBC sent from Treasury account to Government account</p>
         <Table
           @previousPage="handlePreviousPage"
           @nextPage="handleNextPage"
@@ -104,7 +104,7 @@ export default Vue.extend({
           attribute: 'amount'
         },
         {
-          name: 'Payment For',
+          name: 'Purpose',
           attribute: 'paymentFor'
         },
         {

@@ -27,14 +27,14 @@
         </div>
       </div>
       <div class="my-16 mx-4 font-sans font-semibold">
-        <h2 class="text-titlelg text-center">Last month's transactions</h2>
-        <p class="text-inbtn font-normal text-center my-4 text-gray-500">This graph represents all the transactions made by TNB government on the last 30 days.</p>
+        <h2 class="text-titlelg text-center">Distribution Chart</h2>
+        <p class="text-inbtn font-normal text-center my-4 text-gray-500">This statistic represents the distribution of TNBC by "TNB Government" on last 12 months.</p>
       </div>
       <div class="mx-4 my-10 md:mx-auto md:w-3/4">
         <LazyTotalPaymentsSentGraph @setDistributedCoins="setDistributedCoins" />
         <div class="flex flex-wrap md:w-10/12 md:mx-auto my-8 lg:divide-x divide-gray-400 border-l border-r border-gray-400">
           <div class="flex flex-col justify-between flex-nowrap w-full md:w-1/2 lg:w-1/4 p-4 border-t md:border-r lg:border-r-0 lg:border-b border-gray-400">
-            <p class="text-sm mb-2">Total Treasury Withdrawals</p>
+            <p class="text-sm mb-2">Treasury Withdrawals</p>
             <p class="w-full text-left self-end text-xl">{{ getTreasuryWithdrawals }}</p>
           </div>
           <div class="flex flex-col justify-between flex-nowrap w-full md:w-1/2 lg:w-1/4 p-4 border-t lg:border-b border-gray-400">
