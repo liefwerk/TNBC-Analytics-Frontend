@@ -49,7 +49,7 @@
           @previousPage="handlePreviousPage"
           @nextPage="handleNextPage"
           @changePageOffset="handlePageOffset"
-          @changedMaxItems="handleItemsChange"
+          @changedMaxItems="handlePerPageChange"
           @githubUserEntry="handleGitHubIdSearch"
           :options="tableOptions"
           :columns="columns"
@@ -118,7 +118,7 @@ export default Vue.extend({
 
     const pk: string = '23676c35fce177aef2412e3ab12d22bf521ed423c6f55b8922c336500a1a27c5'
     const _transactions: Pagination =
-    await $http.$get(`http://54.183.16.194/bank_transactions?limit=10&account_number=${pk}&block__sender=${pk}&fee=NONE`)
+    await $http.$get(`http://54.183.16.194/bank_transactions?limit=5&account_number=${pk}&block__sender=${pk}&fee=NONE`)
     
     const _balance = await $http.$get(`http://54.219.234.129/accounts/${pk}/balance`)
 
@@ -188,8 +188,12 @@ export default Vue.extend({
       }
     },
     async handlePageOffset(offset: number, perPage: number): Promise<void> {
-      console.log('received emit from function', offset, perPage)
-      const _transactions: Pagination = await fetch(`https://tnbanalytics.pythonanywhere.com/transaction?limit=${this.perPage}&offset=${offset}&${this.transactionType}`)
+      const url = this.transactionUrl
+      const link = 
+      `${url.protocol}://${url.bank}/bank_transactions?limit=${this.perPage}&offset=${offset}&account_number=${url.publicKey}&fee=NONE`
+
+
+      const _transactions: Pagination = await fetch(link)
         .then(res => res.json())
         .catch(err => console.log(err))
 
@@ -198,16 +202,20 @@ export default Vue.extend({
       this.tableOptions.previous = _transactions.previous
       this.tableOptions.next = _transactions.next
     },
-    async handleItemsChange(perPage: number): Promise<void> {
-      const _newTransactions = await fetch(`https://tnbanalytics.pythonanywhere.com/transaction?limit=${perPage}&offset=${this.pageOffset}&${this.transactionType}`)
+    async handlePerPageChange(perPage: number): Promise<void> {
+       const url = this.transactionUrl
+       const link = 
+       `${url.protocol}://${url.bank}/bank_transactions?limit=${perPage}&offset=${this.pageOffset}&account_number=${url.publicKey}&fee=NONE`
+
+      const _newTransactions = await fetch(link)
           .then(res => res.json())
           .catch(err => console.log(err))
 
-        this.perPage = perPage
-        this.transactions = _newTransactions.results
-        this.tableOptions.previous = _newTransactions.previous
-        this.tableOptions.next = _newTransactions.next
-        this.tableOptions.count = this.transactions.length
+      this.perPage = perPage
+      this.transactions = _newTransactions.results
+      this.tableOptions.previous = _newTransactions.previous
+      this.tableOptions.next = _newTransactions.next
+      this.tableOptions.count = this.transactions.length
     },
     async changeDateRange(value: any): Promise<void> {
       const _graphData: any = await fetch('https://tnbanalytics.pythonanywhere.com/treasury-chart', { 
