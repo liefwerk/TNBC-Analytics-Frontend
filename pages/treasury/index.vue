@@ -120,7 +120,7 @@ export default Vue.extend({
     const _transactions: Pagination =
     await $http.$get(`http://54.183.16.194/bank_transactions?limit=5&account_number=${pk}&block__sender=${pk}&fee=NONE`)
     
-    const _balance = await $http.$get(`http://54.219.234.129/accounts/${pk}/balance`)
+    const _balance = await $http.$get(`http://52.52.160.149/accounts/${pk}/balance`)
 
     let transactions: Array<Transaction> = _transactions.results
     
