@@ -5,7 +5,7 @@
         <h1 class="md:text-titlelg text-titlemd title-font mb-4 text-gray-900 font-sans font-semibold">Frequently Asked Questions</h1>
         <p class="lg:w-2/3 mx-auto leading-relaxed text-subtitle text-pcsecondery">Detailed information of related topics are given below.</p>
       </div>
-      <div class="btn-wrapper">
+      <div>
         <button 
           class="filter-btn mt-0 border-2 btn-hover border-btnprimary self-center cursor-pointer transition-500"
           :class="selectedFilter === '' ? 'selected-button' : ''"
