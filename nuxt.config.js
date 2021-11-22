@@ -9,7 +9,7 @@ export default {
   },
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'TNBC Analytics',
+    title: '(Deprecated) TNBC Analytics',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -81,8 +81,8 @@ export default {
   // PWA module configuration: https://go.nuxtjs.dev/pwa
   pwa: {
     manifest: {
-      name: 'TNBC Analytics',
-      description: 'A simple data viewer for The New Boston Coin',
+      name: 'TNBC Analytics (Deprecated)',
+      description: 'Deprecated version of TNBC Analytics - v001',
       lang: 'en'
     }
   },
