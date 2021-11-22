@@ -5,9 +5,9 @@
         <h1 class="md:text-titlelg text-titlemd title-font mb-4 text-gray-900 font-sans font-semibold">Frequently Asked Questions</h1>
         <p class="lg:w-2/3 mx-auto leading-relaxed text-subtitle text-pcsecondery">Detailed information of related topics are given below.</p>
       </div>
-      <div>
+      <div class="bg-white max-w-max rounded-lg shadow-md">
         <button 
-          class="filter-btn mt-0 border-2 btn-hover border-btnprimary self-center cursor-pointer transition-500"
+          class="filter-btn mt-0 self-center cursor-pointer transition-500"
           :class="selectedFilter === '' ? 'selected-button' : ''"
           @click="resetFilter">
           All
@@ -16,7 +16,7 @@
           v-for="(faq, index) in filteredFaqsTypes" 
           :key="index"
           @click="handleFilter(faq)"
-          class="filter-btn border-2 btn-hover border-btnprimary cursor-pointer transition-500"
+          class="filter-btn cursor-pointer transition-500"
           :class="faq.title === selectedFilter ? 'selected-button' : ''">
             {{faq.title}}
         </button>
