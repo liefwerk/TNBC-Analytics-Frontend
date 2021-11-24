@@ -1,5 +1,5 @@
 <template>
-  <div class="relative h-full card">
+  <div class="relative w-full card">
     <highcharts
       v-if="totalTxs"
       :constructor-type="'stockChart'" 
@@ -104,6 +104,7 @@ export default class GovernmentGraph extends Vue {
       series: [
         {
           name: 'Transactions',
+          turboThreshold: 20000,
           data: this.graphData,
           dataGrouping: {
            approximation: 'sum',
