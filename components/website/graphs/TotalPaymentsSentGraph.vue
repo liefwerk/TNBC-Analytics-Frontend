@@ -23,7 +23,9 @@ export default class GovernmentGraph extends Vue {
   totalTxs: any = null
 
   async fetch() {
-    this.totalTxs = await fetch('http://bank.tnbexplorer.com/stats/api')
+    const startDate = moment().subtract(12, 'month').format('YYYY-MM-DD')
+    const endDate = moment().format('YYYY-MM-DD')
+    this.totalTxs = await fetch(`http://bank.tnbexplorer.com/stats/api/?start=${startDate}&end=${endDate}`)
       .then(res => res.json()).catch(err => console.log(err))
   }
 
@@ -35,7 +37,6 @@ export default class GovernmentGraph extends Vue {
       this.reduceTotalData(this.totalTxs)  
       
       const cumulatedData = this.cumulateTotalData(this.totalTxs)
-      
       return cumulatedData
     }
     return null
@@ -54,6 +55,7 @@ export default class GovernmentGraph extends Vue {
 
   cumulateTotalData(array): any {
     let cumulatedData: any = []
+
     array.forEach((data: any) => {
       const date = moment.utc(data.date).format()
       const formatedDate = moment(data.date).valueOf()
@@ -82,8 +84,11 @@ export default class GovernmentGraph extends Vue {
     let chartOptions: any =
     {
       chart: {
-        type: 'column',
+        type: 'areaspline',
         alignTicks: false
+      },
+      boost: {
+        enabled: false
       },
       title: {
         text: '',
@@ -101,23 +106,20 @@ export default class GovernmentGraph extends Vue {
       rangeSelector: {
         selected: 1
       },
-      series: [
-        {
-          name: 'Transactions',
-          turboThreshold: 20000,
-          data: this.graphData,
-          dataGrouping: {
-           approximation: 'sum',
-            enabled: true,
-            forced: true,
-            anchor: true,
-            units: [[
-              'month', // unit name
-              [1] // allowed multiples
-            ]]
-          },
-        }
-      ]
+      series: [{
+        name: 'Transactions',
+        turboThreshold: 20000,
+        data: this.graphData,
+        dataGrouping: {
+          approximation: 'sum',
+          enabled: true,
+          forced: true,
+          units: [[
+            'month', // unit name
+            [1] // allowed multiples
+          ]]
+        },
+      }]
     }
 
     return chartOptions

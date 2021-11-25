@@ -13,6 +13,9 @@ const options = {
     },
     backgroundColor: 'transparent'
   },
+  boost: {
+    enabled: false
+  },
   scrollbar: {
     enabled: true
   },
@@ -44,6 +47,11 @@ if (typeof Highcharts === "object") {
   Highcharts.setOptions({
     ...options
   })
+  Highcharts.addEvent(Highcharts.Chart, 'displayError', function (event) {
+    if (event.code === 12) {
+      event.preventDefault();
+    }
+  });
 }
 
 Vue.use(HighchartsVue);
