@@ -1,13 +1,5 @@
 <template>
   <div class="h-96 relative">
-    <div class="text-white bg-gray-900 py-2 px-4 text-xs cursor-pointer">
-      <div v-if="!areParticlesPaused" @click="pauseParticles">
-        Pause the animation
-      </div>
-      <div v-else @click="playParticles">
-        Play the animation
-      </div>
-    </div>
     <div :id="id" class="particles-js m-0 p-0 text-center h-full"></div>
   </div>
 </template>
@@ -124,7 +116,7 @@ export default class Particles extends Vue {
     const tsParticles = require("tsparticles")
     this.initParticleJS()
     this.$nextTick(() => {
-      this.onResize()
+      // this.onResize()
       window.addEventListener('resize', this.onResize)
     })
   }
@@ -132,13 +124,13 @@ export default class Particles extends Vue {
   onResize() {
     if (process.client) {
       let width = window.innerWidth
-      if (width < 768){
-        this.particlesOptions.particles.number.value = 35;
-        this.initParticleJS()
-      } else {
-        this.particlesOptions.particles.number.value = 100;
-        this.initParticleJS()
-      }
+      // if (width < 768){
+      //   this.particlesOptions.particles.number.value = 35;
+      //   this.initParticleJS()
+      // } else {
+      //   this.particlesOptions.particles.number.value = 100;
+      //   this.initParticleJS()
+      // }
     }
   }
   
@@ -155,18 +147,6 @@ export default class Particles extends Vue {
     .catch((error) => {
       console.error(error);
     });
-  }
-
-  public pauseParticles () {
-    let particles: any = tsParticles.domItem(0)
-    particles.pause()
-    this.areParticlesPaused = true
-  }
-
-  public playParticles () {
-    let particles: any = tsParticles.domItem(0)
-    particles.play()
-    this.areParticlesPaused = false
   }
 
 }

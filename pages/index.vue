@@ -31,7 +31,7 @@
         <p class="text-inbtn font-normal text-center my-4 text-gray-500">This statistic represents the distribution of TNBC by "TNB Government" on last 12 months.</p>
       </div>
       <div class="mx-4 my-10 md:mx-auto md:w-3/4">
-        <LazyTotalPaymentsSentGraph @setDistributedCoins="setDistributedCoins" />
+        <TotalPaymentsSentGraph @setDistributedCoins="setDistributedCoins" />
         <div class="flex flex-wrap md:w-10/12 md:mx-auto my-8 lg:divide-x divide-gray-400 border-l border-r border-gray-400">
           <div class="flex flex-col justify-between flex-nowrap w-full md:w-1/2 lg:w-1/4 p-4 border-t md:border-r lg:border-r-0 lg:border-b border-gray-400">
             <p class="text-sm mb-2">Treasury Withdrawals</p>
@@ -57,7 +57,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import LazyTotalPaymentsSentGraph from '~/components/website/graphs/TotalPaymentsSentGraph.vue'
+import TotalPaymentsSentGraph from '~/components/website/graphs/TotalPaymentsSentGraph.vue'
 import Particle from '@/components/website/particles/Particle.vue'
 import HomeCard from '@/components/website/cards/HomeCard.vue'
 import { Analytics, Treasury, Government } from '~/types/TnbAnalyticsApi'
@@ -67,7 +67,7 @@ import { AdditionalApi } from '~/types/AdditionalApi'
 export default Vue.extend({
   components: {
     Particle,
-    LazyTotalPaymentsSentGraph,
+    TotalPaymentsSentGraph,
     HomeCard
   },
   data(){

@@ -133,7 +133,7 @@ export default Vue.extend({
       count: txs.results.length
     }
 
-    const _balance = await $http.$get(`http://54.219.234.129/accounts/${pk}/balance`)
+    const _balance = await $http.$get(`http://52.52.160.149/accounts/${pk}/balance`)
     const totalTxs: any = await $axios.get(`http://54.183.16.194/bank_transactions?account_number=${pk}&limit=1`)
 
     let analytics = {
