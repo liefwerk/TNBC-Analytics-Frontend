@@ -205,11 +205,11 @@ export default Vue.extend({
       let url: null | string = null
       switch(type){
         case 'PROJECT':
-          return url = `https://github.com/thenewboston-developers/Projects/issues/${issueId}`
+          return url = ` https://github.com/thenewboston-developers/Projects/issues/${issueId}`
         case 'BOUNTY':
           return url = `https://github.com/thenewboston-developers/Website/issues/${issueId}`
         case 'TS':
-          return url = `https://github.com/thenewboston-developers/Website/issues/${issueId}`
+          return url = ` https://github.com/thenewboston-developers/Contributor-Payments/issues/${issueId}`
         default:
           return url = null
       }

@@ -34,8 +34,8 @@
         <TotalPaymentsSentGraph @setDistributedCoins="setDistributedCoins" />
         <div class="flex flex-wrap md:w-10/12 md:mx-auto my-8 lg:divide-x divide-gray-400 border-l border-r border-gray-400">
           <div class="flex flex-col justify-between flex-nowrap w-full md:w-1/2 lg:w-1/4 p-4 border-t md:border-r lg:border-r-0 lg:border-b border-gray-400">
-            <p class="text-sm mb-2">Treasury Withdrawals</p>
-            <p class="w-full text-left self-end text-xl">{{ getTreasuryWithdrawals }}</p>
+            <p class="text-sm mb-2">Treasury Balance</p>
+            <p class="w-full text-left self-end text-xl">{{ getTreasuryBalance }}</p>
           </div>
           <div class="flex flex-col justify-between flex-nowrap w-full md:w-1/2 lg:w-1/4 p-4 border-t lg:border-b border-gray-400">
             <p class="text-sm mb-2">Distributed Coins</p>
@@ -78,6 +78,7 @@ export default Vue.extend({
       graphTxs: [],
       government: {} as Government,
       totalAccounts: null as null | number,
+      treasuryBalance: null as null | number,
       treasury_withdrawals: null as null | number,
       transactionCount: null as null | number,
       distributedCoins: null as null | number
@@ -96,59 +97,28 @@ export default Vue.extend({
     const _government: Array<Government> = await $axios.$get('https://tnbanalytics.pythonanywhere.com/government')
     let government: Government = _government[0]
 
-
-    const pk = '6e5ea8507e38be7250cde9b8ff1f7c8e39a1460de16b38e6f4d5562ae36b5c1a'
+    const pk: string = '6e5ea8507e38be7250cde9b8ff1f7c8e39a1460de16b38e6f4d5562ae36b5c1a'
     const _transactions: any = await $axios.get(`http://54.183.16.194/bank_transactions?account_number=${pk}&fee=NONE&limit=100`)
     let transactions: Array<Transaction> = _transactions.data.results
+
+    const treasuryPk: string = '23676c35fce177aef2412e3ab12d22bf521ed423c6f55b8922c336500a1a27c5'
+    const _balance = await $axios.get(`http://52.52.160.149/accounts/${treasuryPk}/balance`)
+    const treasuryBalance = _balance.data.balance
 
     const _additionalApi: AdditionalApi = await $http.$get('https://raw.githubusercontent.com/itsnikhil/tnb-analysis/master/web/js/static.json')
     const totalAccounts: number = _additionalApi.Accounts
 
-    return { analytics, transactions, treasury, government, totalAccounts, transactionCount }
+    return { analytics, transactions, treasury, government, totalAccounts, transactionCount, treasuryBalance }
   },
   methods: {
-    async calculateTreasuryWithdrawals(): Promise<any> {
-
-      if (localStorage.getItem('treasury_withdrawals')) {
-        this.treasury_withdrawals = Number(JSON.parse(localStorage.getItem('treasury_withdrawals') as string))
-
-      } else if (!localStorage.getItem('treasury_withdrawals')) {
-        let treasuryTxs: any = [];
-        let total = 0;
-        let uri = 'http://54.183.16.194/bank_transactions?account_number=23676c35fce177aef2412e3ab12d22bf521ed423c6f55b8922c336500a1a27c5&fee=NONE';
-        
-        const txs = await fetch(uri)
-          .then((response) => {
-              return response.json();
-          }).catch(err=>{
-              console.log('error', err)
-          })
-  
-        let bank_transactions = txs.results;
-        for (const txs of bank_transactions){
-          let amount = txs.amount;
-          if(amount === 1){
-              continue;
-          }
-          let obj: any = {
-              "transactions" : amount,
-          }
-          treasuryTxs.push(obj);
-          total = total + amount;
-        }
-        this.treasury_withdrawals = total
-       
-        localStorage.setItem('treasury_withdrawals', JSON.stringify(total) as string)
-      }
-    },
     setDistributedCoins(value){
       this.distributedCoins = value
     }
   },
   computed: {
-    getTreasuryWithdrawals(): any {
-      this.treasury_withdrawals ? this.treasury_withdrawals : this.calculateTreasuryWithdrawals()
-      return this.treasury_withdrawals
+    getTreasuryBalance(): any {
+      console.log(this.treasuryBalance)
+      return this.treasuryBalance
     },
     getDistributedCoins(): number {
       return this.distributedCoins as any
