@@ -88,6 +88,7 @@ export default Vue.extend({
     const _analytics: Array<Analytics> = await $axios.$get('https://tnbanalytics.pythonanywhere.com/statistics')
     let analytics: Analytics = _analytics[0]
 
+    // const _transactionsCount = await $axios.$get('http://54.183.16.194/bank_transactions?limit=1&date=-1')
     const _transactionsCount = await $axios.$get('http://54.183.16.194/bank_transactions?limit=1&date=-1')
     let transactionCount = _transactionsCount.count
 

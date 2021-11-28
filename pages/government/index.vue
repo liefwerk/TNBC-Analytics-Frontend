@@ -201,15 +201,31 @@ export default Vue.extend({
       this.tableOptions.count = _newTransactions.results.length
       
     },
-    prepareGithubIssue(type: string, issueId: number): any {
+    prepareGithubIssue(type: string, issueId: any): any {
       let url: null | string = null
+
+      let selectFirstId = /^[\d]+/gm
+      let projectFirstId = issueId.match(selectFirstId)
+
       switch(type){
         case 'PROJECT':
-          return url = ` https://github.com/thenewboston-developers/Projects/issues/${issueId}`
+          let selectLastId = /[\d]+$/gm
+          let projectLastId = issueId.match(selectLastId)
+          console.log('projetct lqst id', projectLastId)
+          return {
+            id: projectLastId[0],
+            url: `https://github.com/thenewboston-developers/Projects/issues/${projectLastId[0]}`
+          }
         case 'BOUNTY':
-          return url = `https://github.com/thenewboston-developers/Website/issues/${issueId}`
+          return {
+            id: projectFirstId[0],
+            url: `https://github.com/thenewboston-developers/Website/issues/${projectFirstId[0]}`
+          }
         case 'TS':
-          return url = ` https://github.com/thenewboston-developers/Contributor-Payments/issues/${issueId}`
+          return {
+            id: projectFirstId[0],
+            url: ` https://github.com/thenewboston-developers/Contributor-Payments/issues/${projectFirstId[0]}`
+          }
         default:
           return url = null
       }
@@ -219,8 +235,9 @@ export default Vue.extend({
       unformatedTransactions.map((transaction: any) => {
         const date = transaction.block.created_date
         const lastTransactionDate = moment(date).format('MMM Do, YYYY')
-        const githubRegex = /(?<=PROJECT_|BOUNTY_|TS_)[\d+.-]+/
-        let githubId = transaction.memo.match(githubRegex)
+        
+        const matchAllIds = /(?<=PROJECT_|BOUNTY_|TS_)[\d+.-].+/
+        let allGithubIds = transaction.memo.match(matchAllIds)
 
         const paymentForRegex = /(?<=TNB_)[\w].*?(?=_)/
         let paymentFor = transaction.memo.match(paymentForRegex)
@@ -229,7 +246,7 @@ export default Vue.extend({
           {
             date: lastTransactionDate,
             amount: transaction.amount,
-            githubLink: githubId ? {id: githubId[0], url: this.prepareGithubIssue(paymentFor[0], githubId[0])} : null,
+            githubLink: allGithubIds ? this.prepareGithubIssue(paymentFor[0], allGithubIds[0]) : null,
             paymentFor: paymentFor ? paymentFor[0] : null,
             recipientPublicKey: transaction.recipient
           }
