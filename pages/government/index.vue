@@ -204,9 +204,6 @@ export default Vue.extend({
     prepareGithubIssue(type: string, issueId: any): any {
       let url: null | string = null
 
-      console.log('issue id', issueId)
-      console.log('type', type)
-
       let selectFirstId = /^[\d]+/gm
       let projectFirstId = issueId.match(selectFirstId)
 
@@ -215,13 +212,20 @@ export default Vue.extend({
           let selectLastId = /[\d]+$/gm
           let projectLastId = issueId.match(selectLastId)
           console.log('projetct lqst id', projectLastId)
-          return url = `https://github.com/thenewboston-developers/Projects/issues/${projectLastId[0]}`
+          return {
+            id: projectLastId[0],
+            url: `https://github.com/thenewboston-developers/Projects/issues/${projectLastId[0]}`
+          }
         case 'BOUNTY':
-          console.log('inside bounty')
-          return url = `https://github.com/thenewboston-developers/Website/issues/${projectFirstId[0]}`
+          return {
+            id: projectFirstId[0],
+            url: `https://github.com/thenewboston-developers/Website/issues/${projectFirstId[0]}`
+          }
         case 'TS':
-          console.log('inside ts')
-          return url = ` https://github.com/thenewboston-developers/Contributor-Payments/issues/${projectFirstId[0]}`
+          return {
+            id: projectFirstId[0],
+            url: ` https://github.com/thenewboston-developers/Contributor-Payments/issues/${projectFirstId[0]}`
+          }
         default:
           return url = null
       }
@@ -242,7 +246,7 @@ export default Vue.extend({
           {
             date: lastTransactionDate,
             amount: transaction.amount,
-            githubLink: allGithubIds ? {id: allGithubIds[0], url: this.prepareGithubIssue(paymentFor[0], allGithubIds[0])} : null,
+            githubLink: allGithubIds ? this.prepareGithubIssue(paymentFor[0], allGithubIds[0]) : null,
             paymentFor: paymentFor ? paymentFor[0] : null,
             recipientPublicKey: transaction.recipient
           }

@@ -89,7 +89,7 @@ export default Vue.extend({
     let analytics: Analytics = _analytics[0]
 
     // const _transactionsCount = await $axios.$get('http://54.183.16.194/bank_transactions?limit=1&date=-1')
-    const _transactionsCount = await $axios.$get('http://54.183.16.194//bank_transactions?limit=1&date=-1')
+    const _transactionsCount = await $axios.$get('http://54.183.16.194/bank_transactions?limit=1&date=-1')
     let transactionCount = _transactionsCount.count
 
     const _treasury: Array<Treasury> = await $axios.$get('https://tnbanalytics.pythonanywhere.com/treasury')
@@ -99,7 +99,7 @@ export default Vue.extend({
     let government: Government = _government[0]
 
     const pk: string = '6e5ea8507e38be7250cde9b8ff1f7c8e39a1460de16b38e6f4d5562ae36b5c1a'
-    const _transactions: any = await $axios.get(`http://54.183.16.194//bank_transactions?account_number=${pk}&fee=NONE&limit=100`)
+    const _transactions: any = await $axios.get(`http://54.183.16.194/bank_transactions?account_number=${pk}&fee=NONE&limit=100`)
     let transactions: Array<Transaction> = _transactions.data.results
 
     const treasuryPk: string = '23676c35fce177aef2412e3ab12d22bf521ed423c6f55b8922c336500a1a27c5'

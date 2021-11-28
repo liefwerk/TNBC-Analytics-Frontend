@@ -7,10 +7,10 @@
         "npm": ">=7.16"
     },
     "scripts": {
-        "dev": "nuxt",
+        "dev": "genversion lib/version.js --es6 && nuxt",
         "build": "nuxt build",
         "start": "nuxt start",
-        "generate": "genversion lib/version.js --es6 && nuxt generate",
+        "generate": "nuxt generate",
         "deploy": "push-dir --dir=dist --branch=gh-pages --cleanup"
     },
     "dependencies": {
