@@ -23,7 +23,7 @@
             title="Distributed to Projects"/>
           <HomeCard 
             :number="analytics.total_paid_as_bounty"
-            title="Disctributed as Bounty Rewards"/>
+            title="Distributed as Bounty Rewards"/>
         </div>
       </div>
       <div class="my-16 mx-4 font-sans font-semibold">
